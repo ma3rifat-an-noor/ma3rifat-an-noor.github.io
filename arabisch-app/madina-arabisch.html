@@ -219,6 +219,17 @@ p{margin:0}
 .mic-help strong{font-size:.95rem}
 .mic-help ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .mic-help .row{display:flex;justify-content:flex-end}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:4px;align-self:stretch}
+.opt{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:9px 12px;color:var(--ink);width:100%;box-shadow:var(--shadow)}
+.opt:hover{border-color:var(--gold);background:var(--gold-soft)}
+.opt .o-ar{flex:1;font-family:var(--f-ar);font-size:1.45rem;line-height:1.6;direction:rtl;text-align:right;overflow-wrap:anywhere}
+.opt .o-n{width:26px;height:26px;border-radius:50%;background:var(--sunk);color:var(--muted);display:grid;place-items:center;font-size:.8rem;font-weight:700;flex:none;font-variant-numeric:tabular-nums}
+.mode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+.mode-tag{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--green-soft);color:var(--green);white-space:nowrap}
+.mode-tag.ai{background:var(--gold-soft);color:var(--gold-ink)}
+.link{background:none;border:0;padding:0;color:var(--gold-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;font-size:inherit}
+.mode-seg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.mode-seg .lab{font-size:.85rem;color:var(--muted)}
 
 /* Rollenspiel */
 .scenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
@@ -427,11 +438,14 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
           <label class="sr" for="tutor-topic">Übungsthema</label>
           <select class="select" id="tutor-topic"></select>
           <button class="btn small" type="button" id="tutor-reset"><svg class="ico sm"><use href="#i-refresh"/></svg>Neu</button>
+          <div class="seg" data-mode-seg role="group" aria-label="Modus"><button type="button" data-mode="offline">Übungen</button><button type="button" data-mode="claude">Frei mit Claude</button></div>
         </div>
       </div>
       <div class="msgs" id="tutor-scroll"><div class="wrap" id="tutor-msgs"></div></div>
       <div class="dock">
         <div class="wrap">
+          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag">Übungsmodus · kostenlos</span><span>Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude">Frei mit Claude sprechen</button></div>
+          <div data-claude-ui>
           <div class="mic-help" data-mic-help hidden></div>
           <div class="scroller" id="tutor-chips"></div>
           <form class="composer" id="tutor-form" autocomplete="off">
@@ -440,6 +454,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
             <textarea id="tutor-input" rows="1" dir="auto" placeholder="Sprich oder schreib …"></textarea>
             <button class="send" type="submit" id="tutor-send" aria-label="Senden"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
+          </div>
         </div>
       </div>
     </section>
@@ -449,6 +464,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
       <div class="wrap">
         <h2 class="h">Rollenspiele</h2>
         <p class="lede">Wähle eine Situation. Der Tutor spielt die andere Rolle, korrigiert dich und hilft mit fertigen Sätzen.</p>
+        <div class="mode-seg"><span class="lab">Modus</span><div class="seg" data-mode-seg role="group" aria-label="Modus"><button type="button" data-mode="offline">Dialog-Übung · kostenlos</button><button type="button" data-mode="claude">Frei mit Claude</button></div></div>
         <div id="role-resume"></div>
         <div class="scenes" id="scenes"></div>
       </div>
@@ -465,6 +481,8 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
       <div class="msgs" id="role-scroll"><div class="wrap" id="role-msgs"></div></div>
       <div class="dock">
         <div class="wrap">
+          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag">Übungsmodus · kostenlos</span><span>Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude">Frei mit Claude sprechen</button></div>
+          <div data-claude-ui>
           <div class="mic-help" data-mic-help hidden></div>
           <div class="scroller" id="role-chips"></div>
           <form class="composer" id="role-form" autocomplete="off">
@@ -473,6 +491,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
             <textarea id="role-input" rows="1" dir="auto" placeholder="Deine Antwort …"></textarea>
             <button class="send" type="submit" id="role-send" aria-label="Senden"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
+          </div>
         </div>
       </div>
     </section>
@@ -496,6 +515,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
             <span class="grow"></span>
             <button class="btn primary" type="submit" id="tr-go">Erklären</button>
           </div>
+          <div class="mode-bar" id="tr-mode"></div>
           <div class="mic-help" data-mic-help hidden></div>
           <div class="scroller" id="tr-examples"></div>
         </form>
@@ -516,6 +536,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
         <div class="set"><label class="l" for="set-showTl"><b>Umschrift zeigen</b><span>Lateinische Lautschrift unter dem Arabischen.</span></label><input class="sw" type="checkbox" id="set-showTl"></div>
         <div class="set"><label class="l" for="set-autoSpeak"><b>Antworten vorlesen</b><span>Der Tutor spricht seine Antworten laut.</span></label><input class="sw" type="checkbox" id="set-autoSpeak"></div>
         <div class="set"><label class="l" for="set-autoSend"><b>Nach dem Sprechen senden</b><span>Spracheingabe geht direkt an den Tutor.</span></label><input class="sw" type="checkbox" id="set-autoSend"></div>
+        <div class="set"><label class="l" for="set-spar"><b>Sparmodus: ohne Claude üben</b><span>Tutor und Rollenspiele mit vorbereiteten Übungen, Übersetzer als Wörterbuch. Kostet nichts.</span></label><input class="sw" type="checkbox" id="set-spar"></div>
         <div class="set"><label class="l" for="set-precise"><b>Genauere Korrektur</b><span>Gründlicher, aber langsamer.</span></label><input class="sw" type="checkbox" id="set-precise"></div>
         <div class="set col"><label class="l" for="set-rate"><b>Sprechtempo</b><span id="rate-val"></span></label><input type="range" id="set-rate" min="0.6" max="1.1" step="0.05"></div>
         <div class="set col"><div class="l"><b>Fortschritt</b><span id="sync-state">Wird auf diesem Gerät gespeichert.</span></div>
@@ -676,6 +697,135 @@ const TR_EXAMPLE = {sentences:[{ar:'ذَهَبَ الطَّالِبُ إِلَى
     {ar:'الْمَسْجِدِ', tl:'al-masjidi', de:'der Moschee', type:'Nomen, mask., bestimmt, Genitiv', root:'س ج د', note:'مَسْجِد ist der „Ort der Niederwerfung" (سُجُود).'}
   ]}]};
 
+
+// Übungen für den Sparmodus. q: Frage des Tutors (qF: Form für weibliche Anrede), qde: Deutsch, ok: [richtig, Bedeutung, richtig für weibliche Anrede?], bad: [[falsch, Erklärung], ...]
+const EX = {
+'b1-hadha':[
+ {q:'مَا هٰذَا؟',qde:'Was ist das? (Der Tutor zeigt auf ein Buch.)',ok:['هٰذَا كِتَابٌ.','Das ist ein Buch.'],bad:[['هٰذَا الْكِتَابٌ.','الـ und Tanwīn stehen nie zusammen. Entweder كِتَابٌ (ein Buch) oder الْكِتَابُ (das Buch).'],['هٰذِهِ كِتَابٌ.','كِتَابٌ ist männlich, also هٰذَا.']]},
+ {q:'أَهٰذَا بَيْتٌ؟',qde:'Ist das ein Haus? (Es ist eine Moschee.)',ok:['لَا، هٰذَا مَسْجِدٌ.','Nein, das ist eine Moschee.'],bad:[['لَا، هٰذَا بَيْتٌ.','Du hast verneint, dann darf nicht wieder بَيْتٌ kommen. Es ist eine Moschee: مَسْجِدٌ.'],['نَعَمْ، هٰذَا مَسْجِدٌ.','نَعَمْ heißt ja. Es ist aber kein Haus, also لَا.']]},
+ {q:'أَهٰذَا قَلَمٌ؟',qde:'Ist das ein Stift? (Ja.)',ok:['نَعَمْ، هٰذَا قَلَمٌ.','Ja, das ist ein Stift.'],bad:[['نَعَمْ، هٰذَا قَلَمُ.','Ein unbestimmtes Nomen am Satzende hat Tanwīn: قَلَمٌ.'],['نَعَمْ، هٰذِهِ قَلَمٌ.','قَلَمٌ ist männlich, also هٰذَا.']]}],
+'b1-dhalika':[
+ {q:'مَنْ هٰذَا؟',qde:'Wer ist das? (Ein Arzt.)',ok:['هٰذَا طَبِيبٌ.','Das ist ein Arzt.'],bad:[['هٰذَا طَبِيبَةٌ.','Es ist ein Mann: طَبِيبٌ. طَبِيبَةٌ ist eine Ärztin.'],['مَا هٰذَا؟','Du sollst antworten, nicht fragen. Nach Personen fragt man außerdem mit مَنْ.']]},
+ {q:'مَا ذٰلِكَ؟',qde:'Was ist das dort? (Weit weg: ein Stern.)',ok:['ذٰلِكَ نَجْمٌ.','Das dort ist ein Stern.'],bad:[['هٰذَا نَجْمٌ.','Der Stern ist weit weg: ذٰلِكَ (das dort).'],['ذٰلِكَ نَجْمَةٌ.','Stern heißt نَجْمٌ und ist männlich.']]},
+ {q:'أَهٰذَا كَلْبٌ؟',qde:'Ist das ein Hund? (Es ist eine Katze, direkt vor dir.)',ok:['لَا، هٰذَا قِطٌّ.','Nein, das ist eine Katze.'],bad:[['لَا، هٰذَا كَلْبٌ.','Es ist eine Katze: قِطٌّ.'],['لَا، ذٰلِكَ قِطٌّ.','Die Katze ist nah: هٰذَا, nicht ذٰلِكَ.']]}],
+'b1-al':[
+ {q:'هٰذَا كِتَابٌ. أَلْكِتَابُ جَدِيدٌ أَمْ قَدِيمٌ؟',qde:'Das ist ein Buch. Ist das Buch neu oder alt? (Neu.)',ok:['الْكِتَابُ جَدِيدٌ.','Das Buch ist neu.'],bad:[['الْكِتَابُ جَدِيدُ.','Das Prädikat ist unbestimmt und bekommt Tanwīn: جَدِيدٌ.'],['كِتَابٌ جَدِيدٌ.','Das heißt nur „ein neues Buch", kein Satz. Mit الـ wird es ein Satz: الْكِتَابُ جَدِيدٌ.']]},
+ {q:'الْبَابُ مَفْتُوحٌ أَمْ مُغْلَقٌ؟',qde:'Ist die Tür offen oder geschlossen? (Geschlossen.)',ok:['الْبَابُ مُغْلَقٌ.','Die Tür ist geschlossen.'],bad:[['الْبَابٌ مُغْلَقٌ.','Mit الـ gibt es kein Tanwīn: الْبَابُ.'],['الْمُغْلَقُ بَابٌ.','Reihenfolge: zuerst das Bestimmte (الْبَابُ), dann die Eigenschaft.']]},
+ {q:'كَيْفَ الْمَاءُ؟',qde:'Wie ist das Wasser? (Kalt.)',ok:['الْمَاءُ بَارِدٌ.','Das Wasser ist kalt.'],bad:[['الْمَاءُ بَارِدَةٌ.','مَاءٌ ist männlich, also بَارِدٌ.'],['الْمَاءُ الْبَارِدُ.','Das heißt „das kalte Wasser", noch kein Satz. Das Prädikat bleibt ohne الـ.']]}],
+'b1-jarr':[
+ {q:'أَيْنَ الْقَلَمُ؟',qde:'Wo ist der Stift? (Auf dem Schreibtisch.)',ok:['الْقَلَمُ عَلَى الْمَكْتَبِ.','Der Stift ist auf dem Schreibtisch.'],bad:[['الْقَلَمُ عَلَى الْمَكْتَبُ.','Nach عَلَى steht der Genitiv: الْمَكْتَبِ.'],['الْقَلَمُ فِي الْمَكْتَبِ.','فِي heißt „in". Auf dem Tisch: عَلَى.']]},
+ {q:'أَيْنَ الْمُدَرِّسُ؟',qde:'Wo ist der Lehrer? (Im Klassenzimmer.)',ok:['الْمُدَرِّسُ فِي الْفَصْلِ.','Der Lehrer ist im Klassenzimmer.'],bad:[['الْمُدَرِّسُ فِي فَصْلٌ.','Nach فِي steht der Genitiv, und hier bestimmt: الْفَصْلِ.'],['الْمُدَرِّسُ عَلَى الْفَصْلِ.','عَلَى heißt „auf". Im Zimmer: فِي.']]},
+ {q:'أَيْنَ أَنْتَ؟',qF:'أَيْنَ أَنْتِ؟',qde:'Wo bist du? (Hier.)',ok:['أَنَا هُنَا.','Ich bin hier.'],bad:[['أَنَا فِي هُنَا.','هُنَا braucht keine Präposition.'],['أَنَا هُنَاكَ.','هُنَاكَ heißt „dort". Du bist hier: هُنَا.']]}],
+'b1-idafa':[
+ {q:'مَا اسْمُكَ؟',qF:'مَا اسْمُكِ؟',qde:'Wie heißt du? (Ahmad / Fatima)',ok:['اِسْمِي أَحْمَدُ.','Ich heiße Ahmad.','اِسْمِي فَاطِمَةُ.'],bad:[['اِسْمِي هُوَ أَحْمَدُ.','Kein „ist" und kein هُوَ nötig: اِسْمِي أَحْمَدُ.'],['أَنَا اِسْمِي أَحْمَدُ.','Doppelt: اِسْمِي heißt schon „mein Name". Ohne أَنَا.']]},
+ {q:'لِمَنْ هٰذَا الْكِتَابُ؟',qde:'Wem gehört dieses Buch? (Muhammad.)',ok:['هٰذَا كِتَابُ مُحَمَّدٍ.','Das ist Muhammads Buch.'],bad:[['هٰذَا الْكِتَابُ مُحَمَّدٍ.','Das erste Wort einer Iḍāfa hat kein الـ: كِتَابُ مُحَمَّدٍ.'],['هٰذَا كِتَابٌ مُحَمَّدٌ.','Besitz: erstes Wort ohne Tanwīn, zweites im Genitiv: كِتَابُ مُحَمَّدٍ.']]},
+ {q:'مَنْ هٰذَا؟',qde:'Wer ist das? (Der Sohn des Lehrers.)',ok:['هٰذَا ابْنُ الْمُدَرِّسِ.','Das ist der Sohn des Lehrers.'],bad:[['هٰذَا ابْنٌ الْمُدَرِّسِ.','Erstes Wort ohne Tanwīn: ابْنُ الْمُدَرِّسِ.'],['هٰذَا الِابْنُ الْمُدَرِّسِ.','Erstes Wort ohne الـ: ابْنُ الْمُدَرِّسِ.']]}],
+'b1-hadhihi':[
+ {q:'مَا هٰذِهِ؟',qde:'Was ist das? (Eine Uhr.)',ok:['هٰذِهِ سَاعَةٌ.','Das ist eine Uhr.'],bad:[['هٰذَا سَاعَةٌ.','سَاعَةٌ endet auf ـة und ist weiblich, also هٰذِهِ.'],['هٰذِهِ سَاعَةُ.','Unbestimmt am Satzende: Tanwīn, سَاعَةٌ.']]},
+ {q:'مَنْ تِلْكَ؟',qde:'Wer ist das dort? (Eine Lehrerin, weit weg.)',ok:['تِلْكَ مُدَرِّسَةٌ.','Das dort ist eine Lehrerin.'],bad:[['ذٰلِكَ مُدَرِّسَةٌ.','مُدَرِّسَةٌ ist weiblich, also تِلْكَ.'],['تِلْكَ مُدَرِّسٌ.','Eine Frau: مُدَرِّسَةٌ.']]},
+ {q:'أَهٰذِهِ نَافِذَةٌ؟',qde:'Ist das ein Fenster? (Ja, und es ist offen.)',ok:['نَعَمْ، هٰذِهِ نَافِذَةٌ، وَهِيَ مَفْتُوحَةٌ.','Ja, das ist ein Fenster, und es ist offen.'],bad:[['نَعَمْ، هٰذِهِ نَافِذَةٌ، وَهِيَ مَفْتُوحٌ.','نَافِذَةٌ ist weiblich, also auch das Adjektiv: مَفْتُوحَةٌ.'],['نَعَمْ، هٰذِهِ نَافِذَةٌ، وَهُوَ مَفْتُوحَةٌ.','Weiblich, also هِيَ.']]}],
+'b1-damir':[
+ {q:'مِنْ أَيْنَ أَنْتَ؟',qF:'مِنْ أَيْنَ أَنْتِ؟',qde:'Woher kommst du? (Aus Deutschland.)',ok:['أَنَا مِنْ أَلْمَانِيَا.','Ich komme aus Deutschland.'],bad:[['أَنَا أَلْمَانِيَا.','Herkunft braucht مِنْ: أَنَا مِنْ أَلْمَانِيَا.'],['أَنَا فِي أَلْمَانِيَا.','فِي heißt „in" (wo du bist). Woher: مِنْ.']]},
+ {q:'هَلْ أَنْتَ طَالِبٌ؟',qF:'هَلْ أَنْتِ طَالِبَةٌ؟',qde:'Bist du Student/Studentin? (Ja.)',ok:['نَعَمْ، أَنَا طَالِبٌ.','Ja, ich bin Student.','نَعَمْ، أَنَا طَالِبَةٌ.'],bad:[['نَعَمْ، أَنْتَ طَالِبٌ.','أَنْتَ heißt „du". Über dich selbst: أَنَا.'],['نَعَمْ، أَنَا الطَّالِبُ.','Das hieße „ich bin DER Student". Ohne الـ.']]},
+ {q:'مَنْ هِيَ؟',qde:'Wer ist sie? (Eine Studentin aus Ägypten.)',ok:['هِيَ طَالِبَةٌ مِنْ مِصْرَ.','Sie ist eine Studentin aus Ägypten.'],bad:[['هُوَ طَالِبَةٌ مِنْ مِصْرَ.','Über eine Frau: هِيَ.'],['هِيَ طَالِبٌ مِنْ مِصْرَ.','Weiblich: طَالِبَةٌ.']]}],
+'b1-jam':[
+ {q:'مَنْ هٰؤُلَاءِ؟',qde:'Wer sind diese? (Studenten.)',ok:['هٰؤُلَاءِ طُلَّابٌ.','Das sind Studenten.'],bad:[['هٰؤُلَاءِ طَالِبٌ.','Mehrere Personen: Plural طُلَّابٌ.'],['هٰذَا طُلَّابٌ.','Für mehrere Personen: هٰؤُلَاءِ.']]},
+ {q:'هَلْ أَنْتُمْ مُسْلِمُونَ؟',qde:'Seid ihr Muslime? (Ja.)',ok:['نَعَمْ، نَحْنُ مُسْلِمُونَ.','Ja, wir sind Muslime.'],bad:[['نَعَمْ، أَنَا مُسْلِمُونَ.','Ihr seid mehrere: نَحْنُ (wir).'],['نَعَمْ، نَحْنُ مُسْلِمٌ.','Wir, also Plural: مُسْلِمُونَ.']]},
+ {q:'مَا هٰذِهِ؟',qde:'Was ist das? (Mehrere Bücher.)',ok:['هٰذِهِ كُتُبٌ.','Das sind Bücher.'],bad:[['هٰؤُلَاءِ كُتُبٌ.','هٰؤُلَاءِ nur für Personen. Dinge im Plural gelten als weiblich Einzahl: هٰذِهِ.'],['هٰذِهِ كِتَابٌ.','Mehrere Bücher: كُتُبٌ.']]}],
+'b1-madi':[
+ {q:'أَيْنَ ذَهَبْتَ أَمْسِ؟',qF:'أَيْنَ ذَهَبْتِ أَمْسِ؟',qde:'Wohin bist du gestern gegangen? (Zur Moschee.)',ok:['ذَهَبْتُ إِلَى الْمَسْجِدِ.','Ich ging zur Moschee.'],bad:[['ذَهَبْتَ إِلَى الْمَسْجِدِ.','ذَهَبْتَ heißt „du gingst". Ich: ذَهَبْتُ.'],['ذَهَبْتُ فِي الْمَسْجِدِ.','Richtung „zu": إِلَى.']]},
+ {q:'مَاذَا شَرِبْتَ؟',qF:'مَاذَا شَرِبْتِ؟',qde:'Was hast du getrunken? (Das Wasser.)',ok:['شَرِبْتُ الْمَاءَ.','Ich trank das Wasser.'],bad:[['شَرِبْتُ الْمَاءُ.','Das Objekt steht im Akkusativ: الْمَاءَ.'],['شَرِبَ الْمَاءَ.','شَرِبَ heißt „er trank". Ich: شَرِبْتُ.']]},
+ {q:'مَنْ فَتَحَ الْبَابَ؟',qde:'Wer hat die Tür geöffnet? (Der Lehrer.)',ok:['فَتَحَ الْمُدَرِّسُ الْبَابَ.','Der Lehrer öffnete die Tür.'],bad:[['الْمُدَرِّسُ فَتَحْتُ الْبَابَ.','فَتَحْتُ heißt „ich öffnete". Er: فَتَحَ.'],['فَتَحَ الْمُدَرِّسَ الْبَابَ.','Das Subjekt steht im Nominativ: الْمُدَرِّسُ.']]}],
+'b1-adad':[
+ {q:'كَمْ كِتَابًا عِنْدَكَ؟',qF:'كَمْ كِتَابًا عِنْدَكِ؟',qde:'Wie viele Bücher hast du? (Drei.)',ok:['عِنْدِي ثَلَاثَةُ كُتُبٍ.','Ich habe drei Bücher.'],bad:[['عِنْدِي ثَلَاثَةُ كِتَابٍ.','Nach 3 bis 10 steht der Plural: كُتُبٍ.'],['عِنْدِي ثَلَاثُ كُتُبٍ.','كِتَابٌ ist männlich, dann hat die Zahl ein ة: ثَلَاثَةُ.']]},
+ {q:'كَمْ أُخْتًا لَكَ؟',qF:'كَمْ أُخْتًا لَكِ؟',qde:'Wie viele Schwestern hast du? (Zwei.)',ok:['لِي أُخْتَانِ.','Ich habe zwei Schwestern.'],bad:[['لِي اِثْنَانِ أُخْتٌ.','Für „zwei" nutzt man die Zweizahl: أُخْتَانِ.'],['لِي أُخْتٌ اثْنَانِ.','Zweizahl ohne Zahlwort: أُخْتَانِ.']]},
+ {q:'كَمْ طَالِبًا فِي الْفَصْلِ؟',qde:'Wie viele Studenten sind im Klassenzimmer? (Fünf.)',ok:['فِي الْفَصْلِ خَمْسَةُ طُلَّابٍ.','Im Klassenzimmer sind fünf Studenten.'],bad:[['فِي الْفَصْلِ خَمْسُ طُلَّابٍ.','طَالِبٌ ist männlich, also Zahl mit ة: خَمْسَةُ.'],['فِي الْفَصْلِ خَمْسَةُ طَالِبٍ.','Nach der Zahl steht der Plural: طُلَّابٍ.']]}],
+'b2-mudari':[
+ {q:'أَيْنَ تَسْكُنُ؟',qF:'أَيْنَ تَسْكُنِينَ؟',qde:'Wo wohnst du? (In Berlin.)',ok:['أَسْكُنُ فِي بَرْلِينَ.','Ich wohne in Berlin.'],bad:[['تَسْكُنُ فِي بَرْلِينَ.','تَسْكُنُ heißt „du wohnst". Ich: أَسْكُنُ.'],['سَكَنْتُ فِي بَرْلِينَ.','Das ist Vergangenheit. Jetzt: أَسْكُنُ.']]},
+ {q:'مَاذَا تَدْرُسُ؟',qF:'مَاذَا تَدْرُسِينَ؟',qde:'Was lernst du? (Arabisch.)',ok:['أَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','Ich lerne die arabische Sprache.'],bad:[['أَدْرُسُ اللُّغَةُ الْعَرَبِيَّةُ.','Objekt im Akkusativ: اللُّغَةَ الْعَرَبِيَّةَ.'],['يَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','يَدْرُسُ heißt „er lernt". Ich: أَدْرُسُ.']]},
+ {q:'هَلْ تَفْهَمُ؟',qF:'هَلْ تَفْهَمِينَ؟',qde:'Verstehst du? (Nein.)',ok:['لَا، لَا أَفْهَمُ.','Nein, ich verstehe nicht.'],bad:[['لَا، مَا أَفْهَمُ.','Die Gegenwart verneint man mit لَا: لَا أَفْهَمُ.'],['لَا، لَا تَفْهَمُ.','تَفْهَمُ heißt „du verstehst". Ich: أَفْهَمُ.']]}],
+'b2-zaman':[
+ {q:'أَيُّ يَوْمٍ الْيَوْمَ؟',qde:'Welcher Tag ist heute? (Freitag.)',ok:['الْيَوْمَ يَوْمُ الْجُمُعَةِ.','Heute ist Freitag.'],bad:[['الْيَوْمَ يَوْمُ الْجُمُعَةُ.','Iḍāfa: das zweite Wort steht im Genitiv, الْجُمُعَةِ.'],['الْيَوْمَ الْجُمُعَةِ.','Entweder الْيَوْمَ يَوْمُ الْجُمُعَةِ oder kurz الْيَوْمَ الْجُمُعَةُ (Nominativ).']]},
+ {q:'مَتَى تَذْهَبُ إِلَى الْجَامِعَةِ؟',qF:'مَتَى تَذْهَبِينَ إِلَى الْجَامِعَةِ؟',qde:'Wann gehst du zur Universität? (Morgens.)',ok:['أَذْهَبُ إِلَى الْجَامِعَةِ صَبَاحًا.','Ich gehe morgens zur Universität.'],bad:[['أَذْهَبُ إِلَى الْجَامِعَةِ صَبَاحٌ.','Die Zeitangabe steht im Akkusativ: صَبَاحًا.'],['أَذْهَبُ إِلَى الْجَامِعَةِ فِي صَبَاحًا.','Ohne فِي: صَبَاحًا reicht.']]},
+ {q:'مَتَى الدَّرْسُ؟',qde:'Wann ist der Unterricht? (Morgen.)',ok:['الدَّرْسُ غَدًا.','Der Unterricht ist morgen.'],bad:[['الدَّرْسُ فِي غَدًا.','غَدًا steht allein, ohne فِي.'],['الدَّرْسُ أَمْسِ.','أَمْسِ heißt „gestern". Morgen: غَدًا.']]}],
+'b2-salah':[
+ {q:'مَتَى تَسْتَيْقِظُ؟',qF:'مَتَى تَسْتَيْقِظِينَ؟',qde:'Wann wachst du auf? (Vor dem Fadschr.)',ok:['أَسْتَيْقِظُ قَبْلَ الْفَجْرِ.','Ich wache vor dem Fadschr auf.'],bad:[['أَسْتَيْقِظُ قَبْلَ الْفَجْرُ.','Nach قَبْلَ steht der Genitiv: الْفَجْرِ.'],['أَسْتَيْقِظُ بَعْدَ الْفَجْرِ.','بَعْدَ heißt „nach". Vor: قَبْلَ.']]},
+ {q:'مَتَى تَأْكُلُ الْغَدَاءَ؟',qF:'مَتَى تَأْكُلِينَ الْغَدَاءَ؟',qde:'Wann isst du zu Mittag? (Nach dem Dhuhr.)',ok:['آكُلُ الْغَدَاءَ بَعْدَ الظُّهْرِ.','Ich esse nach dem Dhuhr zu Mittag.'],bad:[['أَأْكُلُ الْغَدَاءَ بَعْدَ الظُّهْرِ.','Bei أَكَلَ verschmelzen die beiden Hamza: آكُلُ.'],['آكُلُ الْغَدَاءُ بَعْدَ الظُّهْرِ.','Objekt im Akkusativ: الْغَدَاءَ.']]},
+ {q:'أَيْنَ تُصَلِّي الْعَصْرَ؟',qF:'أَيْنَ تُصَلِّينَ الْعَصْرَ؟',qde:'Wo betest du das Asr? (In der Moschee.)',ok:['أُصَلِّي الْعَصْرَ فِي الْمَسْجِدِ.','Ich bete das Asr in der Moschee.'],bad:[['أُصَلِّي الْعَصْرَ إِلَى الْمَسْجِدِ.','Ort, an dem du bist: فِي.'],['يُصَلِّي الْعَصْرَ فِي الْمَسْجِدِ.','يُصَلِّي heißt „er betet". Ich: أُصَلِّي.']]}],
+'b2-alwan':[
+ {q:'مَا لَوْنُ سَيَّارَتِكَ؟',qF:'مَا لَوْنُ سَيَّارَتِكِ؟',qde:'Welche Farbe hat dein Auto? (Rot.)',ok:['سَيَّارَتِي حَمْرَاءُ.','Mein Auto ist rot.'],bad:[['سَيَّارَتِي أَحْمَرُ.','سَيَّارَةٌ ist weiblich, also حَمْرَاءُ.'],['سَيَّارَتِي حَمْرَاءٌ.','Farben auf ـَاءُ bekommen kein Tanwīn: حَمْرَاءُ.']]},
+ {q:'مَا لَوْنُ الْقَمِيصِ؟',qde:'Welche Farbe hat das Hemd? (Blau.)',ok:['الْقَمِيصُ أَزْرَقُ.','Das Hemd ist blau.'],bad:[['الْقَمِيصُ زَرْقَاءُ.','قَمِيصٌ ist männlich, also أَزْرَقُ.'],['الْقَمِيصُ أَزْرَقٌ.','Farben auf أَفْعَلُ bekommen kein Tanwīn: أَزْرَقُ.']]},
+ {q:'أَهٰذَا قَلَمٌ أَسْوَدُ؟',qde:'Ist das ein schwarzer Stift? (Nein, ein weißer.)',ok:['لَا، هٰذَا قَلَمٌ أَبْيَضُ.','Nein, das ist ein weißer Stift.'],bad:[['لَا، هٰذَا أَبْيَضُ قَلَمٌ.','Das Adjektiv steht nach dem Nomen: قَلَمٌ أَبْيَضُ.'],['لَا، هٰذَا قَلَمٌ بَيْضَاءُ.','قَلَمٌ ist männlich, also أَبْيَضُ.']]}],
+'b2-amr':[
+ {q:'الْبَابُ مُغْلَقٌ!',qde:'Die Tür ist zu! (Bitte deinen Freund, sie zu öffnen.)',ok:['اِفْتَحِ الْبَابَ مِنْ فَضْلِكَ.','Öffne bitte die Tür.'],bad:[['تَفْتَحُ الْبَابَ مِنْ فَضْلِكَ.','Das heißt „du öffnest". Befehl: اِفْتَحْ.'],['فَتَحَ الْبَابَ مِنْ فَضْلِكَ.','فَتَحَ heißt „er öffnete". Befehl: اِفْتَحْ.']]},
+ {q:'أَنَا وَاقِفٌ.',qde:'Ich stehe. (Sag mir: Setz dich bitte.)',ok:['اِجْلِسْ مِنْ فَضْلِكَ.','Setz dich bitte.'],bad:[['جَلَسَ مِنْ فَضْلِكَ.','جَلَسَ heißt „er setzte sich". Befehl: اِجْلِسْ.'],['لَا تَجْلِسْ مِنْ فَضْلِكَ.','Das ist ein Verbot: „Setz dich nicht."']]},
+ {q:'أُرِيدُ أَنْ أَتَكَلَّمَ فِي الْفَصْلِ.',qde:'Ich will im Klassenzimmer reden. (Verbiete es ihm.)',ok:['لَا تَتَكَلَّمْ فِي الْفَصْلِ.','Sprich nicht im Klassenzimmer.'],bad:[['لَا تَتَكَلَّمُ فِي الْفَصْلِ.','Nach dem لَا des Verbots endet das Verb mit Sukūn: تَتَكَلَّمْ.'],['مَا تَتَكَلَّمُ فِي الْفَصْلِ.','Verbot mit لَا und Sukūn: لَا تَتَكَلَّمْ.']]}],
+'b2-kana':[
+ {q:'كَيْفَ كَانَ الْجَوُّ أَمْسِ؟',qde:'Wie war das Wetter gestern? (Kalt.)',ok:['كَانَ الْجَوُّ بَارِدًا.','Das Wetter war kalt.'],bad:[['كَانَ الْجَوُّ بَارِدٌ.','Nach كَانَ steht das Prädikat im Akkusativ: بَارِدًا.'],['كَانَ الْجَوَّ بَارِدًا.','Das Subjekt von كَانَ bleibt im Nominativ: الْجَوُّ.']]},
+ {q:'هَلِ الْبَابُ مَفْتُوحٌ؟',qde:'Ist die Tür offen? (Nein, sie ist nicht offen.)',ok:['لَا، لَيْسَ الْبَابُ مَفْتُوحًا.','Nein, die Tür ist nicht offen.'],bad:[['لَا، لَيْسَ الْبَابُ مَفْتُوحٌ.','لَيْسَ wirkt wie كَانَ: Prädikat im Akkusativ, مَفْتُوحًا.'],['لَا، لَا الْبَابُ مَفْتُوحٌ.','„ist nicht" heißt لَيْسَ.']]},
+ {q:'أَيْنَ كُنْتَ أَمْسِ؟',qF:'أَيْنَ كُنْتِ أَمْسِ؟',qde:'Wo warst du gestern? (Krank, zu Hause.)',ok:['كُنْتُ مَرِيضًا فِي الْبَيْتِ.','Ich war krank zu Hause.','كُنْتُ مَرِيضَةً فِي الْبَيْتِ.'],bad:[['كُنْتُ مَرِيضٌ فِي الْبَيْتِ.','Nach كُنْتُ steht der Akkusativ: مَرِيضًا.'],['كَانَ مَرِيضًا فِي الْبَيْتِ.','كَانَ heißt „er war". Ich: كُنْتُ.']]}],
+'b3-tafdil':[
+ {q:'أَيُّهُمَا أَكْبَرُ: الشَّمْسُ أَمِ الْقَمَرُ؟',qde:'Was ist größer: die Sonne oder der Mond?',ok:['الشَّمْسُ أَكْبَرُ مِنَ الْقَمَرِ.','Die Sonne ist größer als der Mond.'],bad:[['الشَّمْسُ أَكْبَرُ عَنِ الْقَمَرِ.','„als" heißt مِنْ.'],['الشَّمْسُ كُبْرَى مِنَ الْقَمَرِ.','Mit مِنْ bleibt die Form أَكْبَرُ, auch bei weiblichem Subjekt.']]},
+ {q:'مَنْ أَطْوَلُ طَالِبٍ فِي الْفَصْلِ؟',qde:'Wer ist der größte Student in der Klasse? (Ahmad.)',ok:['أَحْمَدُ أَطْوَلُ طَالِبٍ فِي الْفَصْلِ.','Ahmad ist der größte Student in der Klasse.'],bad:[['أَحْمَدُ أَطْوَلُ الطَّالِبِ فِي الْفَصْلِ.','Superlativ: Nomen unbestimmt im Genitiv, أَطْوَلُ طَالِبٍ.'],['أَحْمَدُ طَوِيلٌ طَالِبٍ.','Der Superlativ braucht die Form أَطْوَلُ.']]},
+ {q:'هَلِ الْمَدِينَةُ أَقْرَبُ أَمْ مَكَّةُ؟',qde:'Ist Medina näher oder Mekka? (Medina.)',ok:['الْمَدِينَةُ أَقْرَبُ مِنْ مَكَّةَ.','Medina ist näher als Mekka.'],bad:[['الْمَدِينَةُ أَقْرَبُ مِنْ مَكَّةٍ.','مَكَّةُ ist ein Name ohne Tanwīn: مِنْ مَكَّةَ.'],['الْمَدِينَةُ قَرِيبَةٌ مِنْ مَكَّةَ.','Das heißt „nah bei". Näher: أَقْرَبُ.']]}],
+'b3-awzan':[
+ {q:'أَيْنَ تَعَلَّمْتَ الْعَرَبِيَّةَ؟',qF:'أَيْنَ تَعَلَّمْتِ الْعَرَبِيَّةَ؟',qde:'Wo hast du Arabisch gelernt? (In Medina.)',ok:['تَعَلَّمْتُ الْعَرَبِيَّةَ فِي الْمَدِينَةِ.','Ich habe Arabisch in Medina gelernt.'],bad:[['عَلَّمْتُ الْعَرَبِيَّةَ فِي الْمَدِينَةِ.','عَلَّمَ (Stamm II) heißt „lehren". Lernen: تَعَلَّمَ (Stamm V).'],['تَعَلَّمْتُ الْعَرَبِيَّةُ فِي الْمَدِينَةِ.','Objekt im Akkusativ: الْعَرَبِيَّةَ.']]},
+ {q:'مَنْ دَرَّسَكَ الْعَرَبِيَّةَ؟',qF:'مَنْ دَرَّسَكِ الْعَرَبِيَّةَ؟',qde:'Wer hat dir Arabisch beigebracht? (Mein Lehrer.)',ok:['دَرَّسَنِي مُدَرِّسِي.','Mein Lehrer hat mich unterrichtet.'],bad:[['دَرَسَنِي مُدَرِّسِي.','دَرَسَ (Stamm I) heißt „lernen". Unterrichten: دَرَّسَ mit Schadda.'],['دَرَّسَ مُدَرِّسِي.','„mich" fehlt: دَرَّسَنِي.']]},
+ {q:'مَاذَا فَعَلْتَ بَعْدَ الصَّلَاةِ؟',qF:'مَاذَا فَعَلْتِ بَعْدَ الصَّلَاةِ؟',qde:'Was hast du nach dem Gebet gemacht? (Allah um Vergebung gebeten.)',ok:['اِسْتَغْفَرْتُ اللّٰهَ.','Ich habe Allah um Vergebung gebeten.'],bad:[['غَفَرْتُ اللّٰهَ.','غَفَرَ heißt „vergeben". Um Vergebung bitten: اِسْتَغْفَرَ (Stamm X).'],['اِسْتَغْفَرَ اللّٰهَ.','Das ist „er". Ich: اِسْتَغْفَرْتُ.']]}],
+'b3-majhul':[
+ {q:'مَنْ فَتَحَ الْبَابَ؟',qde:'Wer hat die Tür geöffnet? (Du weißt es nicht. Sag: Die Tür wurde geöffnet.)',ok:['لَا أَدْرِي، فُتِحَ الْبَابُ.','Ich weiß nicht, die Tür wurde geöffnet.'],bad:[['لَا أَدْرِي، فَتَحَ الْبَابُ.','Ohne Täter: Passiv فُتِحَ (u–i).'],['لَا أَدْرِي، فُتِحَ الْبَابَ.','Im Passiv wird das Objekt zum Subjekt, Nominativ: الْبَابُ.']]},
+ {q:'أَيْنَ وُلِدْتَ؟',qF:'أَيْنَ وُلِدْتِ؟',qde:'Wo wurdest du geboren? (In Deutschland.)',ok:['وُلِدْتُ فِي أَلْمَانِيَا.','Ich wurde in Deutschland geboren.'],bad:[['وَلَدْتُ فِي أَلْمَانِيَا.','وَلَدْتُ heißt „ich habe geboren". Geboren werden: وُلِدْتُ.'],['وُلِدَ فِي أَلْمَانِيَا.','وُلِدَ heißt „er wurde geboren". Ich: وُلِدْتُ.']]},
+ {q:'بِأَيِّ لُغَةٍ كُتِبَ هٰذَا الْكِتَابُ؟',qde:'In welcher Sprache wurde dieses Buch geschrieben? (Auf Arabisch.)',ok:['كُتِبَ بِالْعَرَبِيَّةِ.','Es wurde auf Arabisch geschrieben.'],bad:[['كَتَبَ بِالْعَرَبِيَّةِ.','Passiv: كُتِبَ.'],['يُكْتَبُ بِالْعَرَبِيَّةِ.','Es ist schon geschrieben, also Vergangenheit: كُتِبَ.']]}]
+};
+
+// Dialog-Übungen für den Sparmodus. t: Satz des Tutors [ar, de, tl, arF?] (null = Begrüßung der Szene), ok: [richtig, Bedeutung, richtig weiblich?], bad: [[falsch, Erklärung], ...]
+const STEPS = {
+cafe:[
+ {t:null,ok:['أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ.','Ich möchte einen Kaffee, bitte.'],bad:[['أُرِيدُ قَهْوَةٌ، مِنْ فَضْلِكَ.','Das Objekt steht im Akkusativ: قَهْوَةً.'],['أَنَا قَهْوَةٌ.','Das heißt „ich bin Kaffee". Ich möchte: أُرِيدُ.']]},
+ {t:['بِالْحَلِيبِ أَمْ بِدُونِ حَلِيبٍ؟','Mit Milch oder ohne Milch?','bi-l-ḥalībi am bi-dūni ḥalībin?'],ok:['بِالْحَلِيبِ، وَبِدُونِ سُكَّرٍ.','Mit Milch und ohne Zucker.'],bad:[['مَعَ الْحَلِيبُ.','Nach مَعَ steht der Genitiv: مَعَ الْحَلِيبِ, oder kurz بِالْحَلِيبِ.'],['بِدُونِ حَلِيبٌ.','Nach بِدُونِ steht der Genitiv: حَلِيبٍ.']]},
+ {t:['تَفَضَّلْ، هٰذِهِ قَهْوَتُكَ.','Bitte sehr, dein Kaffee.','tafaḍḍal, hādhihi qahwatuka.','تَفَضَّلِي، هٰذِهِ قَهْوَتُكِ.'],ok:['شُكْرًا. بِكَمْ هٰذِهِ؟','Danke. Wie viel kostet sie?'],bad:[['شُكْرًا. كَمْ هٰذِهِ؟','Nach dem Preis fragt man mit بِكَمْ.'],['شُكْرًا. بِكَمْ هٰذَا؟','قَهْوَةٌ ist weiblich, also هٰذِهِ.']]},
+ {t:['بِخَمْسَةِ رِيَالَاتٍ.','Fünf Riyal.','bi-khamsati riyālātin.'],ok:['الْحِسَابُ، مِنْ فَضْلِكَ.','Die Rechnung, bitte.'],bad:[['حِسَابٌ، مِنْ فَضْلِكَ.','Deine Rechnung ist bestimmt: الْحِسَابُ.'],['أُرِيدُ الْحِسَابُ.','Nach أُرِيدُ steht der Akkusativ: الْحِسَابَ.']]},
+ {t:['تَفَضَّلْ. شُكْرًا لَكَ!','Bitte. Danke dir!','tafaḍḍal. shukran laka!','تَفَضَّلِي. شُكْرًا لَكِ!'],ok:['شُكْرًا جَزِيلًا، مَعَ السَّلَامَةِ.','Vielen Dank, auf Wiedersehen.'],bad:[['شُكْرًا جَزِيلٌ.','Die Dankesformel steht im Akkusativ: شُكْرًا جَزِيلًا.'],['مَعَ السَّلَامَةُ.','Nach مَعَ steht der Genitiv: السَّلَامَةِ.']]}],
+restaurant:[
+ {t:null,ok:['مَسَاءَ النُّورِ. مَاذَا تَقْتَرِحُ؟','Guten Abend. Was empfiehlst du?'],bad:[['مَسَاءُ النُّورُ.','Die Grußformel lautet مَسَاءَ النُّورِ.'],['صَبَاحَ النُّورِ.','Es ist Abend: مَسَاءَ النُّورِ.']]},
+ {t:['أَقْتَرِحُ الدَّجَاجَ مَعَ الْأَرُزِّ.','Ich empfehle Hähnchen mit Reis.','aqtariḥu d-dajāja maʿa l-aruzz.'],ok:['حَسَنًا، أُرِيدُ دَجَاجًا وَأَرُزًّا.','Gut, ich möchte Hähnchen und Reis.'],bad:[['أُرِيدُ دَجَاجٌ وَأَرُزٌّ.','Objekte im Akkusativ: دَجَاجًا وَأَرُزًّا.'],['أُرِيدُ الدَّجَاجِ.','Nach أُرِيدُ steht der Akkusativ: الدَّجَاجَ.']]},
+ {t:['وَمَاذَا تَشْرَبُ؟','Und was trinkst du?','wa-mādhā tashrabu?','وَمَاذَا تَشْرَبِينَ؟'],ok:['مَاءً، مِنْ فَضْلِكَ.','Wasser, bitte.'],bad:[['مَاءٌ، مِنْ فَضْلِكَ.','Gemeint ist „(ich möchte) Wasser", also Akkusativ: مَاءً.'],['أَشْرَبُ مَاءٌ.','Objekt im Akkusativ: مَاءً.']]},
+ {t:['تَفَضَّلْ. هَلِ الطَّعَامُ لَذِيذٌ؟','Bitte sehr. Ist das Essen lecker?','tafaḍḍal. hali ṭ-ṭaʿāmu ladhīdhun?','تَفَضَّلِي. هَلِ الطَّعَامُ لَذِيذٌ؟'],ok:['نَعَمْ، الطَّعَامُ لَذِيذٌ جِدًّا!','Ja, das Essen ist sehr lecker!'],bad:[['نَعَمْ، الطَّعَامُ لَذِيذَةٌ.','طَعَامٌ ist männlich, also لَذِيذٌ.'],['نَعَمْ، الطَّعَامُ جِدًّا لَذِيذٌ.','جِدًّا (sehr) steht nach dem Adjektiv.']]},
+ {t:['الْحَمْدُ لِلّٰهِ. هَلْ تُرِيدُ شَيْئًا آخَرَ؟','Gott sei Dank. Möchtest du noch etwas?','al-ḥamdu li-llāh. hal turīdu shayʾan ākhar?','الْحَمْدُ لِلّٰهِ. هَلْ تُرِيدِينَ شَيْئًا آخَرَ؟'],ok:['لَا، شُكْرًا. الْحِسَابُ، مِنْ فَضْلِكَ.','Nein, danke. Die Rechnung, bitte.'],bad:[['لَا، شُكْرًا. حِسَابٌ، مِنْ فَضْلِكَ.','Deine Rechnung ist bestimmt: الْحِسَابُ.'],['لَا، شُكْرًا. أَيْنَ الْحِسَابُ؟','Das heißt „Wo ist die Rechnung?". Du bittest darum: الْحِسَابُ، مِنْ فَضْلِكَ.']]}],
+hotel:[
+ {t:null,ok:['أُرِيدُ غُرْفَةً، مِنْ فَضْلِكَ.','Ich möchte ein Zimmer, bitte.'],bad:[['أُرِيدُ غُرْفَةٌ.','Objekt im Akkusativ: غُرْفَةً.'],['عِنْدِي غُرْفَةٌ.','Das heißt „ich habe ein Zimmer". Du möchtest eins: أُرِيدُ.']]},
+ {t:['لِكَمْ لَيْلَةً؟','Für wie viele Nächte?','li-kam laylatan?'],ok:['لِلَيْلَتَيْنِ.','Für zwei Nächte.'],bad:[['لِلَيْلَتَانِ.','Nach لِـ steht die Zweizahl auf ـَيْنِ: لَيْلَتَيْنِ.'],['لِاثْنَيْنِ لَيْلَةٍ.','Zwei Nächte sagt man mit der Zweizahl: لَيْلَتَيْنِ.']]},
+ {t:['لِشَخْصٍ وَاحِدٍ أَمْ لِشَخْصَيْنِ؟','Für eine Person oder für zwei?','li-shakhṣin wāḥidin am li-shakhṣayn?'],ok:['لِشَخْصٍ وَاحِدٍ.','Für eine Person.'],bad:[['لِشَخْصٍ وَاحِدٌ.','Das Adjektiv folgt dem Nomen im Genitiv: وَاحِدٍ.'],['لِوَاحِدٍ شَخْصٍ.','Erst das Nomen, dann die Zahl: شَخْصٍ وَاحِدٍ.']]},
+ {t:['الْغُرْفَةُ بِمِائَتَيْ رِيَالٍ لِلَّيْلَةِ.','Das Zimmer kostet 200 Riyal pro Nacht.','al-ghurfatu bi-miʾatay riyālin li-l-laylah.'],ok:['هَلِ الْفُطُورُ مَوْجُودٌ؟','Gibt es Frühstück?'],bad:[['هَلِ الْفُطُورُ مَوْجُودَةٌ؟','فُطُورٌ ist männlich, also مَوْجُودٌ.'],['أَيْنَ الْفُطُورُ مَوْجُودٌ؟','Ja/Nein-Frage: هَلْ, nicht أَيْنَ.']]},
+ {t:['نَعَمْ، الْفُطُورُ مِنَ السَّابِعَةِ إِلَى الْعَاشِرَةِ.','Ja, Frühstück gibt es von 7 bis 10 Uhr.','naʿam, al-fuṭūru mina s-sābiʿati ila l-ʿāshirah.'],ok:['شُكْرًا. الْمِفْتَاحُ، مِنْ فَضْلِكَ. أَيْنَ الْمِصْعَدُ؟','Danke. Den Schlüssel, bitte. Wo ist der Aufzug?'],bad:[['شُكْرًا. مِفْتَاحٌ، مِنْ فَضْلِكَ.','Dein Zimmerschlüssel ist bestimmt: الْمِفْتَاحُ.'],['شُكْرًا. أَيْنَ مِصْعَدٌ؟','Der Aufzug des Hotels: الْمِصْعَدُ.']]}],
+laden:[
+ {t:null,ok:['وَعَلَيْكُمُ السَّلَامُ. أُرِيدُ خُبْزًا.','Und Friede sei mit euch. Ich möchte Brot.'],bad:[['وَعَلَيْكُمُ السَّلَامُ. أُرِيدُ خُبْزٌ.','Objekt im Akkusativ: خُبْزًا.'],['السَّلَامُ عَلَيْكُمْ. أُرِيدُ خُبْزًا.','Auf den Gruß antwortet man mit وَعَلَيْكُمُ السَّلَامُ.']]},
+ {t:['تَفَضَّلْ. وَمَاذَا أَيْضًا؟','Bitte sehr. Und was noch?','tafaḍḍal. wa-mādhā ayḍan?','تَفَضَّلِي. وَمَاذَا أَيْضًا؟'],ok:['أَيْنَ الْحَلِيبُ؟','Wo ist die Milch?'],bad:[['أَيْنَ حَلِيبٌ؟','Du fragst nach der Milch im Laden: الْحَلِيبُ.'],['أَيْنَ الْحَلِيبِ؟','Das Subjekt steht im Nominativ: الْحَلِيبُ.']]},
+ {t:['الْحَلِيبُ هُنَاكَ، فِي الثَّلَّاجَةِ.','Die Milch ist dort, im Kühlschrank.','al-ḥalību hunāka, fi th-thallājah.'],ok:['شُكْرًا. وَكِيلُو تُفَّاحٍ، مِنْ فَضْلِكَ.','Danke. Und ein Kilo Äpfel, bitte.'],bad:[['وَكِيلُو تُفَّاحٌ، مِنْ فَضْلِكَ.','Iḍāfa: كِيلُو تُفَّاحٍ (ein Kilo Äpfel), Genitiv.'],['وَتُفَّاحٌ كِيلُو.','Zuerst das Maß: كِيلُو تُفَّاحٍ.']]},
+ {t:['تَفَضَّلْ. الْمَجْمُوعُ خَمْسَةَ عَشَرَ رِيَالًا.','Bitte sehr. Zusammen 15 Riyal.','tafaḍḍal. al-majmūʿu khamsata ʿashara riyālan.','تَفَضَّلِي. الْمَجْمُوعُ خَمْسَةَ عَشَرَ رِيَالًا.'],ok:['هٰذَا غَالٍ! بِكَمِ التُّفَّاحُ؟','Das ist teuer! Wie viel kosten die Äpfel?'],bad:[['هٰذَا غَالِي!','غَالٍ endet mit Tanwīn-Kasra: غَالٍ.'],['هٰذِهِ غَالٍ!','Gemeint ist der Preis: هٰذَا.']]},
+ {t:['التُّفَّاحُ بِثَمَانِيَةِ رِيَالَاتٍ.','Die Äpfel kosten acht Riyal.','at-tuffāḥu bi-thamāniyati riyālātin.'],ok:['حَسَنًا. تَفَضَّلْ، هٰذِهِ عِشْرُونَ رِيَالًا.','Gut. Bitte, hier sind zwanzig Riyal.'],bad:[['هٰذِهِ عِشْرُونَ رِيَالٌ.','Nach 20 bis 90 steht der Singular im Akkusativ: رِيَالًا.'],['هٰذِهِ عِشْرُونَ رِيَالَاتٍ.','Nach den Zehnern steht der Singular: رِيَالًا.']]}],
+arzt:[
+ {t:null,ok:['وَعَلَيْكُمُ السَّلَامُ. أَنَا مَرِيضٌ.','Und Friede sei mit euch. Ich bin krank.','وَعَلَيْكُمُ السَّلَامُ. أَنَا مَرِيضَةٌ.'],bad:[['أَنَا الْمَرِيضُ.','Ohne الـ: أَنَا مَرِيضٌ.'],['أَنَا مَرَضٌ.','مَرَضٌ ist die Krankheit. Krank: مَرِيضٌ.']]},
+ {t:['بِمَ تَشْعُرُ؟','Was spürst du?','bi-ma tashʿuru?','بِمَ تَشْعُرِينَ؟'],ok:['عِنْدِي صُدَاعٌ وَحُمَّى.','Ich habe Kopfschmerzen und Fieber.'],bad:[['عِنْدِي صُدَاعًا.','Nach عِنْدِي steht der Nominativ: صُدَاعٌ.'],['أَنَا صُدَاعٌ.','„Ich habe" heißt عِنْدِي.']]},
+ {t:['مُنْذُ مَتَى؟','Seit wann?','mundhu matā?'],ok:['مُنْذُ يَوْمَيْنِ.','Seit zwei Tagen.'],bad:[['مُنْذُ يَوْمَانِ.','Nach مُنْذُ steht der Genitiv, Zweizahl: يَوْمَيْنِ.'],['مُنْذُ اثْنَيْنِ يَوْمٍ.','Zwei Tage: يَوْمَيْنِ.']]},
+ {t:['هَلْ يُؤْلِمُكَ بَطْنُكَ؟','Tut dir dein Bauch weh?','hal yuʾlimuka baṭnuka?','هَلْ يُؤْلِمُكِ بَطْنُكِ؟'],ok:['نَعَمْ، بَطْنِي يُؤْلِمُنِي أَيْضًا.','Ja, mein Bauch tut auch weh.'],bad:[['نَعَمْ، بَطْنِي يُؤْلِمُكَ.','يُؤْلِمُكَ heißt „tut DIR weh". Mir: يُؤْلِمُنِي.'],['نَعَمْ، بَطْنِي تُؤْلِمُنِي.','بَطْنٌ ist männlich, also يُؤْلِمُنِي.']]},
+ {t:['عِنْدَكَ زُكَامٌ. هٰذَا دَوَاءٌ، مَرَّتَيْنِ فِي الْيَوْمِ.','Du hast eine Erkältung. Hier ist ein Medikament, zweimal am Tag.','ʿindaka zukāmun. hādhā dawāʾun, marratayni fi l-yawm.','عِنْدَكِ زُكَامٌ. هٰذَا دَوَاءٌ، مَرَّتَيْنِ فِي الْيَوْمِ.'],ok:['جَزَاكَ اللّٰهُ خَيْرًا يَا دُكْتُورُ.','Allah belohne dich, Doktor.'],bad:[['جَزَاكَ اللّٰهُ خَيْرٌ.','Die Formel lautet خَيْرًا im Akkusativ.'],['شُكْرًا اللّٰهُ.','Die Dankesformel: جَزَاكَ اللّٰهُ خَيْرًا.']]}],
+uni:[
+ {t:null,ok:['وَعَلَيْكُمُ السَّلَامُ. نَعَمْ، أَنَا طَالِبٌ جَدِيدٌ. اِسْمِي كَرِيمٌ.','Und Friede sei mit euch. Ja, ich bin ein neuer Student. Ich heiße Karim.','وَعَلَيْكُمُ السَّلَامُ. نَعَمْ، أَنَا طَالِبَةٌ جَدِيدَةٌ. اِسْمِي كَرِيمَةُ.'],bad:[['نَعَمْ، أَنَا جَدِيدٌ طَالِبٌ.','Das Adjektiv steht nach dem Nomen: طَالِبٌ جَدِيدٌ.'],['نَعَمْ، أَنَا الطَّالِبُ جَدِيدٌ.','Beide ohne الـ: طَالِبٌ جَدِيدٌ.']]},
+ {t:['أَهْلًا بِكَ! مِنْ أَيْنَ أَنْتَ؟','Willkommen! Woher kommst du?','ahlan bika! min ayna anta?','أَهْلًا بِكِ! مِنْ أَيْنَ أَنْتِ؟'],ok:['أَنَا مِنْ أَلْمَانِيَا.','Ich komme aus Deutschland.'],bad:[['أَنَا أَلْمَانِيَا.','Herkunft mit مِنْ: أَنَا مِنْ أَلْمَانِيَا.'],['أَنَا مِنْ أَلْمَانِيٌّ.','Entweder مِنْ أَلْمَانِيَا (aus Deutschland) oder أَنَا أَلْمَانِيٌّ (ich bin Deutscher).']]},
+ {t:['مَا شَاءَ اللّٰهُ! مَاذَا تَدْرُسُ هُنَا؟','Mascha Allah! Was studierst du hier?','mā shāʾa llāh! mādhā tadrusu hunā?','مَا شَاءَ اللّٰهُ! مَاذَا تَدْرُسِينَ هُنَا؟'],ok:['أَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','Ich lerne die arabische Sprache.'],bad:[['أَدْرُسُ اللُّغَةُ الْعَرَبِيَّةُ.','Objekt im Akkusativ: اللُّغَةَ الْعَرَبِيَّةَ.'],['أَدْرُسُ الْعَرَبِيَّةَ اللُّغَةَ.','Das Adjektiv steht nach dem Nomen: اللُّغَةَ الْعَرَبِيَّةَ.']]},
+ {t:['جَمِيلٌ! وَأَنَا أَدْرُسُ الْحَدِيثَ.','Schön! Und ich studiere Hadith.','jamīl! wa-anā adrusu l-ḥadīth.'],ok:['أَيْنَ الْمَكْتَبَةُ، مِنْ فَضْلِكَ؟','Wo ist die Bibliothek, bitte?'],bad:[['أَيْنَ مَكْتَبَةٌ؟','Die Bibliothek der Universität: الْمَكْتَبَةُ.'],['أَيْنَ الْمَكْتَبُ؟','مَكْتَبٌ heißt Schreibtisch oder Büro. Bibliothek: الْمَكْتَبَةُ.']]},
+ {t:['الْمَكْتَبَةُ قَرِيبَةٌ، خَلْفَ الْمَسْجِدِ.','Die Bibliothek ist nah, hinter der Moschee.','al-maktabatu qarībatun, khalfa l-masjid.'],ok:['شُكْرًا. مَنْ مُدَرِّسُكَ؟','Danke. Wer ist dein Lehrer?'],bad:[['شُكْرًا. مَنْ مُدَرِّسَكَ؟','Das Subjekt steht im Nominativ: مُدَرِّسُكَ.'],['شُكْرًا. مَا مُدَرِّسُكَ؟','Nach Personen fragt man mit مَنْ.']]}]
+};
+const ENDS = {
+cafe:['مَعَ السَّلَامَةِ! أَهْلًا بِكَ دَائِمًا.','Auf Wiedersehen! Du bist immer willkommen.','maʿa s-salāmah! ahlan bika dāʾiman.','مَعَ السَّلَامَةِ! أَهْلًا بِكِ دَائِمًا.'],
+restaurant:['تَفَضَّلْ، خَمْسُونَ رِيَالًا. شُكْرًا لَكَ!','Bitte sehr, fünfzig Riyal. Danke dir!','tafaḍḍal, khamsūna riyālan. shukran laka!','تَفَضَّلِي، خَمْسُونَ رِيَالًا. شُكْرًا لَكِ!'],
+hotel:['تَفَضَّلْ، هٰذَا مِفْتَاحُكَ. الْمِصْعَدُ هُنَاكَ عَلَى الْيَمِينِ.','Bitte sehr, hier ist dein Schlüssel. Der Aufzug ist dort rechts.','tafaḍḍal, hādhā miftāḥuka. al-miṣʿadu hunāka ʿala l-yamīn.','تَفَضَّلِي، هٰذَا مِفْتَاحُكِ. الْمِصْعَدُ هُنَاكَ عَلَى الْيَمِينِ.'],
+laden:['شُكْرًا، وَهٰذَا الْبَاقِي: خَمْسَةُ رِيَالَاتٍ. مَعَ السَّلَامَةِ!','Danke, und hier ist der Rest: fünf Riyal. Auf Wiedersehen!','shukran, wa-hādha l-bāqī: khamsatu riyālātin. maʿa s-salāmah!'],
+arzt:['وَإِيَّاكَ. شَفَاكَ اللّٰهُ!','Dich auch. Allah heile dich!','wa-iyyāka. shafāka llāh!','وَإِيَّاكِ. شَفَاكِ اللّٰهُ!'],
+uni:['مُدَرِّسِي الشَّيْخُ عَبْدُ الرَّحْمٰنِ. أَهْلًا بِكَ فِي الْجَامِعَةِ!','Mein Lehrer ist Scheich Abdurrahman. Willkommen an der Universität!','mudarrisī sh-shaykhu ʿabdu r-raḥmān. ahlan bika fi l-jāmiʿah!','مُدَرِّسِي الشَّيْخُ عَبْدُ الرَّحْمٰنِ. أَهْلًا بِكِ فِي الْجَامِعَةِ!']
+};
+
 /* ---------- Helfer ---------- */
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -718,7 +868,7 @@ const SCENE = Object.fromEntries(SCENES.map(s => [s.id, s]));
 const LS = 'madina-arabisch-v1';
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar'}, srs:{}, mistakes:[], custom:[]});
+const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar', mode:'offline'}, srs:{}, mistakes:[], custom:[]});
 function mergeState(x){
   const d = DEFAULTS(); x = x && typeof x === 'object' ? x : {};
   return {...d, ...x, settings:{...d.settings, ...(x.settings || {})}, srs:(x.srs && typeof x.srs === 'object') ? x.srs : {},
@@ -918,13 +1068,14 @@ function sceneExtra(id){
 
 /* ---------- Gespräche (Tutor + Rollenspiel) ---------- */
 const CHAT = {
-  tutor:{msgs:[], topic:'', busy:false, ctl:null},
-  role:{scene:null, msgs:[], busy:false, ctl:null}
+  tutor:{msgs:[], topic:'', busy:false, ctl:null, recent:[]},
+  role:{scene:null, msgs:[], busy:false, ctl:null, step:0}
 };
-try { const c = JSON.parse(lsGet(LS + ':chats') || 'null'); if (c){ if (c.tutor) Object.assign(CHAT.tutor, {msgs:c.tutor.msgs || [], topic:c.tutor.topic || ''}); if (c.role && SCENE[c.role.scene]) Object.assign(CHAT.role, {scene:c.role.scene, msgs:c.role.msgs || []}); } } catch (e) {}
+try { const c = JSON.parse(lsGet(LS + ':chats') || 'null'); if (c){ if (c.tutor) Object.assign(CHAT.tutor, {msgs:c.tutor.msgs || [], topic:c.tutor.topic || '', recent:c.tutor.recent || []}); if (c.role && SCENE[c.role.scene]) Object.assign(CHAT.role, {scene:c.role.scene, msgs:c.role.msgs || [], step:c.role.step || 0}); } } catch (e) {}
+const offline = () => S.settings.mode !== 'claude';
 function saveChats(){
   const keep = m => m.role !== 'err';
-  lsSet(LS + ':chats', JSON.stringify({tutor:{topic:CHAT.tutor.topic, msgs:CHAT.tutor.msgs.filter(keep).slice(-60)}, role:{scene:CHAT.role.scene, msgs:CHAT.role.msgs.filter(keep).slice(-60)}}));
+  lsSet(LS + ':chats', JSON.stringify({tutor:{topic:CHAT.tutor.topic, recent:CHAT.tutor.recent, msgs:CHAT.tutor.msgs.filter(keep).slice(-60)}, role:{scene:CHAT.role.scene, step:CHAT.role.step, msgs:CHAT.role.msgs.filter(keep).slice(-60)}}));
 }
 function tutorOpening(){
   const f = S.settings.gender === 'f';
@@ -938,12 +1089,13 @@ function sceneOpening(id){
   const s = SCENE[id]; const o = S.settings.gender === 'f' && s.openF ? s.openF : s.open;
   return {role:'tutor', opening:true, ar:o[0], de:o[1], tl:o[2], tip:''};
 }
-if (!CHAT.tutor.msgs.length) CHAT.tutor.msgs = [tutorOpening()];
+if (!CHAT.tutor.msgs.length && S.settings.mode === 'claude') CHAT.tutor.msgs = [tutorOpening()];
 
 function buildTurns(ctx, rules){
   const turns = [{role:'user', content:rules}];
-  for (const m of ctx.msgs.filter(m => m.role === 'tutor' || m.role === 'me').slice(-24)){
-    if (m.role === 'tutor') turns.push({role:'assistant', content:JSON.stringify({correction:m.fixRaw || null, reply:m.ar, translation:m.de, translit:m.tl, tip:m.tip || ''})});
+  for (const m of ctx.msgs.filter(m => m.role === 'tutor' || m.role === 'me' || m.role === 'quiz').slice(-24)){
+    if (m.role === 'quiz') turns.push({role:'assistant', content:JSON.stringify({correction:null, reply:m.q.ar, translation:m.q.de, translit:m.q.tl || '', tip:''})});
+    else if (m.role === 'tutor') turns.push({role:'assistant', content:JSON.stringify({correction:m.fixRaw || null, reply:m.ar, translation:m.de, translit:m.tl, tip:m.tip || ''})});
     else turns.push({role:'user', content:m.text});
   }
   return turns;
@@ -988,6 +1140,16 @@ function msgHTML(m, i, kind){
     }
     return h + '</div>';
   }
+  if (m.role === 'quiz'){
+    const q = m.q;
+    return '<div class="msg tutor"><span class="who">' + (kind === 'role' ? 'Rolle' : 'Tutor') + '</span><div class="bubble">'
+      + '<p class="b-ar" lang="ar" dir="rtl">' + esc(q.ar) + '</p>'
+      + (st.showTl && q.tl ? '<p class="b-tl">' + esc(q.tl) + '</p>' : '')
+      + (q.de ? '<p class="b-de' + (st.showDe ? '' : ' veil') + '"' + (st.showDe ? '' : ' data-unveil title="Antippen zum Anzeigen"') + '>' + rich(q.de) + '</p>' : '')
+      + '<div class="b-row">' + speakBtn(q.ar) + '<span class="grow"></span></div></div>'
+      + (m.answered ? '' : '<div class="opts" role="group" aria-label="Antworten">' + m.opts.map((o, k) => '<button class="opt" type="button" data-opt="' + k + '" data-qi="' + i + '" data-kind="' + kind + '"><span class="o-n">' + (k + 1) + '</span><span class="o-ar" lang="ar">' + esc(o.ar) + '</span></button>').join('') + '</div>')
+      + (m.hint && !m.answered ? '<div class="tip">' + rich(m.hint) + '</div>' : '') + '</div>';
+  }
   if (m.role === 'note') return '<p class="note">' + rich(m.text) + '</p>';
   if (m.role === 'err') return '<div class="err" role="alert"><p>' + esc(m.text) + '</p>' + (m.retry ? '<button class="btn small" type="button" data-retry="' + kind + '">' + icon('i-refresh', 'ico sm') + 'Nochmal</button>' : '') + '</div>';
   if (m.role === 'fb') return fbHTML(m.data);
@@ -1012,7 +1174,7 @@ const CHAT_DOM = {
 };
 function renderChat(kind){
   const ctx = CHAT[kind], dom = CHAT_DOM[kind];
-  let h = (noClaude ? '<p class="notice"><strong>Hinweis:</strong> Tutor, Rollenspiele und Übersetzer brauchen Claude. Öffne diese App in Claude (im Browser oder in der Claude-App). Karteikarten und Lehrbuch-Themen funktionieren überall.</p>' : '') + ctx.msgs.map((m, i) => msgHTML(m, i, kind)).join('');
+  let h = (noClaude && !offline() ? '<p class="notice"><strong>Hinweis:</strong> Tutor, Rollenspiele und Übersetzer brauchen Claude. Öffne diese App in Claude (im Browser oder in der Claude-App). Karteikarten und Lehrbuch-Themen funktionieren überall.</p>' : '') + ctx.msgs.map((m, i) => msgHTML(m, i, kind)).join('');
   if (ctx.busy) h += '<div class="msg tutor"><div class="bubble typing" aria-label="Tutor schreibt"><i></i><i></i><i></i><span>schreibt …</span></div></div>';
   $(dom.list).innerHTML = h;
   const btn = $(dom.send);
@@ -1031,6 +1193,7 @@ async function sendChat(kind, text, hidden){
 }
 async function requestReply(kind){
   const ctx = CHAT[kind];
+  if (offline()) return;
   ctx.msgs = ctx.msgs.filter(m => m.role !== 'err');
   const sample = await getSample();
   if (!sample || aiOff){ ctx.msgs.push({role:'err', text:NO_CLAUDE, retry:false}); renderChat(kind); return; }
@@ -1066,10 +1229,156 @@ function insertInto(input, text){
   else input.setSelectionRange(input.value.length, input.value.length);
 }
 
+
+/* ---------- Übungsmodus (ohne Claude) ---------- */
+function makeQuiz(q, ok, bad, hint){
+  const f = S.settings.gender === 'f';
+  const opts = shuffle([{ar:(f && ok[2]) || ok[0], de:ok[1], ok:true}, ...bad.map(b => ({ar:b[0], why:b[1], ok:false}))]);
+  return {role:'quiz', q, opts, answered:false, hint:hint || ''};
+}
+function tutorQuiz(){
+  const ctx = CHAT.tutor, f = S.settings.gender === 'f';
+  const ids = ctx.topic && EX[ctx.topic] ? [ctx.topic] : TOPICS.filter(t => t.book <= (Number(S.settings.book) || 1) && EX[t.id]).map(t => t.id);
+  const pool = []; for (const id of ids) EX[id].forEach((ex, k) => pool.push({key:id + '#' + k, ex, topic:id}));
+  if (!pool.length) return null;
+  let fresh = pool.filter(p => !ctx.recent.includes(p.key)); if (!fresh.length){ ctx.recent = []; fresh = pool; }
+  const pick = fresh[Math.floor(Math.random() * fresh.length)];
+  ctx.recent.push(pick.key); if (ctx.recent.length > Math.max(1, pool.length - 1)) ctx.recent.shift();
+  const ex = pick.ex;
+  const first = !ctx.msgs.some(m => m.role === 'quiz');
+  const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.' : '');
+  m.topic = pick.topic; return m;
+}
+function ensureTutorQuiz(){
+  const ctx = CHAT.tutor;
+  const last = ctx.msgs[ctx.msgs.length - 1];
+  if (last && last.role === 'quiz' && !last.answered) return;
+  const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
+}
+function roleStepQuiz(){
+  const ctx = CHAT.role, s = SCENE[ctx.scene], steps = STEPS[ctx.scene] || [], f = S.settings.gender === 'f';
+  const st = steps[ctx.step];
+  if (!st){
+    const e = ENDS[ctx.scene]; if (!e) return null;
+    return {role:'tutor', ar:(f && e[3]) || e[0], de:e[1], tl:e[2], tip:'Ziel erreicht! Du hast die Szene durchgespielt. Tippe auf „Auswertung" oder spiel sie noch einmal.'};
+  }
+  const t = st.t ? {ar:(f && st.t[3]) || st.t[0], de:st.t[1], tl:st.t[2]} : (() => { const o = f && s.openF ? s.openF : s.open; return {ar:o[0], de:o[1], tl:o[2]}; })();
+  return makeQuiz(t, st.ok, st.bad, ctx.step === 0 ? 'Wähle deine Antwort. Falsche Antworten werden erklärt.' : '');
+}
+function answerQuiz(kind, qi, k){
+  const ctx = CHAT[kind]; const m = ctx.msgs[qi]; if (!m || m.role !== 'quiz' || m.answered) return;
+  m.answered = true;
+  const opt = m.opts[k], ok = m.opts.find(o => o.ok);
+  const me = {role:'me', text:opt.ar};
+  if (opt.ok) me.ok = true;
+  else { me.fix = {wrong:opt.ar, correct:ok.ar, correct_de:ok.de, explanation:opt.why}; addCustom({ar:ok.ar, de:ok.de, tl:'', src:'uebung'}, true); }
+  ctx.msgs.push(me);
+  let next = null;
+  if (kind === 'tutor') next = tutorQuiz();
+  else { ctx.step++; next = roleStepQuiz(); }
+  if (next) ctx.msgs.push(next);
+  renderChat(kind); saveChats();
+  if (S.settings.autoSpeak && next) speak(next.role === 'quiz' ? next.q.ar : next.ar);
+}
+function offlineFeedback(){
+  const ctx = CHAT.role, s = SCENE[ctx.scene], f = S.settings.gender === 'f';
+  const answers = ctx.msgs.filter(m => m.role === 'me');
+  if (answers.length < 2){ toast('Beantworte zuerst ein paar Fragen. Dann gibt es eine Auswertung.'); return; }
+  const wrong = answers.filter(m => m.fix);
+  const good = wrong.length ? [answers.length - wrong.length + ' von ' + answers.length + ' Antworten waren richtig.'] : ['Alle ' + answers.length + ' Antworten waren richtig!'];
+  if (!wrong.length) good.push('Du hast das Ziel „' + s.goal + '" ohne Fehler erreicht.');
+  const improve = []; for (const m of wrong){ if (!improve.includes(m.fix.explanation)) improve.push(m.fix.explanation); }
+  const words = s.phrases.slice(0, 5).map(p => ({ar:(f && p[3]) || p[0], de:(f && p[4]) || p[1], tl:(f && p[5]) || p[2]}));
+  ctx.msgs.push({role:'fb', data:{summary:'Auswertung aus der Übung, ohne Claude.', good, improve:improve.slice(0, 4), words}});
+  renderChat('role'); saveChats();
+}
+function setMode(m){
+  if (S.settings.mode === m) return;
+  S.settings.mode = m; save(); applyModeUI();
+  if (m === 'offline'){
+    if (currentView === 'tutor') ensureTutorQuiz();
+    if (CHAT.role.scene && !CHAT.role.msgs.some(x => x.role === 'quiz')){ CHAT.role.step = 0; const q = roleStepQuiz(); if (q){ CHAT.role.msgs.push({role:'note', text:'Weiter als Dialog-Übung'}); CHAT.role.msgs.push(q); } }
+    toast('Sparmodus an: Übungen ohne Claude.');
+  } else {
+    for (const kind of ['tutor', 'role']){ const ctx = CHAT[kind]; const last = ctx.msgs[ctx.msgs.length - 1]; if (last && last.role === 'quiz' && !last.answered){ ctx.msgs.pop(); } }
+    if (!CHAT.tutor.msgs.length) CHAT.tutor.msgs = [tutorOpening()];
+    toast('Frei mit Claude: Antworten verbrauchen dein Claude-Kontingent.');
+  }
+  renderChat('tutor'); if (CHAT.role.scene) renderChat('role'); saveChats();
+}
+function applyModeUI(){
+  const off = offline();
+  $$('[data-mode]').forEach(b => { if (b.closest('.seg')) b.setAttribute('aria-pressed', String(b.dataset.mode === (off ? 'offline' : 'claude'))); });
+  $$('[data-offline-ui]').forEach(x => { x.hidden = !off; });
+  $$('[data-claude-ui]').forEach(x => { x.hidden = off; });
+  $('#set-spar').checked = off;
+  $('#tr-mode').innerHTML = off
+    ? '<span class="mode-tag">Wörterbuch · kostenlos</span><span>Wörter aus der App werden erkannt.</span><button class="link" type="button" data-mode="claude">Frei mit Claude</button>'
+    : '<span class="mode-tag ai">Claude</span><span>Jede Erklärung verbraucht Kontingent.</span><button class="link" type="button" data-mode="offline">Sparmodus</button>';
+}
+
+/* ---------- Wörterbuch (Übersetzer ohne Claude) ---------- */
+const DICT = new Map(), SENTS = new Map(), DEDICT = new Map();
+const DE_STOP = new Set(['der','die','das','ein','eine','einen','einem','einer','ich','du','er','sie','es','wir','ihr','ist','sind','bin','bist','und','oder','mit','zu','zur','zum','in','im','auf','von','vom','dem','den','des','nicht','ja','nein','ein','bitte']);
+const deStem = w => w.length > 4 ? w.replace(/(en|es|er|em|st|e|s|n|t)$/, '') : w;
+function addDe(de, card){
+  for (let w of norm(de).split(' ')){ if (!w || DE_STOP.has(w) || w.length < 3) continue; for (const k of [w, deStem(w)]) if (!DEDICT.has(k)) DEDICT.set(k, card); }
+}
+for (const id of Object.keys(CARDS)){ const c = CARDS[id]; if (c.topic === 'custom') continue; const k = norm(c.ar); if (k && !DICT.has(k)) DICT.set(k, c); addDe(c.de.split(/[;(]/)[0], c); }
+function addSent(ar, de, tl){ const k = norm(ar); if (k && !SENTS.has(k)) SENTS.set(k, {ar, de, tl:tl || ''}); }
+for (const t of TOPICS){ for (const e of t.ex) addSent(e[0], e[1]); for (const w of t.words) if (w[3]) addSent(w[3], w[4]); }
+for (const s of SCENES){ addSent(s.open[0], s.open[1], s.open[2]); if (s.openF) addSent(s.openF[0], s.openF[1], s.openF[2]); for (const p of s.phrases){ addSent(p[0], p[1], p[2]); if (p[3]) addSent(p[3], p[4], p[5]); } }
+for (const id of Object.keys(EX)) for (const ex of EX[id]){ addSent(ex.ok[0], ex.ok[1]); if (ex.ok[2]) addSent(ex.ok[2], ex.ok[1]); addSent(ex.q, ex.qde.replace(/\s*\(.*\)\s*$/, '')); }
+for (const id of Object.keys(STEPS)) for (const st of STEPS[id]){ addSent(st.ok[0], st.ok[1]); if (st.t) addSent(st.t[0], st.t[1], st.t[2]); }
+for (const c of TUTOR_CHIPS) addSent(c[0], c[1]);
+const PRE = [['و','وَ (und)'],['ف','فَ (dann)'],['ب','بِ (mit, in)'],['ل','لِ (für, zu)'],['ك','كَ (wie)'],['ال','الـ (der, die, das)']];
+const SUF = [['ها','ـهَا (ihr)'],['نا','ـنَا (unser)'],['كم','ـكُمْ (euer)'],['هم','ـهُمْ (ihr, Mehrzahl)'],['ون','ـُونَ (Mehrzahl)'],['ين','ـِينَ (Mehrzahl oder Zweizahl)'],['ان','ـَانِ (Zweizahl)'],['ات','ـَاتٌ (Mehrzahl, weiblich)'],['ني','ـنِي (mich)'],['ي','ـِي (mein)'],['ك','ـكَ / ـكِ (dein)'],['ه','ـهُ (sein)']];
+function lookupAr(tok){
+  const n = norm(tok); if (!n) return null;
+  const hit = (k, parts) => DICT.has(k) ? {card:DICT.get(k), parts} : (DICT.has('ال' + k) ? {card:DICT.get('ال' + k), parts} : null);
+  let r = hit(n, []); if (r) return r;
+  const forms = [[n, []]];
+  for (let depth = 0; depth < 2; depth++){
+    for (const [f, parts] of forms.slice()){
+      for (const [p, lab] of PRE){ if (f.startsWith(p) && f.length > p.length + 1 && !parts.includes(lab) && !(p !== 'ال' && parts.some(x => x !== PRE[5][1]))) forms.push([f.slice(p.length), [...parts, lab]]); }
+    }
+  }
+  for (const [f, parts] of forms){ r = hit(f, parts); if (r) return r; }
+  for (const [f, parts] of forms){
+    for (const [sfx, lab] of SUF){ if (f.endsWith(sfx) && f.length > sfx.length + 1){ r = hit(f.slice(0, -sfx.length), [...parts, lab]); if (r) return r; } }
+  }
+  return null;
+}
+function lookupDe(tok){
+  const w = tok.toLowerCase().replace(/[^a-zäöüß]/g, ''); if (!w || DE_STOP.has(w)) return null;
+  for (const cand of [w, deStem(w)]){ if (cand.length >= 3 && DEDICT.has(cand)) return DEDICT.get(cand); }
+  return null;
+}
+function offlineTranslate(text){
+  const ar = isArabic(text);
+  const whole = ar ? SENTS.get(norm(text)) : [...SENTS.values()].find(s => norm(s.de) === norm(text));
+  const toks = text.split(/[\s،,.!?؟:;"“”«»()]+/).filter(Boolean);
+  let words, sent;
+  if (ar){
+    let found = 0;
+    words = toks.map(tok => {
+      const r = lookupAr(tok);
+      if (!r){ return {ar:tok, de:'?', tl:'', type:'', root:'', note:'Nicht im Wörterbuch der App. Für dieses Wort tippe auf „Mit Claude genau erklären".'}; }
+      found++; const c = r.card;
+      return {ar:tok, de:c.de, tl:c.tl, type:TOPIC[c.topic] ? 'Thema: ' + TOPIC[c.topic].de : '', root:'', note:(r.parts.length ? r.parts.join(' + ') + ' + ' + c.ar : '') + (c.ex ? (r.parts.length ? ' · ' : '') + 'Beispiel: ' + c.ex + ' – ' + c.exde : '')};
+    });
+    sent = {ar:text, de:whole ? whole.de : (found ? 'Satz nicht als Ganzes bekannt. Die Bedeutung der einzelnen Wörter steht unten.' : 'Kein Wort erkannt.'), tl:whole ? whole.tl : '', structure:whole ? '' : 'Das Wörterbuch kennt die Wörter aus den Lektionen der App. Für Grammatik und Satzbau nutze „Mit Claude genau erklären".', words};
+  } else {
+    words = toks.map(tok => { const c = lookupDe(tok); return c ? {ar:c.ar, de:tok + ' = ' + c.de, tl:c.tl, type:TOPIC[c.topic] ? 'Thema: ' + TOPIC[c.topic].de : '', root:'', note:c.ex ? 'Beispiel: ' + c.ex + ' – ' + c.exde : ''} : null; }).filter(Boolean);
+    sent = {ar:whole ? whole.ar : (words.length ? words.map(w => w.ar).join(' ') : '…'), de:text, tl:whole ? whole.tl : '', structure:whole ? '' : (words.length ? 'Das sind nur die einzelnen Wörter aus dem Wörterbuch, kein fertiger Satz. Einen richtigen Satz baut dir „Mit Claude genau erklären".' : 'Keines dieser Wörter ist im Wörterbuch der App.'), words};
+  }
+  renderTranslation({offline:true, sentences:[sent]}, false);
+}
+
 /* Tutor */
 function renderTutorHead(){
   const sel = $('#tutor-topic');
-  sel.innerHTML = '<option value="">Freies Gespräch</option>' + BOOKS.map(b => '<optgroup label="' + esc(b.de) + '">'
+  sel.innerHTML = '<option value="">' + (offline() ? 'Gemischte Übungen' : 'Freies Gespräch') + '</option>' + BOOKS.map(b => '<optgroup label="' + esc(b.de) + '">'
     + TOPICS.filter(t => t.book === b.n).map(t => '<option value="' + t.id + '">' + esc(t.de) + ' · ' + esc(t.ar) + '</option>').join('') + '</optgroup>').join('');
   sel.value = CHAT.tutor.topic || '';
   $('#tutor-chips').innerHTML = TUTOR_CHIPS.map(c => '<button class="chip" type="button" data-insert="#tutor-input" data-text="' + esc(c[0]) + '"><span class="ar-s" lang="ar">' + esc(c[0]) + '</span><span class="de-s">' + esc(c[1]) + '</span></button>').join('');
@@ -1079,6 +1388,7 @@ function practiceTopic(id){
   CHAT.tutor.topic = id; $('#tutor-topic').value = id;
   CHAT.tutor.msgs.push({role:'note', text:'Neues Thema: ' + t.de + ' · ' + t.ar});
   go('tutor'); renderChat('tutor'); saveChats();
+  if (offline()){ const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); } return; }
   sendChat('tutor', '(Neues Übungsthema: ' + t.de + ' – ' + t.ar + '. Bitte beginne eine kurze, einfache Übung dazu mit einer ersten Frage. Diese Nachricht kommt von der App, nicht von der lernenden Person: keine Korrektur.)', true);
 }
 
@@ -1094,8 +1404,11 @@ function renderScenes(){
     ? '<div class="resume"><span>Angefangen: <b>' + esc(SCENE[r.scene].de) + '</b></span><button class="btn small" type="button" data-resume>Weiterspielen</button></div>' : '';
 }
 function startScene(id){
-  CHAT.role = {scene:id, msgs:[sceneOpening(id)], busy:false, ctl:null};
+  CHAT.role = {scene:id, msgs:[], busy:false, ctl:null, step:0};
+  if (offline()){ const q = roleStepQuiz(); CHAT.role.msgs = q ? [q] : [sceneOpening(id)]; }
+  else CHAT.role.msgs = [sceneOpening(id)];
   saveChats(); showRole(true);
+  if (S.settings.autoSpeak){ const m = CHAT.role.msgs[0]; speak(m.role === 'quiz' ? m.q.ar : m.ar); }
 }
 function showRole(play){
   $('#v-rollen-pick').hidden = play; $('#v-rollen-play').hidden = !play;
@@ -1112,6 +1425,7 @@ function showRole(play){
 async function roleFeedback(){
   const ctx = CHAT.role, s = SCENE[ctx.scene];
   if (ctx.busy) return;
+  if (offline()){ offlineFeedback(); return; }
   const lines = ctx.msgs.filter(m => (m.role === 'tutor' || m.role === 'me') && !m.hidden).map(m => (m.role === 'tutor' ? 'T: ' + m.ar : 'P: ' + m.text));
   if (lines.filter(l => l.startsWith('P:')).length < 2){ toast('Sprich zuerst ein paar Sätze. Dann gibt es eine Auswertung.'); return; }
   const sample = await getSample();
@@ -1230,7 +1544,7 @@ function answerCard(ok){
 let trCtl = null;
 function renderTranslation(data, isExample){
   const sents = (data.sentences || []).filter(x => x && x.ar);
-  let h = isExample ? '<p class="ex-mark">Beispiel</p>' : '';
+  let h = isExample ? '<p class="ex-mark">Beispiel</p>' : (data.offline ? '<p class="ex-mark">Wörterbuch · ohne Claude</p>' : '');
   sents.forEach((s, si) => {
     const words = (Array.isArray(s.words) ? s.words : []).filter(w => w && w.ar);
     h += '<article class="sent"><div class="sent-top"><p class="sent-ar" lang="ar" dir="rtl">' + esc(s.ar) + '</p>' + speakBtn(s.ar, 'Satz vorlesen')
@@ -1245,13 +1559,15 @@ function renderTranslation(data, isExample){
       + '</article>';
   });
   if (data.note) h += '<p class="notice">' + rich(data.note) + '</p>';
+  if (data.offline) h += '<div class="tr-actions"><button class="btn primary" type="button" data-tr-claude>Mit Claude genau erklären</button><span class="source">Übersetzt den ganzen Satz und erklärt Grammatik und Wurzeln. Verbraucht Kontingent.</span></div>';
   if (!sents.length) h = '<p class="notice">Keine Sätze erkannt. Versuch es mit einem kürzeren Text.</p>';
   $('#tr-out').innerHTML = h;
   markAdded($('#tr-out'));
 }
-async function translate(text){
+async function translate(text, force){
   text = String(text || '').trim(); if (!text) { $('#tr-input').focus(); return; }
   if (trCtl){ trCtl.abort(); return; }
+  if (offline() && !force){ offlineTranslate(text); return; }
   const sample = await getSample();
   if (!sample || aiOff){ $('#tr-out').innerHTML = '<p class="notice">Der Übersetzer braucht Claude. Öffne diese App in Claude (im Browser oder in der Claude-App).</p>'; return; }
   trCtl = new AbortController(); const go_ = $('#tr-go'); go_.textContent = 'Stopp';
@@ -1310,6 +1626,7 @@ function applySettingsUI(){
   $$('#set-book button').forEach(x => x.setAttribute('aria-pressed', String(Number(x.dataset.book) === Number(st.book))));
   $$('#set-gender button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.gender === st.gender)));
   for (const k of ['showDe', 'showTl', 'autoSpeak', 'autoSend', 'precise']) $('#set-' + k).checked = !!st[k];
+  applyModeUI();
   $('#set-rate').value = st.rate;
   $('#rate-val').textContent = st.rate <= 0.7 ? 'Langsam' : st.rate >= 1 ? 'Normal' : 'Etwas langsamer';
   updateDuePill();
@@ -1350,7 +1667,7 @@ function show(v){
   $('#brand-sub').textContent = TITLES[v];
   if (v === 'start') renderStart();
   if (v === 'karten'){ if (session) renderSession(); else renderDecks(); }
-  if (v === 'tutor') renderChat('tutor');
+  if (v === 'tutor'){ if (offline()) ensureTutorQuiz(); renderChat('tutor'); }
 }
 let rolePlaying = false;
 function refreshCurrent(){ show(currentView); }
@@ -1368,6 +1685,9 @@ document.addEventListener('click', e => {
     return;
   }
   if (d.retry){ requestReply(d.retry); return; }
+  if (d.opt !== undefined && d.qi !== undefined){ answerQuiz(d.kind, Number(d.qi), Number(d.opt)); return; }
+  if (d.mode){ setMode(d.mode); return; }
+  if (d.trClaude !== undefined){ translate($('#tr-input').value, true); return; }
   if (d.insert){ const inp = $(d.insert); insertInto(inp, d.text); if (d.say && S.settings.autoSpeak) speak(d.text); return; }
   if (d.practice){ practiceTopic(d.practice); return; }
   if (d.study){ startSession('topic', d.study); return; }
@@ -1433,11 +1753,12 @@ $('#tr-input').addEventListener('input', e => autoGrow(e.target));
 $('#tutor-topic').addEventListener('change', e => {
   const id = e.target.value;
   if (id) practiceTopic(id);
-  else { CHAT.tutor.topic = ''; CHAT.tutor.msgs.push({role:'note', text:'Freies Gespräch'}); renderChat('tutor'); saveChats(); }
+  else { CHAT.tutor.topic = ''; CHAT.tutor.msgs.push({role:'note', text:offline() ? 'Gemischte Übungen' : 'Freies Gespräch'}); if (offline()){ const q = tutorQuiz(); if (q) CHAT.tutor.msgs.push(q); } renderChat('tutor'); saveChats(); }
 });
 $('#tutor-reset').addEventListener('click', () => {
   if (CHAT.tutor.ctl) CHAT.tutor.ctl.abort();
-  CHAT.tutor.msgs = [tutorOpening()]; CHAT.tutor.topic = ''; $('#tutor-topic').value = '';
+  CHAT.tutor.msgs = offline() ? [] : [tutorOpening()]; CHAT.tutor.topic = ''; CHAT.tutor.recent = []; $('#tutor-topic').value = '';
+  if (offline()) ensureTutorQuiz();
   renderChat('tutor'); saveChats();
 });
 $('#role-back').addEventListener('click', () => { rolePlaying = false; showRole(false); });
@@ -1449,6 +1770,7 @@ $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeS
 for (const k of ['showDe', 'showTl', 'autoSpeak', 'autoSend', 'precise']){
   $('#set-' + k).addEventListener('change', e => { S.settings[k] = e.target.checked; save(); if (k === 'showDe' || k === 'showTl'){ renderChat('tutor'); renderChat('role'); } });
 }
+$('#set-spar').addEventListener('change', e => setMode(e.target.checked ? 'offline' : 'claude'));
 $('#set-rate').addEventListener('input', e => { S.settings.rate = Number(e.target.value); applySettingsUI(); });
 $('#set-rate').addEventListener('change', () => { save(); speak('مَرْحَبًا، كَيْفَ حَالُكَ؟'); });
 $('#tr-examples').innerHTML = TR_SAMPLES.map(s => '<button class="chip" type="button" data-tr-sample="' + esc(s) + '">' + (isArabic(s) ? '<span class="ar-s" lang="ar">' + esc(s) + '</span>' : esc(s)) + '</button>').join('');
