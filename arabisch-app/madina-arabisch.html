@@ -1527,9 +1527,12 @@ function answerQuiz(kind, qi, k){
 // nächsten Ausbaustufe, nicht dieser Funktion.
 // m wird über role:'table' gesucht statt über den letzten Chat-Eintrag: sobald die Tutor-Ansicht sichtbar
 // wird, kann der bestehende Sparmodus-Mechanismus (ensureTutorQuiz(), siehe show()) eine zusätzliche
-// quiz-Nachricht NACH der Tabelle anhängen, die Tabelle muss also namentlich gefunden werden.
+// quiz-Nachricht NACH der Tabelle anhängen, die Tabelle muss also namentlich gefunden werden. Seit der
+// Verb-Verkettung (Task 6) kann ctx.msgs außerdem GLEICHZEITIG mehrere role:'table'-Nachrichten enthalten
+// (die abgeschlossene Tabelle von Verb A bleibt stehen, während Verb B's Tabelle danach angehängt wird) -
+// gesucht wird deshalb die ZULETZT angehängte (aktive) Tabellen-Nachricht, nicht die erste im Array.
 function submitTableCell(kind, qi, rawInput){
-  const ctx = CHAT[kind]; const m = ctx.msgs.find(x => x.role === 'table');
+  const ctx = CHAT[kind]; const m = ctx.msgs.filter(x => x.role === 'table').pop();
   if (!m || m.role !== 'table' || m.done) return;
   if (qi !== m.pos) return;
   const given = norm(rawInput);
@@ -1551,6 +1554,12 @@ function submitTableCell(kind, qi, rawInput){
                          // Zellen in Phase 2 nicht fälschlich als "schon beantwortet" rendern.
       } else {
         m.done = true;
+        // Verkettung (Task 6): Lektionen mit mehreren Verbparadigmen (z. B. Lektion 27/28) zeigen ihre
+        // Tabellen nacheinander im selben Chat. Sobald diese Tabelle fertig ist, prüfen, ob TABLES[m.topicId]
+        // noch ein weiteres Verb enthält - wenn ja, dessen Tabelle direkt anhängen, sonst eine Abschluss-Notiz.
+        const list = TABLES[m.topicId];
+        if (list && list[m.verbIndex + 1]) ctx.msgs.push(makeTable(m.topicId, m.verbIndex + 1));
+        else ctx.msgs.push({role:'note', text:'Tabellen dieser Lektion abgeschlossen.'});
       }
     }
   }
