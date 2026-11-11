@@ -749,6 +749,52 @@ const TR_EXAMPLE = {sentences:[{ar:'ذَهَبَ الطَّالِبُ إِلَى
     {ar:'الْمَسْجِدِ', tl:'al-masjidi', de:'der Moschee', type:'Nomen, mask., bestimmt, Genitiv', root:'س ج د', note:'مَسْجِد ist der „Ort der Niederwerfung" (سُجُود).'}
   ]}]};
 
+// Feste Reihenfolge der Personen/Zahlen-Buckets für Typ-2-Konjugationstabellen (volle Tabelle statt Einzelsatz):
+// 3. Pers. m (Sg/Du/Pl) -> 3. Pers. f (Sg/Du/Pl) -> 2. Pers. m Sg -> 2. Pers. Dual (für m+f gemeinsam, nur
+// einmal gefragt) -> 2. Pers. m Pl -> 2. Pers. f Sg -> 2. Pers. f Pl -> 1. Pers. Sg -> 1. Pers. Pl
+// (1. Person hat keinen Dual). Nimmt ein Array von Zell-Objekten (beliebige Eingabe-Reihenfolge, Schema
+// siehe TABLES unten) und gibt sie in dieser festen Reihenfolge zurück; Zellen ohne passende Eingabe werden
+// ausgelassen (keine Lücken, keine Platzhalter).
+function buildTableSteps(cells){
+  const order = [
+    ['3','m','sg'], ['3','m','du'], ['3','m','pl'],
+    ['3','f','sg'], ['3','f','du'], ['3','f','pl'],
+    ['2','m','sg'], ['2',null,'du'], ['2','m','pl'],
+    ['2','f','sg'], ['2','f','pl'],
+    ['1',null,'sg'], ['1',null,'pl']
+  ];
+  const steps = [];
+  for (const [group, gender, num] of order){
+    const cell = cells.find(c => c.group === group && c.gender === gender && c.num === num);
+    if (cell) steps.push(cell);
+  }
+  return steps;
+}
+
+// Konjugationstabellen für Typ-2-Übungen. TABLES[topicId] = Array<VerbTabelle>.
+// VerbTabelle: {verb (Anzeige-Label), tense:'madi'|'mudari'|'amr' (nur Anzeige, keine Logik hängt daran),
+// de (Tabellen-Überschrift, Deutsch), cells:[{group, gender, num, pronoun, form}, ...] (unsortiert erlaubt,
+// buildTableSteps() sortiert)}.
+const TABLES = {
+'b2-l08':[
+ {verb:'ذهب', tense:'madi', de:'gehen — Vergangenheit', cells:[
+   {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'ذهب'},
+   {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'ذهبوا'},
+   {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'ذهبت'},
+   {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'ذهبن'},
+   {group:'2', gender:'m', num:'sg', pronoun:'أنت', form:'ذهبت'},
+   {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'ذهبتم'},
+   {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'ذهبتِ'},
+   {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'ذهبتن'},
+   {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'ذهبت'},
+   {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'ذهبنا'}
+ ]}
+]
+};
+// Für Playwright-Tests (tests/test_build_table_steps.py) global erreichbar machen: das übrige Script läuft
+// in einer IIFE, page.evaluate() braucht window-Eigenschaften. Ändert das Laufzeitverhalten der App nicht.
+window.buildTableSteps = buildTableSteps;
+window.TABLES = TABLES;
 
 // Übungen für den Sparmodus. q: Frage des Tutors (qF: Form für weibliche Anrede), qde: Deutsch, ok: [richtig, Bedeutung, richtig für weibliche Anrede?], bad: [[falsch, Erklärung], ...]
 const EX = {
