@@ -115,3 +115,40 @@ def test_submit_after_chain_grades_new_verb_not_stale_one(page, served_app):
     page.fill("#t-input-1", step_b["form"])
     page.click('[data-table-submit][data-qi="1"]')
     assert page.evaluate("() => CHAT.tutor.msgs[1].pos") == 1
+
+# Regressionstest für den Null-Push-Bug in submitTableCell(): die Verkettungslogik prüfte bisher nur, ob
+# TABLES[m.topicId][m.verbIndex + 1] EXISTIERT, nicht, ob makeTable() dafür tatsächlich eine gültige
+# Tabellennachricht liefert. makeTable() gibt laut seinem eigenen Kommentar null zurück, wenn cells zwar
+# gefüllt ist, aber keine Zelle in einen der festen Buckets von buildTableSteps() passt (z. B. ein
+# Tippfehler bei group/gender/num). Ohne den Fix würde dieses null direkt in ctx.msgs gepusht, und
+# msgHTML(null, ...) stürzt beim Lesen von m.role ab, weil es keine Null-Prüfung hat - der Chat-Render
+# würde noch vor saveChats() crashen und das Problem damit bei jedem Reload wiederholen. Verb B hat hier
+# absichtlich nur Zellen mit group/num-Werten, die in keinem Eintrag der Bucket-Liste in buildTableSteps()
+# vorkommen, sodass buildTableSteps() eine leere Liste liefert und makeTable() laut seinem !steps.length-
+# Guard null zurückgibt. Verb A wird komplett durchgespielt (Phase 1 + Phase 2); danach darf die App nicht
+# abstürzen, und statt Verb B's (nicht existenter) Tabelle muss dieselbe Abschluss-Notiz erscheinen, die
+# auch test_note_shown_after_last_verb_in_chain oben nach dem letzten Verb einer Kette erwartet.
+def test_malformed_next_verb_shows_note_instead_of_crashing(page, served_app):
+    page.goto(served_app)
+    page.evaluate("""() => {
+      document.querySelector('#v-tutor').hidden = false;
+      TABLES['test-chain-malformed'] = [
+        {verb:'أ', tense:'madi', de:'Test A', cells:[
+          {group:'3',gender:'m',num:'sg',pronoun:'هو',form:'أ1'},
+          {group:'1',gender:null,num:'sg',pronoun:'أنا',form:'أ2'}]},
+        {verb:'ب', tense:'madi', de:'Test B (kaputt)', cells:[
+          {group:'9',gender:'x',num:'bad',pronoun:'؟',form:'ب1'}]}
+      ];
+      CHAT.tutor.msgs.push(makeTable('test-chain-malformed', 0)); renderChat('tutor');
+    }""")
+    # Verb A komplett durchspielen: Phase 1 + Phase 2, mit der tatsächlich erwarteten Form (nicht hart
+    # codiert), da der Zufalls-Shuffle in Phase 2 bei 2 Zellen die Reihenfolge vertauschen kann (siehe
+    # Kommentar in test_second_verb_starts_automatically oben).
+    for _ in range(4):
+        pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
+        step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
+    assert page.evaluate("() => CHAT.tutor.msgs[0].done") == True
+    assert page.evaluate("() => CHAT.tutor.msgs.length") == 2
+    assert page.evaluate("() => CHAT.tutor.msgs[1].role") == "note"

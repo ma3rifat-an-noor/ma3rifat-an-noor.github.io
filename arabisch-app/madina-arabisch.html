@@ -1610,8 +1610,8 @@ function submitTableCell(kind, mi, rawInput){
         // Verkettung (Task 6): Lektionen mit mehreren Verbparadigmen (z. B. Lektion 27/28) zeigen ihre
         // Tabellen nacheinander im selben Chat. Sobald diese Tabelle fertig ist, prüfen, ob TABLES[m.topicId]
         // noch ein weiteres Verb enthält - wenn ja, dessen Tabelle direkt anhängen, sonst eine Abschluss-Notiz.
-        const list = TABLES[m.topicId];
-        if (list && list[m.verbIndex + 1]) ctx.msgs.push(makeTable(m.topicId, m.verbIndex + 1));
+        const nxt = makeTable(m.topicId, m.verbIndex + 1);
+        if (nxt) ctx.msgs.push(nxt);
         else ctx.msgs.push({role:'note', text:'Tabellen dieser Lektion abgeschlossen.'});
       }
     }
