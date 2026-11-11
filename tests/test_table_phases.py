@@ -8,8 +8,8 @@ def _answer_all_phase1(page):
     for i in range(10):
         pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
         step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
-        page.fill(f"#t-input-{pos}", step["form"])
-        page.click(f'[data-table-submit][data-qi="{pos}"]')
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
 
 def test_phase2_starts_with_same_cell_set(page, served_app):
     page.goto(served_app)
@@ -28,7 +28,7 @@ def test_table_marks_done_after_phase2(page, served_app):
         pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
         if page.evaluate("() => CHAT.tutor.msgs[0].done"): break
         step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
-        page.fill(f"#t-input-{pos}", step["form"])
-        page.click(f'[data-table-submit][data-qi="{pos}"]')
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
     assert page.evaluate("() => CHAT.tutor.msgs[0].done") == True
     assert page.locator(".msg.table .t-row.active").count() == 0

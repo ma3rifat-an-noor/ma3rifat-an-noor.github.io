@@ -823,6 +823,12 @@ function makeTable(topicId, verbIndex){
   const entry = list && list[verbIndex];
   if (!entry || !Array.isArray(entry.cells) || !entry.cells.length) return null;
   const steps = buildTableSteps(entry.cells);
+  // Zweiter Fall derselben Art: cells ist zwar gefüllt, aber KEINE Zelle passt in einen der festen
+  // Buckets von buildTableSteps() (z. B. Tippfehler bei group/gender/num beim späteren Einpflegen der
+  // übrigen 30 Lektionen). Ohne diese Prüfung entstünde eine Tabellennachricht ohne jede Zeile: eine tote
+  // Blase, die weder beantwortbar noch jemals done ist - und die damit (siehe ensureTutorTable()) das
+  // Thema dauerhaft blockiert. Wie bei "gar keine cells" also null zurückgeben: Lektion überspringen.
+  if (!steps.length) return null;
   return {
     role:'table',
     topicId, verbIndex,
@@ -1367,6 +1373,12 @@ function msgHTML(m, i, kind){
   if (m.role === 'fb') return fbHTML(m.data);
   if (m.role === 'table'){
     const activeIdx = (!m.done && m.pos < m.order.length) ? m.order[m.pos] : -1;
+    // Eingabefeld und Senden-Knopf werden über den INDEX DIESER NACHRICHT in ctx.msgs (i) adressiert, nicht
+    // über den Zell-Cursor (m.pos): dieselbe Konvention wie beim Typ-1-Quiz oben (data-qi="i" -> answerQuiz).
+    // Damit ist die DOM-Id auch dann eindeutig, wenn mehrere role:'table'-Nachrichten gleichzeitig im Chat
+    // stehen (Verb-Verkettung aus Task 6, abgeschlossene Tabelle eines früheren Themas), und submitTableCell()
+    // kann genau die Nachricht werten, in die die lernende Person tatsächlich getippt hat.
+    const inputId = 't-input-' + i;
     const rows = m.steps.map((step, idx) => {
       const ans = m.answers[idx];
       let cls = '', cell;
@@ -1375,10 +1387,10 @@ function msgHTML(m, i, kind){
         cell = '<span class="t-form" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
       } else if (idx === activeIdx){
         cls = ' active';
-        cell = '<input type="text" dir="rtl" lang="ar" id="t-input-' + m.pos + '">'
-          + '<button class="btn small" type="button" data-table-submit data-qi="' + m.pos + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
+        cell = '<input type="text" dir="rtl" lang="ar" id="' + inputId + '">'
+          + '<button class="btn small" type="button" data-table-submit data-qi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
           + (m.attempt === 1 ? '<span class="t-hint">Nicht ganz — versuch\'s noch mal.</span>' : '')
-          + arabicKeysHTML('t-input-' + m.pos);
+          + arabicKeysHTML(inputId);
       } else {
         cell = '<span class="t-form empty"></span>';
       }
@@ -1489,28 +1501,45 @@ function tutorQuiz(){
   const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.' : '');
   m.topic = pick.topic; return m;
 }
-// Einstieg für Typ-2-Themen (TABLES): sobald ctx.topic überhaupt eine Konjugationstabelle hat, ist das ein
-// Typ-2-Thema und darf NIEMALS in die Typ-1-Logik (tutorQuiz()/EX) durchfallen - unabhängig davon, warum der
-// "neue Tabelle anhängen"-Zweig nicht greift. Grund: EX[ctx.topic] existiert für ein reines Typ-2-Thema nicht
-// (ein Thema ist laut Konvention entweder Typ-1 ODER Typ-2, nie beides), also fällt tutorQuiz() in diesem Fall
-// NICHT auf null zurück, sondern auf seinen allgemeinen Themen-Pool (Fallback für "kein Thema gewählt") und
-// liefert eine zufällige FREMDE Quiz-Frage. Ohne diesen frühen return hier würde das die letzte Nachricht auf
-// 'quiz' setzen, wodurch der nächste ensureTutorQuiz()-Aufruf (z. B. beim nächsten Tab-Wechsel zurück zum
-// Tutor) die Tabellen-Bedingung wieder erfüllt und eine weitere frische Tabelle anhängt, die wiederum einen
-// weiteren Fremd-Quiz nach sich zieht - eine unbegrenzte table/quiz-Wechsel-Duplizierung bei jedem erneuten
-// Besuch (gefunden vom Reviewer nach Task 7, Fix-Runde 1). Deshalb: Ist last schon selbst eine Tabelle (egal
-// ob fertig oder nicht), wird gar nichts angehängt, nur zurückgekehrt - sonst eine frische Tabelle anhängen.
-// Nur wenn das Thema GAR KEINE TABLES-Einträge hat, läuft die bestehende Typ-1-Logik unverändert weiter.
+// Einstieg für Typ-2-Themen (TABLES). Gemeinsam genutzt von den ZWEI Stellen, über die im Sparmodus eine
+// Tabelle starten kann: practiceTopic() (ausdrückliche Themenwahl über das Dropdown oder einen „Üben"-Knopf)
+// und ensureTutorQuiz() (beiläufig, sobald die Tutor-Ansicht gezeigt wird, siehe show()). Beide MÜSSEN
+// dieselbe Bedingung benutzen; als practiceTopic() noch selbst tutorQuiz() aufrief, hängte die Themenwahl
+// eine fremde Quizfrage an, und der nächste Tab-Wechsel legte eine zweite Tabelle darüber.
+// Rückgabe true = ctx.topic IST ein Typ-2-Thema. Der Aufrufer darf dann NIEMALS in die Typ-1-Logik
+// (tutorQuiz()/EX) weiterlaufen, auch nicht, wenn hier gar nichts angehängt wurde. Grund: EX[ctx.topic]
+// existiert für ein reines Typ-2-Thema nicht (ein Thema ist laut Konvention entweder Typ-1 ODER Typ-2, nie
+// beides), also liefert tutorQuiz() in dem Fall nicht null, sondern greift auf seinen allgemeinen Themen-Pool
+// zurück (Fallback für „kein Thema gewählt") und schiebt eine zufällige FREMDE Quizfrage in den Chat.
+// Geprüft wird das GESAMTE ctx.msgs-Array, nicht nur die letzte Nachricht: zwischen der Tabelle und jetzt
+// kann jederzeit etwas anderes gelandet sein (Notiz, Antwort, die Abschlussnotiz der Verb-Verkettung), und
+// „die letzte Nachricht ist keine Tabelle" würde dann fälschlich eine zweite Tabelle für dasselbe Thema
+// anhängen. Abgeglichen wird zusätzlich über m.topicId, damit die Tabelle eines FRÜHEREN Themas den
+// Einstieg in ein neues Typ-2-Thema nicht blockiert.
+// restartIfFinished ist der einzige Unterschied zwischen den beiden Aufrufern:
+//   true  (ausdrückliche Themenwahl): nur eine noch LAUFENDE Tabelle dieses Themas blockiert. Ist die
+//         Lektion schon abgeschlossen, wird sie auf ausdrücklichen Wunsch neu gestartet - sichtbar, weil
+//         practiceTopic() direkt davor die „Neues Thema"-Notiz in den Chat legt.
+//   false (beiläufiger Aufruf): JEDE Tabelle dieses Themas blockiert, auch eine abgeschlossene. Ein bloßer
+//         Tab-Wechsel zurück zum Tutor darf weder eine zweite Tabelle anhängen noch eine fertige Lektion
+//         stillschweigend wieder bei verbIndex 0 starten.
+function ensureTutorTable(restartIfFinished){
+  const ctx = CHAT.tutor;
+  const list = TABLES[ctx.topic];
+  if (!ctx.topic || !Array.isArray(list) || !list.length) return false;
+  const blocked = ctx.msgs.some(m => m.role === 'table' && m.topicId === ctx.topic && !(restartIfFinished && m.done));
+  if (!blocked){
+    // null = defekte Lektionsdaten (fehlende/leere cells, keine Zelle passt in einen Bucket). Dann wird die
+    // Lektion übersprungen - aber eben still, nicht durch eine fremde Typ-1-Quizfrage ersetzt.
+    const tbl = makeTable(ctx.topic, 0);
+    if (tbl){ ctx.msgs.push(tbl); saveChats(); }
+  }
+  return true;
+}
 function ensureTutorQuiz(){
   const ctx = CHAT.tutor;
+  if (ensureTutorTable(false)) return;
   const last = ctx.msgs[ctx.msgs.length - 1];
-  if (ctx.topic && Array.isArray(TABLES[ctx.topic]) && TABLES[ctx.topic].length){
-    if (!(last && last.role === 'table')){
-      const tbl = makeTable(ctx.topic, 0);
-      if (tbl){ ctx.msgs.push(tbl); saveChats(); }
-    }
-    return;
-  }
   if (last && last.role === 'quiz' && !last.answered) return;
   const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
 }
@@ -1540,23 +1569,20 @@ function answerQuiz(kind, qi, k){
   if (S.settings.autoSpeak && next) speak(next.role === 'quiz' ? next.q.ar : next.ar);
 }
 // Grading für eine Typ-2-Konjugationstabellen-Zelle: zwei Versuche pro Zelle, dann Aufdecken + Weiterschalten.
-// qi ist der Zell-Cursor zur Render-Zeit (m.pos, siehe data-qi in msgHTML()), NICHT der Message-Index und
-// NICHT der wahre Step-Index (m.order[m.pos]). Ein qi, das nicht mehr dem aktuellen m.pos entspricht, ist
-// ein veralteter/doppelter Submit auf eine bereits beantwortete Zelle und wird ignoriert. m.answers wird
-// über den wahren Step-Index (m.order[m.pos]) geschlüsselt, weil msgHTML() beim Rendern über m.steps per
-// wahrem Index iteriert (siehe m.answers[idx] dort) — bei Schlüsselung über qi/pos würden bereits
-// beantwortete Zellen ab Phase 2 (Shuffle) falsch dargestellt. Phasenende/Phasenwechsel ist Aufgabe der
-// nächsten Ausbaustufe, nicht dieser Funktion.
-// m wird über role:'table' gesucht statt über den letzten Chat-Eintrag: sobald die Tutor-Ansicht sichtbar
-// wird, kann der bestehende Sparmodus-Mechanismus (ensureTutorQuiz(), siehe show()) eine zusätzliche
-// quiz-Nachricht NACH der Tabelle anhängen, die Tabelle muss also namentlich gefunden werden. Seit der
-// Verb-Verkettung (Task 6) kann ctx.msgs außerdem GLEICHZEITIG mehrere role:'table'-Nachrichten enthalten
-// (die abgeschlossene Tabelle von Verb A bleibt stehen, während Verb B's Tabelle danach angehängt wird) -
-// gesucht wird deshalb die ZULETZT angehängte (aktive) Tabellen-Nachricht, nicht die erste im Array.
-function submitTableCell(kind, qi, rawInput){
-  const ctx = CHAT[kind]; const m = ctx.msgs.filter(x => x.role === 'table').pop();
+// mi ist der INDEX DER NACHRICHT in ctx.msgs (data-qi in msgHTML(), gleiche Konvention wie beim Typ-1-Quiz
+// in answerQuiz()). Die Tabelle wird damit über ihre Identität adressiert, nicht über Position/Aktualität:
+// die frühere Suche .filter(x => x.role === 'table').pop() traf immer die ZULETZT angehängte Tabelle, auch
+// wenn die lernende Person sichtbar in eine andere getippt hat - und da die DOM-Id des Eingabefelds damals
+// nur den Zell-Cursor enthielt (t-input-<pos>), hatten zwei gleichzeitig offene Tabellen dieselbe Id, so
+// dass der Klick-Handler ohnehin das falsche Feld auslas. Beides ist mit der Message-Adressierung erledigt.
+// m.answers wird über den wahren Step-Index (m.order[m.pos]) geschlüsselt, weil msgHTML() beim Rendern über
+// m.steps per wahrem Index iteriert (siehe m.answers[idx] dort) — bei Schlüsselung über m.pos würden bereits
+// beantwortete Zellen ab Phase 2 (Shuffle) falsch dargestellt.
+// Doppeltes Absenden (Doppel-Tap) wertet eine Zelle trotzdem nur einmal: der erste Klick rendert den Chat
+// neu, das Eingabefeld der nächsten Zelle ist dadurch leer, und ein leerer Submit ist unten ein No-Op.
+function submitTableCell(kind, mi, rawInput){
+  const ctx = CHAT[kind]; const m = ctx.msgs[mi];
   if (!m || m.role !== 'table' || m.done) return;
-  if (qi !== m.pos) return;
   const given = norm(rawInput);
   if (!given) return;
   const idx = m.order[m.pos], step = m.steps[idx];
@@ -1698,12 +1724,24 @@ function practiceTopic(id){
   CHAT.tutor.topic = id; $('#tutor-topic').value = id;
   CHAT.tutor.msgs.push({role:'note', text:'Neues Thema: ' + t.de + ' · ' + t.ar});
   go('tutor'); renderChat('tutor'); saveChats();
-  if (offline()){ const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); } return; }
+  if (offline()){
+    // Typ-2-Thema (TABLES): Tabelle über den gemeinsamen Einstieg starten und NICHT nach tutorQuiz()
+    // durchfallen - siehe ensureTutorTable(). go('tutor') oben kann show('tutor') -> ensureTutorQuiz()
+    // je nach aktuellem Hash synchron oder erst über das hashchange-Ereignis auslösen; beide Reihenfolgen
+    // laufen über dieselbe Bedingung, es entsteht in keinem Fall eine zweite Tabelle.
+    if (ensureTutorTable(true)){ renderChat('tutor'); return; }
+    const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); }
+    return;
+  }
   sendChat('tutor', '(Neues Übungsthema: ' + t.de + ' – ' + t.ar + '. Bitte beginne eine kurze, einfache Übung dazu mit einer ersten Frage. Diese Nachricht kommt von der App, nicht von der lernenden Person: keine Korrektur.)', true);
 }
 // Für Playwright-Tests (tests/test_table_entry_and_resume.py) global erreichbar machen: siehe Kommentar bei
-// window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
+// window.makeTable oben. Ändert das Laufzeitverhalten der App nicht. TOPIC kommt dazu, damit ein Test ein
+// künstliches Thema mit absichtlich defekten Tabellendaten registrieren und über practiceTopic() - den
+// echten Einstiegspfad - durchspielen kann; ohne das würde practiceTopic() schon an `if (!t) return;`
+// abbrechen und der Test liefe ins Leere (genau der Fehler, den der Abschluss-Review gefunden hat).
 window.practiceTopic = practiceTopic;
+window.TOPIC = TOPIC;
 
 /* Rollenspiel */
 function renderScenes(){

@@ -41,8 +41,8 @@ def test_second_verb_starts_automatically(page, served_app):
     for _ in range(4):
         pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
         step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
-        page.fill(f"#t-input-{pos}", step["form"])
-        page.click(f'[data-table-submit][data-qi="{pos}"]')
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
     assert page.evaluate("() => CHAT.tutor.msgs.length") == 2
     assert page.evaluate("() => CHAT.tutor.msgs[1].verb") == "ب"
     assert page.evaluate("() => CHAT.tutor.msgs[1].verbIndex") == 1
@@ -61,8 +61,8 @@ def test_note_shown_after_last_verb_in_chain(page, served_app):
     for _ in range(4):
         pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
         step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
-        page.fill(f"#t-input-{pos}", step["form"])
-        page.click(f'[data-table-submit][data-qi="{pos}"]')
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
     assert page.evaluate("() => CHAT.tutor.msgs[1].role") == "note"
 
 # Regressionstest für den vom Controller gefundenen Bug in submitTableCell(): die Message-Suche lief über
@@ -72,6 +72,9 @@ def test_note_shown_after_last_verb_in_chain(page, served_app):
 # A's (fertige, "done") Nachricht. Jeder weitere Submit für Verb B würde dann an der falschen, bereits
 # abgeschlossenen Message-Objekt vorbei ins Leere laufen (die done-Prüfung in submitTableCell() greift
 # sofort, m.pos von Verb B bleibt für immer bei 0 stehen) - ohne Fehler, ohne Crash, einfach unspielbar.
+# (Seit dem Abschluss-Review adressiert submitTableCell() die Nachricht direkt über ihren Index in
+# ctx.msgs - data-qi/#t-input-<index> -, statt sie über role/Position zu suchen; Verb B ist msgs[1] und
+# wird deshalb unten über "#t-input-1" / [data-qi="1"] bedient.)
 # Dieser Test vervollständigt Verb A komplett (Phase 1 + Phase 2, wie in den beiden Tests oben), reicht dann
 # eine KORREKTE Antwort für Verb B's erste Zelle ein und prüft, dass CHAT.tutor.msgs[1].pos tatsächlich
 # vorrückt - das beweist, dass der Submit gegen Verb B's Nachricht gewertet wurde, nicht gegen Verb A's
@@ -98,8 +101,8 @@ def test_submit_after_chain_grades_new_verb_not_stale_one(page, served_app):
             break
         pos = page.evaluate("() => CHAT.tutor.msgs[0].pos")
         step = page.evaluate(f"() => CHAT.tutor.msgs[0].steps[CHAT.tutor.msgs[0].order[{pos}]]")
-        page.fill(f"#t-input-{pos}", step["form"])
-        page.click(f'[data-table-submit][data-qi="{pos}"]')
+        page.fill("#t-input-0", step["form"])
+        page.click('[data-table-submit][data-qi="0"]')
     assert page.evaluate("() => CHAT.tutor.msgs[0].done") == True
     assert page.evaluate("() => CHAT.tutor.msgs.length") == 2
     # Verb B's Tabelle steht jetzt an msgs[1], frisch (Phase 1, pos 0). Eine korrekte Antwort für ihre
@@ -109,6 +112,6 @@ def test_submit_after_chain_grades_new_verb_not_stale_one(page, served_app):
     assert page.evaluate("() => CHAT.tutor.msgs[1].pos") == 0
     pos_b = page.evaluate("() => CHAT.tutor.msgs[1].pos")
     step_b = page.evaluate(f"() => CHAT.tutor.msgs[1].steps[CHAT.tutor.msgs[1].order[{pos_b}]]")
-    page.fill(f"#t-input-{pos_b}", step_b["form"])
-    page.click(f'[data-table-submit][data-qi="{pos_b}"]')
+    page.fill("#t-input-1", step_b["form"])
+    page.click('[data-table-submit][data-qi="1"]')
     assert page.evaluate("() => CHAT.tutor.msgs[1].pos") == 1
