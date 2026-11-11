@@ -239,6 +239,8 @@ p{margin:0}
 .t-row.done.ok .t-form{color:var(--green)}
 .t-row.done.bad .t-form{color:var(--red)}
 .t-row .t-form.empty{display:inline-block;width:3em}
+.t-phase2-label{font-size:.78rem;font-weight:700;color:var(--gold);padding:8px 2px 0;margin:0}
+.t-done{padding-top:8px;margin-top:4px;border-top:1px dashed var(--line)}
 .mode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
 .mode-tag{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--green-soft);color:var(--green);white-space:nowrap}
 .mode-tag.ai{background:var(--gold-soft);color:var(--gold-ink)}
@@ -1361,9 +1363,11 @@ function msgHTML(m, i, kind){
       } else {
         cell = '<span class="t-form empty"></span>';
       }
-      return '<div class="t-row' + cls + '"><span class="t-pro" lang="ar" dir="rtl">' + esc(step.pronoun) + '</span><span class="t-cell">' + cell + '</span></div>';
+      const label = (idx === activeIdx && m.phase === 2) ? '<p class="t-phase2-label">Wiederholung, zufällige Reihenfolge</p>' : '';
+      return label + '<div class="t-row' + cls + '"><span class="t-pro" lang="ar" dir="rtl">' + esc(step.pronoun) + '</span><span class="t-cell">' + cell + '</span></div>';
     }).join('');
-    return '<div class="msg table"><div class="t-head"><span class="t-verb" lang="ar" dir="rtl">' + esc(m.verb) + '</span><span class="t-de">' + esc(m.de) + '</span></div>' + rows + '</div>';
+    const doneTag = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + 'Tabelle abgeschlossen</span></p>' : '';
+    return '<div class="msg table"><div class="t-head"><span class="t-verb" lang="ar" dir="rtl">' + esc(m.verb) + '</span><span class="t-de">' + esc(m.de) + '</span></div>' + rows + doneTag + '</div>';
   }
   return '';
 }
@@ -1520,6 +1524,19 @@ function submitTableCell(kind, qi, rawInput){
   if (correct || m.attempt >= 2){
     m.answers[idx] = {given:rawInput, correct, attempts:m.attempt};
     m.pos++; m.attempt = 0;
+    // Phasenübergang: läuft synchron im selben Aufruf wie der Advance oben, damit m.pos ===
+    // m.order.length nie mit m.done noch false von einem anderen Aufruf aus beobachtet werden kann.
+    if (m.pos === m.order.length){
+      if (m.phase === 1){
+        m.phase = 2;
+        m.order = shuffle(m.steps.map((_, k) => k));
+        m.pos = 0;
+        m.answers = {}; // Phase 2 ist eine eigene Durchlauf-Zählung; alte Phase-1-Antworten dürfen
+                         // Zellen in Phase 2 nicht fälschlich als "schon beantwortet" rendern.
+      } else {
+        m.done = true;
+      }
+    }
   }
   renderChat(kind); saveChats();
 }
