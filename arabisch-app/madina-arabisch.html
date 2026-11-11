@@ -235,6 +235,10 @@ p{margin:0}
 .t-row.active .t-cell{flex-wrap:wrap}
 .t-row.active .t-cell input[type=text]{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-family:var(--f-ar);font-size:1.3rem;direction:rtl;text-align:right}
 .t-hint{flex:1 0 100%;font-size:.78rem;color:var(--red)}
+.t-keys{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.t-key{font-family:var(--f-ar);font-size:1rem;line-height:1;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 9px;color:var(--ink)}
+.t-key:hover{border-color:var(--gold);background:var(--gold-soft)}
+.t-key-back{font-family:inherit;color:var(--muted)}
 .t-row.done .t-form{font-family:var(--f-ar);font-size:1.2rem;direction:rtl;color:var(--muted)}
 .t-row.done.ok .t-form{color:var(--green)}
 .t-row.done.bad .t-form{color:var(--red)}
@@ -1308,6 +1312,17 @@ function diffMark(wrong, right){
   };
 }
 
+// Standard-arabisches Alphabet (28 Buchstaben, keine Diakritika-Tasten nötig, da submitTableCell()
+// die Eingabe ohnehin diakritikafrei über norm() vergleicht).
+const ARABIC_LETTERS = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'س', 'ش', 'ص', 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'ه', 'و', 'ي'];
+// Rendert die Eingabehilfe (Tastenreihe) für das aktive Tabellenzelle-Eingabefeld targetInputId:
+// eine Taste je Buchstabe plus eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyBack unten,
+// die auf data-key-insert/data-key-target bzw. data-key-back reagieren.
+function arabicKeysHTML(targetInputId){
+  const letterKeys = ARABIC_LETTERS.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
+  const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="Zeichen löschen">⌫</button>';
+  return '<div class="t-keys" role="group" aria-label="Arabische Tastatur">' + letterKeys + backKey + '</div>';
+}
 function msgHTML(m, i, kind){
   const st = S.settings;
   if (m.role === 'tutor'){
@@ -1359,7 +1374,8 @@ function msgHTML(m, i, kind){
         cls = ' active';
         cell = '<input type="text" dir="rtl" lang="ar" id="t-input-' + m.pos + '">'
           + '<button class="btn small" type="button" data-table-submit data-qi="' + m.pos + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
-          + (m.attempt === 1 ? '<span class="t-hint">Nicht ganz — versuch\'s noch mal.</span>' : '');
+          + (m.attempt === 1 ? '<span class="t-hint">Nicht ganz — versuch\'s noch mal.</span>' : '')
+          + arabicKeysHTML('t-input-' + m.pos);
       } else {
         cell = '<span class="t-form empty"></span>';
       }
@@ -1950,6 +1966,8 @@ document.addEventListener('click', e => {
   if (d.retry){ requestReply(d.retry); return; }
   if (d.opt !== undefined && d.qi !== undefined){ answerQuiz(d.kind, Number(d.qi), Number(d.opt)); return; }
   if (d.tableSubmit !== undefined){ submitTableCell(d.kind, Number(d.qi), $('#t-input-' + d.qi).value); return; }
+  if (d.keyInsert !== undefined){ const el = $('#' + d.keyTarget); el.value += d.keyInsert; el.focus(); return; }
+  if (d.keyBack !== undefined){ const el = $('#' + d.keyBack); el.value = el.value.slice(0, -1); el.focus(); return; }
   if (d.mode){ setMode(d.mode); return; }
   if (d.trClaude !== undefined){ translate($('#tr-input').value, true); return; }
   if (d.insert){ const inp = $(d.insert); insertInto(inp, d.text); if (d.say && S.settings.autoSpeak) speak(d.text); return; }
