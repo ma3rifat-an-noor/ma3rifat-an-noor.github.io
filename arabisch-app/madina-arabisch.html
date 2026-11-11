@@ -800,18 +800,23 @@ function buildTableSteps(cells){
 // de (Tabellen-Überschrift, Deutsch), cells:[{group, gender, num, pronoun, form}, ...] (unsortiert erlaubt,
 // buildTableSteps() sortiert)}.
 const TABLES = {
+// form wird MIT Taschkīl gepflegt: ohne die Vokalzeichen sehen vier der zehn Formen (هي/أنتَ/أنتِ/أنا)
+// identisch aus (ذهبت), obwohl sie grammatisch verschieden sind - die fertige Tabelle soll das Paradigma
+// aber sichtbar unterscheidbar zeigen. Auf die Bewertung hat das keinen Einfluss: submitTableCell()
+// vergleicht über norm(), und norm() entfernt Taschkīl auf beiden Seiten (siehe TASHKEEL dort), die
+// Eingabe bleibt also weiterhin ohne Vokalzeichen möglich.
 'b2-l08':[
  {verb:'ذهب', tense:'madi', de:'gehen — Vergangenheit', cells:[
-   {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'ذهب'},
-   {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'ذهبوا'},
-   {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'ذهبت'},
-   {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'ذهبن'},
-   {group:'2', gender:'m', num:'sg', pronoun:'أنت', form:'ذهبت'},
-   {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'ذهبتم'},
-   {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'ذهبتِ'},
-   {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'ذهبتن'},
-   {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'ذهبت'},
-   {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'ذهبنا'}
+   {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'ذَهَبَ'},
+   {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'ذَهَبُوا'},
+   {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'ذَهَبَتْ'},
+   {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'ذَهَبْنَ'},
+   {group:'2', gender:'m', num:'sg', pronoun:'أنتَ', form:'ذَهَبْتَ'},
+   {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'ذَهَبْتُمْ'},
+   {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'ذَهَبْتِ'},
+   {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'ذَهَبْتُنَّ'},
+   {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'ذَهَبْتُ'},
+   {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'ذَهَبْنَا'}
  ]}
 ]
 };
