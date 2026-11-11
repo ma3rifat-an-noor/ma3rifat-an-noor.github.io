@@ -224,6 +224,19 @@ p{margin:0}
 .opt:hover{border-color:var(--gold);background:var(--gold-soft)}
 .opt .o-ar{flex:1;font-family:var(--f-ar);font-size:1.45rem;line-height:1.6;direction:rtl;text-align:right;overflow-wrap:anywhere}
 .opt .o-n{width:26px;height:26px;border-radius:50%;background:var(--sunk);color:var(--muted);display:grid;place-items:center;font-size:.8rem;font-weight:700;flex:none;font-variant-numeric:tabular-nums}
+.msg.table{align-self:flex-start;width:100%;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);gap:4px}
+.t-head{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;margin-bottom:4px;border-bottom:1px dashed var(--line)}
+.t-head .t-verb{font-family:var(--f-ar);font-size:1.5rem;direction:rtl}
+.t-head .t-de{font-size:.86rem;color:var(--muted)}
+.t-row{display:flex;align-items:center;gap:10px;padding:6px 2px;border-radius:10px}
+.t-row .t-pro{font-family:var(--f-ar);font-size:1.2rem;direction:rtl;width:4.2em;flex:none;color:var(--muted)}
+.t-row .t-cell{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.t-row.active{background:var(--gold-soft)}
+.t-row.active .t-cell input[type=text]{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-family:var(--f-ar);font-size:1.3rem;direction:rtl;text-align:right}
+.t-row.done .t-form{font-family:var(--f-ar);font-size:1.2rem;direction:rtl;color:var(--muted)}
+.t-row.done.ok .t-form{color:var(--green)}
+.t-row.done.bad .t-form{color:var(--red)}
+.t-row .t-form.empty{display:inline-block;width:3em}
 .mode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
 .mode-tag{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--green-soft);color:var(--green);white-space:nowrap}
 .mode-tag.ai{background:var(--gold-soft);color:var(--gold-ink)}
@@ -791,10 +804,33 @@ const TABLES = {
  ]}
 ]
 };
-// Für Playwright-Tests (tests/test_build_table_steps.py) global erreichbar machen: das übrige Script läuft
-// in einer IIFE, page.evaluate() braucht window-Eigenschaften. Ändert das Laufzeitverhalten der App nicht.
+// Erzeugt die role:'table'-Chatnachricht für eine Typ-2-Konjugationstabelle (siehe CHAT.tutor.msgs).
+// topicId/verbIndex sind der Lookup-Schlüssel in TABLES. Gibt null zurück, wenn die Lektion fehlt oder
+// keine gültige cells-Liste hat, statt bei einer fehlerhaften Lektion abzustürzen.
+function makeTable(topicId, verbIndex){
+  const list = TABLES[topicId];
+  const entry = list && list[verbIndex];
+  if (!entry || !Array.isArray(entry.cells) || !entry.cells.length) return null;
+  const steps = buildTableSteps(entry.cells);
+  return {
+    role:'table',
+    topicId, verbIndex,
+    verb:entry.verb, tense:entry.tense, de:entry.de,
+    steps,
+    phase:1,
+    order:steps.map((_, k) => k),
+    pos:0,
+    attempt:0,
+    answers:{},
+    done:false
+  };
+}
+// Für Playwright-Tests (tests/test_build_table_steps.py, tests/test_table_render.py) global erreichbar
+// machen: das übrige Script läuft in einer IIFE, page.evaluate() braucht window-Eigenschaften. Ändert das
+// Laufzeitverhalten der App nicht.
 window.buildTableSteps = buildTableSteps;
 window.TABLES = TABLES;
+window.makeTable = makeTable;
 
 // Übungen für den Sparmodus. q: Frage des Tutors (qF: Form für weibliche Anrede), qde: Deutsch, ok: [richtig, Bedeutung, richtig für weibliche Anrede?], bad: [[falsch, Erklärung], ...]
 const EX = {
@@ -1307,6 +1343,25 @@ function msgHTML(m, i, kind){
   if (m.role === 'note') return '<p class="note">' + rich(m.text) + '</p>';
   if (m.role === 'err') return '<div class="err" role="alert"><p>' + esc(m.text) + '</p>' + (m.retry ? '<button class="btn small" type="button" data-retry="' + kind + '">' + icon('i-refresh', 'ico sm') + 'Nochmal</button>' : '') + '</div>';
   if (m.role === 'fb') return fbHTML(m.data);
+  if (m.role === 'table'){
+    const activeIdx = (!m.done && m.pos < m.order.length) ? m.order[m.pos] : -1;
+    const rows = m.steps.map((step, idx) => {
+      const ans = m.answers[idx];
+      let cls = '', cell;
+      if (ans){
+        cls = ' done' + (ans.correct ? ' ok' : ' bad');
+        cell = '<span class="t-form" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
+      } else if (idx === activeIdx){
+        cls = ' active';
+        cell = '<input type="text" dir="rtl" lang="ar" id="t-input-' + i + '">'
+          + '<button class="btn small" type="button" data-table-submit data-qi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>';
+      } else {
+        cell = '<span class="t-form empty"></span>';
+      }
+      return '<div class="t-row' + cls + '"><span class="t-pro" lang="ar" dir="rtl">' + esc(step.pronoun) + '</span><span class="t-cell">' + cell + '</span></div>';
+    }).join('');
+    return '<div class="msg table"><div class="t-head"><span class="t-verb" lang="ar" dir="rtl">' + esc(m.verb) + '</span><span class="t-de">' + esc(m.de) + '</span></div>' + rows + '</div>';
+  }
   return '';
 }
 function fbHTML(d){
@@ -1337,6 +1392,11 @@ function renderChat(kind){
   btn.innerHTML = icon(ctx.busy ? 'i-stop' : 'i-send');
   requestAnimationFrame(() => { const sc = $(dom.scroll); sc.scrollTop = sc.scrollHeight; });
 }
+// Für Playwright-Tests (tests/test_table_render.py) global erreichbar machen: der Test fügt per
+// page.evaluate() eine Tabellennachricht in CHAT.tutor.msgs ein und ruft renderChat('tutor') direkt auf.
+// Ändert das Laufzeitverhalten der App nicht (reine window-Referenz auf die bestehenden Werte).
+window.CHAT = CHAT;
+window.renderChat = renderChat;
 
 async function sendChat(kind, text, hidden){
   const ctx = CHAT[kind]; text = String(text || '').trim();
