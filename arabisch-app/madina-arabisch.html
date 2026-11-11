@@ -1353,8 +1353,8 @@ function msgHTML(m, i, kind){
         cell = '<span class="t-form" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
       } else if (idx === activeIdx){
         cls = ' active';
-        cell = '<input type="text" dir="rtl" lang="ar" id="t-input-' + i + '">'
-          + '<button class="btn small" type="button" data-table-submit data-qi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>';
+        cell = '<input type="text" dir="rtl" lang="ar" id="t-input-' + m.pos + '">'
+          + '<button class="btn small" type="button" data-table-submit data-qi="' + m.pos + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>';
       } else {
         cell = '<span class="t-form empty"></span>';
       }
