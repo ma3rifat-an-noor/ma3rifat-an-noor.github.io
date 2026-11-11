@@ -706,6 +706,9 @@ const TOPICS = [
  gram:'كَانَ (war) setzt das Prädikat in den Akkusativ: الْجَوُّ بَارِدٌ → كَانَ الْجَوُّ بَارِدًا (Das Wetter war kalt). إِنَّ betont einen Satz und setzt das Subjekt in den Akkusativ: إِنَّ اللّٰهَ غَفُورٌ. لَيْسَ (ist nicht) wirkt wie كَانَ.',
  ex:[['كَانَ الطَّالِبُ مَرِيضًا.','Der Student war krank.'],['لَيْسَ الْبَابُ مَفْتُوحًا.','Die Tür ist nicht offen.']],
  words:[['كَانَ','kāna','er/es war'],['كَانَتْ','kānat','sie war'],['لَيْسَ','laysa','ist nicht'],['إِنَّ','inna','wahrlich (Betonung)'],['لٰكِنَّ','lākinna','aber'],['لِأَنَّ','li-anna','weil'],['جَوٌّ','jawwun','Wetter'],['مَرِيضٌ','marīḍun','krank'],['مَشْغُولٌ','mashghūlun','beschäftigt'],['سَعِيدٌ','saʿīdun','glücklich'],['تَعْبَانُ','taʿbānu','müde'],['جَائِعٌ','jāʾiʿun','hungrig']]},
+{id:'b2-l08', book:2, ar:'ذَهَبَ', de:'Verbkonjugation: ذهب (gehen) – Vergangenheit',
+ gram:'Typ-2-Übung: eine vollständige Konjugationstabelle statt einzelner Sätze. Alle Personalformen von ذَهَبَ (gehen) im Perfekt (الْمَاضِي) werden der Reihe nach abgefragt, siehe die Übungstabelle im Tutor.',
+ ex:[], words:[]},
 {id:'b3-tafdil', book:3, ar:'أَفْعَلُ', de:'Steigerung: größer, am größten',
  gram:'Steigerung nach dem Muster أَفْعَلُ: كَبِيرٌ → أَكْبَرُ (größer). „als" heißt مِنْ: الْقَمَرُ أَصْغَرُ مِنَ الشَّمْسِ. Mit folgendem Nomen wird es zum Superlativ: أَكْبَرُ مَسْجِدٍ = die größte Moschee.',
  ex:[['الْقَمَرُ أَصْغَرُ مِنَ الشَّمْسِ.','Der Mond ist kleiner als die Sonne.'],['مَنْ أَطْوَلُ طَالِبٍ فِي الْفَصْلِ؟','Wer ist der größte Student in der Klasse?']],
@@ -1486,9 +1489,17 @@ function tutorQuiz(){
   const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.' : '');
   m.topic = pick.topic; return m;
 }
+// Einstieg für Typ-2-Themen (TABLES): wenn das aktuelle Thema eine Konjugationstabelle hat UND die letzte
+// Nachricht nicht schon eine unfertige Tabelle ist (sonst Reload-Duplikat), eine neue Tabelle anhängen und
+// die bestehende Typ-1-Logik (EX/quiz) für diesen Aufruf komplett überspringen. Liefert makeTable() null
+// (defekte Lektionsdaten, siehe dort), fällt die Funktion ohne Fehler auf die bestehende Logik zurück.
 function ensureTutorQuiz(){
   const ctx = CHAT.tutor;
   const last = ctx.msgs[ctx.msgs.length - 1];
+  if (ctx.topic && Array.isArray(TABLES[ctx.topic]) && TABLES[ctx.topic].length && !(last && last.role === 'table' && !last.done)){
+    const tbl = makeTable(ctx.topic, 0);
+    if (tbl){ ctx.msgs.push(tbl); saveChats(); return; }
+  }
   if (last && last.role === 'quiz' && !last.answered) return;
   const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
 }
@@ -1679,6 +1690,9 @@ function practiceTopic(id){
   if (offline()){ const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); } return; }
   sendChat('tutor', '(Neues Übungsthema: ' + t.de + ' – ' + t.ar + '. Bitte beginne eine kurze, einfache Übung dazu mit einer ersten Frage. Diese Nachricht kommt von der App, nicht von der lernenden Person: keine Korrektur.)', true);
 }
+// Für Playwright-Tests (tests/test_table_entry_and_resume.py) global erreichbar machen: siehe Kommentar bei
+// window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
+window.practiceTopic = practiceTopic;
 
 /* Rollenspiel */
 function renderScenes(){
@@ -1957,6 +1971,9 @@ function show(v){
   if (v === 'karten'){ if (session) renderSession(); else renderDecks(); }
   if (v === 'tutor'){ if (offline()) ensureTutorQuiz(); renderChat('tutor'); }
 }
+// Für Playwright-Tests (tests/test_table_entry_and_resume.py) global erreichbar machen: siehe Kommentar bei
+// window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
+window.show = show;
 let rolePlaying = false;
 function refreshCurrent(){ show(currentView); }
 function route(){ const h = location.hash.slice(1); show(VIEWS.includes(h) ? h : 'start'); }
