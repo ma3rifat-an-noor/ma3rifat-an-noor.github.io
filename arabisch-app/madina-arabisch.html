@@ -1489,16 +1489,27 @@ function tutorQuiz(){
   const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.' : '');
   m.topic = pick.topic; return m;
 }
-// Einstieg für Typ-2-Themen (TABLES): wenn das aktuelle Thema eine Konjugationstabelle hat UND die letzte
-// Nachricht nicht schon eine unfertige Tabelle ist (sonst Reload-Duplikat), eine neue Tabelle anhängen und
-// die bestehende Typ-1-Logik (EX/quiz) für diesen Aufruf komplett überspringen. Liefert makeTable() null
-// (defekte Lektionsdaten, siehe dort), fällt die Funktion ohne Fehler auf die bestehende Logik zurück.
+// Einstieg für Typ-2-Themen (TABLES): sobald ctx.topic überhaupt eine Konjugationstabelle hat, ist das ein
+// Typ-2-Thema und darf NIEMALS in die Typ-1-Logik (tutorQuiz()/EX) durchfallen - unabhängig davon, warum der
+// "neue Tabelle anhängen"-Zweig nicht greift. Grund: EX[ctx.topic] existiert für ein reines Typ-2-Thema nicht
+// (ein Thema ist laut Konvention entweder Typ-1 ODER Typ-2, nie beides), also fällt tutorQuiz() in diesem Fall
+// NICHT auf null zurück, sondern auf seinen allgemeinen Themen-Pool (Fallback für "kein Thema gewählt") und
+// liefert eine zufällige FREMDE Quiz-Frage. Ohne diesen frühen return hier würde das die letzte Nachricht auf
+// 'quiz' setzen, wodurch der nächste ensureTutorQuiz()-Aufruf (z. B. beim nächsten Tab-Wechsel zurück zum
+// Tutor) die Tabellen-Bedingung wieder erfüllt und eine weitere frische Tabelle anhängt, die wiederum einen
+// weiteren Fremd-Quiz nach sich zieht - eine unbegrenzte table/quiz-Wechsel-Duplizierung bei jedem erneuten
+// Besuch (gefunden vom Reviewer nach Task 7, Fix-Runde 1). Deshalb: Ist last schon selbst eine Tabelle (egal
+// ob fertig oder nicht), wird gar nichts angehängt, nur zurückgekehrt - sonst eine frische Tabelle anhängen.
+// Nur wenn das Thema GAR KEINE TABLES-Einträge hat, läuft die bestehende Typ-1-Logik unverändert weiter.
 function ensureTutorQuiz(){
   const ctx = CHAT.tutor;
   const last = ctx.msgs[ctx.msgs.length - 1];
-  if (ctx.topic && Array.isArray(TABLES[ctx.topic]) && TABLES[ctx.topic].length && !(last && last.role === 'table' && !last.done)){
-    const tbl = makeTable(ctx.topic, 0);
-    if (tbl){ ctx.msgs.push(tbl); saveChats(); return; }
+  if (ctx.topic && Array.isArray(TABLES[ctx.topic]) && TABLES[ctx.topic].length){
+    if (!(last && last.role === 'table')){
+      const tbl = makeTable(ctx.topic, 0);
+      if (tbl){ ctx.msgs.push(tbl); saveChats(); }
+    }
+    return;
   }
   if (last && last.role === 'quiz' && !last.answered) return;
   const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
@@ -1913,7 +1924,7 @@ function renderStart(){
   $('#start-books').innerHTML = BOOKS.map(bk => '<section><div class="book-head"><h2>' + esc(bk.de) + (bk.n === b ? '<span class="here">Du bist hier</span>' : '') + '</h2><span class="b-ar" lang="ar">' + esc(bk.ar) + '</span></div><div class="topics">'
     + TOPICS.filter(t => t.book === bk.n).map(t => {
         const ids = TOPIC_CARDS[t.id], k = knownCount(ids);
-        return '<details class="topic" data-topic="' + t.id + '"' + (openTopics.has(t.id) ? ' open' : '') + '><summary><span class="t-ar" lang="ar">' + esc(t.ar) + '</span><span class="t-main"><span class="t-de">' + esc(t.de) + '</span><span class="t-meta">' + ids.length + ' Wörter · ' + k + ' gelernt</span><span class="t-bar"><i style="width:' + Math.round(100 * k / ids.length) + '%"></i></span></span>' + icon('i-down', 'ico chev') + '</summary>'
+        return '<details class="topic" data-topic="' + t.id + '"' + (openTopics.has(t.id) ? ' open' : '') + '><summary><span class="t-ar" lang="ar">' + esc(t.ar) + '</span><span class="t-main"><span class="t-de">' + esc(t.de) + '</span><span class="t-meta">' + ids.length + ' Wörter · ' + k + ' gelernt</span><span class="t-bar"><i style="width:' + Math.round(100 * k / Math.max(1, ids.length)) + '%"></i></span></span>' + icon('i-down', 'ico chev') + '</summary>'
           + '<div class="t-body"><p class="gram">' + rich(t.gram) + '</p>'
           + '<ul class="ex-list">' + t.ex.map(e => '<li><p class="ar" lang="ar">' + esc(e[0]) + '</p><p class="de">' + esc(e[1]) + '</p>' + speakBtn(e[0]) + '</li>').join('') + '</ul>'
           + '<div class="t-words">' + t.words.slice(0, 10).map(w => '<button class="chip" type="button" data-speak="' + esc(w[0]) + '"><span class="ar-s" lang="ar">' + esc(w[0]) + '</span><span class="de-s">' + esc(w[2]) + '</span></button>').join('') + '</div>'
