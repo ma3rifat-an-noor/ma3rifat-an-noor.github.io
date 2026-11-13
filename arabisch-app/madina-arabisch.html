@@ -245,6 +245,38 @@ p{margin:0}
 .t-row .t-form.empty{display:inline-block;width:3em}
 .t-phase2-label{font-size:.78rem;font-weight:700;color:var(--gold);padding:8px 2px 0;margin:0}
 .t-done{padding-top:8px;margin-top:4px;border-top:1px dashed var(--line)}
+/* Typ 3 (Buch 3, Ableitungstabellen, role:'derivTable') - eigene dt-* Klassen statt der t-row-Klassen
+   oben, weil hier Zeile=Wurzel UND mehrere Spalten pro Zeile existieren (Grid statt Liste von
+   Einzel-Zellen-Zeilen); wiederverwendet aber dieselben Design-Tokens/Farbcodierung/Button- und
+   Tastatur-Klassen (.btn.small, .t-keys/.t-key von arabicKeysHTML()) wie der 'table'-Zweig. */
+.msg.derivTable{align-self:flex-start;width:100%;max-width:100%;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);gap:4px}
+.msg.derivTable .t-head{justify-content:flex-start}
+.dt-badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-ink);background:var(--gold-soft);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.dt-title{font-size:.95rem;font-weight:700;color:var(--ink)}
+.dt-table{display:flex;flex-direction:column;gap:2px}
+.dt-row{display:flex;direction:rtl;align-items:stretch;gap:6px;padding:4px 2px;border-radius:10px}
+.dt-head-row{border-bottom:1px dashed var(--line);margin-bottom:2px;padding-bottom:8px}
+.dt-cell{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--f-ar);font-size:1.15rem;line-height:1.4;direction:rtl;text-align:center}
+.dt-col-head{color:var(--gold-ink);font-weight:700;font-size:1rem}
+.dt-cell.given{color:var(--ink)}
+/* .dt-cell.active ist seit dem Abschluss-Review 2026-11-13 nur noch ein schmaler visueller Marker (siehe
+   .dt-active-marker) - die eigentliche interaktive Markup lebt im eigenständigen .dt-answer-Panel direkt
+   darunter (volle Bubble-Breite statt in einer von bis zu 4 Spalten gequetscht, siehe msgHTML()). */
+.dt-cell.active{background:var(--gold-soft);border-radius:10px}
+.dt-active-marker{width:.5em;height:.5em;border-radius:50%;background:var(--gold-ink)}
+.dt-answer{width:100%;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 2px;padding:10px 12px;border-radius:12px;background:var(--gold-soft);direction:rtl}
+.dt-answer-label{flex:1 0 100%;margin:0 0 2px;font-family:var(--f-ar);font-size:1rem;font-weight:700;color:var(--gold-ink);direction:rtl;text-align:right}
+.dt-answer input[type=text]{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 10px;font-family:var(--f-ar);font-size:1.3rem;direction:rtl;text-align:right}
+/* direction:ltr ist hier nötig (anders als bei .t-hint in Typ 2): .dt-answer setzt direction:rtl für die
+   arabischen Formen, und der deutsche Hinweistext erbt das sonst - der Schlusspunkt landet dann als
+   neutrales Zeichen am linken Rand (".mal" statt "mal."). */
+.dt-hint{flex:1 0 100%;font-size:.78rem;color:var(--red);text-align:center;direction:ltr}
+.dt-cell.done{color:var(--muted)}
+.dt-cell.done.ok{color:var(--green)}
+.dt-cell.done.bad{color:var(--red)}
+.dt-cell.pending{color:var(--muted)}
+.dt-placeholder{display:inline-block;width:2.4em;border-bottom:1px dashed var(--line)}
+.dt-continue{padding-top:8px;margin-top:4px;border-top:1px dashed var(--line);display:flex;justify-content:flex-end}
 .mode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
 .mode-tag{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--green-soft);color:var(--green);white-space:nowrap}
 .mode-tag.ai{background:var(--gold-soft);color:var(--gold-ink)}
@@ -1146,6 +1178,135 @@ window.buildTableSteps = buildTableSteps;
 window.TABLES = TABLES;
 window.makeTable = makeTable;
 
+// ---------- Typ 3: Ableitungstabellen (Buch 3, Verbformen II-X + Quadriliteral) ----------
+// Buch 3 druckt ab Lektion 16 keine Personen-Konjugationstabellen (Typ 2) mehr, sondern pro Verbform eine
+// Mehrwurzel-Ableitungstabelle: eine ZEILE pro Wurzelverb derselben Verbform, SPALTEN sind grammatische
+// Stammformen (immer الماضي und المضارع; je nach Lektion zusätzlich الأمر und/oder المصدر und/oder
+// اسم الفاعل/اسم المفعول - 3 bis 5 Spalten, Reihenfolge wie im Buch gedruckt). Nur die erste Wurzel (manchmal
+// die erste je Unterkategorie) ist vollständig ausgearbeitet vorgegeben; der Rest ist zum Selbst-Ableiten
+// leer - und manchmal ist eine einzelne schwere Zelle einer unregelmäßigen Wurzel als Hinweis trotzdem
+// vorgegeben, auch wenn die übrige Zeile leer bleibt. Das passt NICHT in das Typ-2-Zellschema
+// ({group,gender,num,pronoun,form}, Zeile=Person) - hier ist die Zeile eine Wurzel, die Spalte eine
+// Stammform. Deshalb eine eigene, parallele Engine (DERIV_TABLES/buildDerivTableSteps/makeDerivTable)
+// statt TABLES/buildTableSteps/makeTable zu überladen. Volles Rationale, inkl. Entscheidung zum Sonderfall
+// "Tabelle ohne Lückenzellen": docs/superpowers/specs/2026-11-13-book3-deriv-tables-design.md
+//
+// DERIV_TABLES[topicId] = Array<DerivTabelle>. DerivTabelle: {de (Überschrift, Deutsch), columns:[...]
+// (3-5 Spaltenbeschriftungen, GEDRUCKTE Reihenfolge - keine feste Universalreihenfolge wie bei Typ 2),
+// rows:[{root, values:[...], given:[...]}, ...]}. given[i] steuert PRO ZELLE (nicht pro Zeile), ob
+// values[i] bereits als gedruckte Referenz gezeigt wird (true) oder vom Nutzer abgefragt werden muss
+// (false, dann ist values[i] null) - das Buch gibt manchmal nur eine einzelne Zelle einer sonst leeren
+// Zeile als Hinweis vor, eine Row-Level-Flagge könnte das nicht abbilden.
+const DERIV_TABLES = {
+'b3-l16':[
+ {de:'فَعَّلَ — Hauptmodell', columns:['الماضي','المضارع','الأمر','المصدر'], rows:[
+   {root:'سَلَّمَ', values:['سَلَّمَ','يُسَلِّمُ','سَلِّمْ','تَسْلِيمٌ'], given:[true,true,true,true]},
+   {root:'قَبَّلَ', values:['قَبَّلَ','يُقَبِّلُ','قَبِّلْ','تَقْبِيلٌ'], given:[true,true,true,true]},
+   {root:'سَبَّحَ', values:['سَبَّحَ','يُسَبِّحُ','سَبِّحْ','تَسْبِيحٌ'], given:[true,true,true,true]}
+ ]},
+ {de:'مصدر باب فعّل', columns:['الماضي','المصدر'], rows:[
+   {root:'كَبَّرَ', values:['كَبَّرَ', 'تَكْبِيرٌ'], given:[true,false]},
+   {root:'عَلَّمَ', values:['عَلَّمَ', 'تَعْلِيمٌ'], given:[true,false]},
+   {root:'وَضَّحَ', values:['وَضَّحَ', 'تَوْضِيحٌ'], given:[true,false]},
+   {root:'وَزَّعَ', values:['وَزَّعَ', 'تَوْزِيعٌ'], given:[true,false]},
+   {root:'سَجَّلَ', values:['سَجَّلَ', 'تَسْجِيلٌ'], given:[true,false]},
+   {root:'هَنَّأَ', values:['هَنَّأَ', 'تَهْنِئَةٌ'], given:[true,true]},
+   {root:'سَمَّى', values:['سَمَّى', 'تَسْمِيَةٌ'], given:[true,true]},
+   {root:'حَيَّى', values:['حَيَّى', 'تَحِيَّةٌ'], given:[true,true]},
+   {root:'رَبَّى', values:['رَبَّى', 'تَرْبِيَةٌ'], given:[true,false]}
+ ]},
+ {de:'اسم الفاعل', columns:['الماضي','المضارع','اسم الفاعل'], rows:[
+   {root:'أَذَّنَ', values:['أَذَّنَ','يُؤَذِّنُ','مُؤَذِّنٌ'], given:[true,true,false]},
+   {root:'سَجَّلَ', values:['سَجَّلَ','يُسَجِّلُ','مُسَجِّلٌ'], given:[true,true,false]},
+   {root:'حَدَّثَ', values:['حَدَّثَ','يُحَدِّثُ','مُحَدِّثٌ'], given:[true,true,false]},
+   {root:'دَرَّسَ', values:['دَرَّسَ','يُدَرِّسُ','مُدَرِّسٌ'], given:[true,true,false]},
+   {root:'صَوَّرَ', values:['صَوَّرَ','يُصَوِّرُ','مُصَوِّرٌ'], given:[true,true,false]},
+   {root:'دَخَّنَ', values:['دَخَّنَ','يُدَخِّنُ','مُدَخِّنٌ'], given:[true,true,false]}
+ ]},
+ {de:'اسم المفعول', columns:['الماضي','المضارع','اسم الفاعل','اسم المفعول'], rows:[
+   {root:'سَجَّلَ', values:['سَجَّلَ','يُسَجِّلُ','مُسَجِّلٌ','مُسَجَّلٌ'], given:[true,true,true,true]},
+   {root:'أَلَّفَ', values:['أَلَّفَ','يُؤَلِّفُ','مُؤَلِّفٌ','مُؤَلَّفٌ'], given:[true,false,false,false]},
+   {root:'رَتَّبَ', values:['رَتَّبَ','يُرَتِّبُ','مُرَتِّبٌ','مُرَتَّبٌ'], given:[true,false,false,false]},
+   {root:'سَلَّحَ', values:['سَلَّحَ','يُسَلِّحُ','مُسَلِّحٌ','مُسَلَّحٌ'], given:[true,false,false,false]},
+   {root:'عَلَّقَ', values:['عَلَّقَ','يُعَلِّقُ','مُعَلِّقٌ','مُعَلَّقٌ'], given:[true,false,false,false]},
+   {root:'جَلَّدَ', values:['جَلَّدَ','يُجَلِّدُ','مُجَلِّدٌ','مُجَلَّدٌ'], given:[true,false,false,false]},
+   {root:'لَوَّنَ', values:['لَوَّنَ','يُلَوِّنُ','مُلَوِّنٌ','مُلَوَّنٌ'], given:[true,false,false,false]},
+   {root:'حَمَّدَ', values:['حَمَّدَ','يُحَمِّدُ','مُحَمِّدٌ','مُحَمَّدٌ'], given:[true,false,false,false]}
+ ]},
+ {de:'مصدر وزن فَعْل', columns:['الماضي','المضارع','المصدر'], rows:[
+   {root:'دَرَسَ', values:['دَرَسَ','يَدْرُسُ','دَرْسٌ'], given:[true,true,false]},
+   {root:'ضَرَبَ', values:['ضَرَبَ','يَضْرِبُ','ضَرْبٌ'], given:[true,true,false]},
+   {root:'قَتَلَ', values:['قَتَلَ','يَقْتُلُ','قَتْلٌ'], given:[true,true,false]},
+   {root:'مَلَأَ', values:['مَلَأَ','يَمْلَأُ','مَلْءٌ'], given:[true,true,false]}
+ ]},
+ {de:'مصدر وزن فِعَال', columns:['الماضي','المضارع','المصدر'], rows:[
+   {root:'قَامَ', values:['قَامَ','يَقُومُ','قِيَامٌ'], given:[true,true,false]},
+   {root:'آبَ', values:['آبَ','يَؤُوبُ','إِيَابٌ'], given:[true,true,false]},
+   {root:'قَاسَ', values:['قَاسَ','يَقِيسُ','قِيَاسٌ'], given:[true,true,false]}
+ ]}
+]
+};
+
+// Analog zu buildTableSteps() (Typ 2), aber ohne feste Universalreihenfolge: die GEDRUCKTE Reihenfolge IST
+// die Reihenfolge - Zeilen von oben nach unten (entry.rows), innerhalb jeder Zeile Spalten von links nach
+// rechts in genau der Reihenfolge aus entry.columns. Nimmt pro Zelle mit given[colIdx] === false einen
+// Step auf; given:true-Zellen sind reine Referenzanzeige und werden komplett ausgelassen (keine Lücken,
+// keine Platzhalter-Steps).
+function buildDerivTableSteps(entry){
+  const steps = [];
+  if (!entry || !Array.isArray(entry.rows) || !Array.isArray(entry.columns)) return steps;
+  entry.rows.forEach((row, rowIdx) => {
+    entry.columns.forEach((column, colIdx) => {
+      if (row.given && row.given[colIdx]) return;
+      steps.push({rowIdx, colIdx, root:row.root, column, form:row.values[colIdx]});
+    });
+  });
+  return steps;
+}
+
+// Analog zu makeTable() (Typ 2). topicId/tableIndex sind der Lookup-Schlüssel in DERIV_TABLES. Gibt null
+// zurück, wenn die Lektion fehlt oder keine gültige rows- ODER columns-Liste hat (gespiegelter
+// Defensiv-Check wie bei makeTable's entry.cells) - das deckt echte defekte Lektionsdaten ab, NICHT den
+// Fall "alle Zellen sind
+// given" (siehe unten). Buch-3-Lektion 16 Eintrag A (das voll ausgearbeitete Hauptmodell) hat absichtlich
+// null Lückenzellen - das ist kein Fehler, sondern eine reine Lese-Referenztabelle, die der Nutzer nur
+// studieren, nicht ausfüllen soll. Deshalb KEIN return null bei steps.length === 0: statt dessen wird die
+// Tabelle als studyOnly markiert (done von Anfang an true, da nichts abzufragen ist) - Darstellung/
+// Weiterschaltung dafür ist Aufgabe der Rendering-Phase, siehe Design-Doc für die volle Begründung und die
+// verworfene Alternative.
+function makeDerivTable(topicId, tableIndex){
+  const list = DERIV_TABLES[topicId];
+  const entry = list && list[tableIndex];
+  // columns MUSS hier mitgeprüft werden, nicht nur rows: buildDerivTableSteps() verlangt beides und gibt
+  // ohne columns zurecht [] zurück - die Karte ginge damit als studyOnly durch (steps.length === 0) und
+  // msgHTML() stürzte beim Rendern an m.columns.map() ab, was renderChat() abbricht und den ganzen Chat
+  // unbenutzbar macht. Defekte Lektionsdaten sollen die Lektion still überspringen, nie den Chat killen.
+  if (!entry || !Array.isArray(entry.rows) || !entry.rows.length
+      || !Array.isArray(entry.columns) || !entry.columns.length) return null;
+  const steps = buildDerivTableSteps(entry);
+  const studyOnly = !steps.length;
+  return {
+    role:'derivTable',
+    topicId, tableIndex,
+    de:entry.de,
+    columns:entry.columns,
+    rows:entry.rows,
+    steps,
+    phase:1,
+    order:steps.map((_, k) => k),
+    pos:0,
+    attempt:0,
+    answers:{},
+    studyOnly,
+    done:studyOnly
+  };
+}
+// Für Playwright-Tests (tests/test_build_deriv_table_steps.py) global erreichbar machen: siehe Kommentar
+// bei window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
+window.buildDerivTableSteps = buildDerivTableSteps;
+window.DERIV_TABLES = DERIV_TABLES;
+window.makeDerivTable = makeDerivTable;
+
 // Übungen für den Sparmodus. q: Frage des Tutors (qF: Form für weibliche Anrede), qde: Deutsch, ok: [richtig, Bedeutung, richtig für weibliche Anrede?], bad: [[falsch, Erklärung], ...]
 const EX = {
 'b1-l01':[
@@ -1771,6 +1932,96 @@ function msgHTML(m, i, kind){
     const doneTag = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + 'Tabelle abgeschlossen</span></p>' : '';
     return '<div class="msg table"><div class="t-head"><span class="t-verb" lang="ar" dir="rtl">' + esc(m.verb) + '</span><span class="t-de">' + esc(m.de) + '</span></div>' + rows + doneTag + '</div>';
   }
+  // Typ 3 (Buch 3, Ableitungstabellen) - eigener, paralleler Zweig zu role === 'table' oben, bewusst NICHT
+  // in diesen integriert (siehe docs/superpowers/specs/2026-11-13-book3-deriv-tables-design.md: andere
+  // Achsenzuordnung, Zeile=Wurzel statt Zeile=Person, mehrere Spalten pro Zeile statt einer Form pro
+  // Zeile). Diese Aufgabe (Phase 2 von 4) ist reines Rendering: keine Bewertung, kein Phasenübergang,
+  // keine Verkettung zum nächsten Eintrag - die kommen in Phase 3. Die drei Zellzustände (done/active/
+  // noch-nicht-erreicht) spiegeln exakt dieselbe activeIdx-Konvention wie der 'table'-Zweig oben, nur
+  // adressiert über (rowIdx,colIdx) statt über den Zeilenindex selbst, weil hier mehrere Zellen pro Zeile
+  // existieren.
+  if (m.role === 'derivTable'){
+    const activeIdx = (!m.done && m.pos < m.order.length) ? m.order[m.pos] : -1;
+    // Lookup (rowIdx,colIdx) -> Index in m.steps. buildDerivTableSteps() erzeugt für jede Zelle mit
+    // given[colIdx]===false genau einen Step, in Zeilen-dann-Spalten-Reihenfolge - diese Map macht das
+    // Nachschlagen pro Zelle beim Rendern O(1) statt einer linearen Suche je Zelle.
+    const stepIdxByCell = {};
+    m.steps.forEach((step, idx) => { stepIdxByCell[step.rowIdx + '_' + step.colIdx] = idx; });
+    const headRow = '<div class="dt-row dt-head-row" role="row">'
+      + m.columns.map(col => '<span class="dt-cell dt-col-head" role="columnheader" lang="ar" dir="rtl">' + esc(col) + '</span>').join('')
+      + '</div>';
+    const bodyRows = m.rows.map((row, rowIdx) => {
+      // answerHTML sammelt die volle interaktive Markup der aktiven Zelle DIESER Zeile (höchstens eine pro
+      // Zeile, da activeIdx genau einen Step adressiert) - wird NICHT mehr inline in die .dt-cell
+      // geschrieben (siehe Abschluss-Review 2026-11-13: bei 3-4 Spalten quetschte das Eingabe+Knopf+Hinweis
+      // +29-Tasten-Tastatur in eine ~25px breite Zelle, Tastatur wurde zum 20-zeiligen Turm). Stattdessen
+      // bleibt .dt-cell.active ein schmaler, rein visueller Marker (Punkt), und answerHTML wird unten als
+      // eigenständiges, volles-Breite-.dt-answer-Panel UNMITTELBAR NACH der .dt-row angehängt - spiegelt
+      // damit, wie der 'table'-Zweig (Typ 2) seiner aktiven Zelle schon immer die volle Bubble-Breite gibt.
+      let answerHTML = '';
+      const cells = m.columns.map((col, colIdx) => {
+        if (row.given && row.given[colIdx]){
+          // Gedruckte Referenzzelle: buildDerivTableSteps() lässt sie komplett aus (kein Step), sie ist
+          // reine, immer sichtbare Anzeige - nie Teil von m.order/m.answers, nie interaktiv.
+          return '<span class="dt-cell given" lang="ar" dir="rtl">' + esc(row.values[colIdx]) + '</span>';
+        }
+        const idx = stepIdxByCell[rowIdx + '_' + colIdx];
+        const step = m.steps[idx];
+        const ans = m.answers[idx];
+        if (ans){
+          // Schon bewertet (Zwei-Versuche-Scoring selbst ist Phase 3) - dieselbe Aufdeck-Farbcodierung wie
+          // der 'table'-Zweig: zeigt step.form (die richtige Form), nicht die Eingabe der lernenden Person.
+          return '<span class="dt-cell done' + (ans.correct ? ' ok' : ' bad') + '" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
+        }
+        if (idx === activeIdx){
+          // Aktive Zelle: NUR noch ein kleiner Marker-Punkt (.dt-active-marker), damit das .dt-cell-
+          // Spaltenzahl-Contract (siehe test_deriv_table_row_has_no_duplicate_leading_root_column) und die
+          // RTL-Spaltenreihenfolge (siehe test_deriv_table_columns_render_right_to_left_matching_print_order)
+          // unverändert bleiben. Die eigentliche interaktive Markup (Eingabe + Senden-Knopf + Hinweis +
+          // arabicKeysHTML()-Tastatur aus Buch 2 Task 5, unverändert wiederverwendet) wandert in answerHTML
+          // und wird nach der Zeile als eigenes .dt-answer-Panel gerendert (siehe unten). Noch kein
+          // Klick-Handler für data-deriv-submit existiert hier (der kommt erst in Phase 3 zusammen mit
+          // submitDerivTableCell o.ä.) - Button/Eingabe sind dadurch inert, aber stabil/inspizierbar.
+          const inputId = 'dt-input-' + i + '-' + rowIdx + '-' + colIdx;
+          answerHTML = '<div class="dt-answer">'
+            + '<p class="dt-answer-label" lang="ar" dir="rtl">' + esc(row.root) + ' — ' + esc(col) + '</p>'
+            + '<input type="text" dir="rtl" lang="ar" id="' + inputId + '">'
+            + '<button class="btn small" type="button" data-deriv-submit data-mi="' + i + '" data-ri="' + rowIdx + '" data-ci="' + colIdx + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
+            + (m.attempt === 1 ? '<span class="dt-hint">Nicht ganz — versuch\'s noch mal.</span>' : '')
+            + arabicKeysHTML(inputId)
+            + '</div>';
+          return '<span class="dt-cell active" lang="ar" dir="rtl"><span class="dt-active-marker"></span></span>';
+        }
+        // Weder bewertet noch aktiv -> Position hinter m.pos in m.order, also noch nicht erreicht: stummer,
+        // leerer Platzhalter ohne jede Interaktion (kein Step-Inhalt wird vorab verraten).
+        return '<span class="dt-cell pending"><span class="dt-placeholder"></span></span>';
+      }).join('');
+      // answerHTML ist '' für jede Zeile ohne aktive Zelle (bewertete/pending-Zeilen, studyOnly-Zeilen) -
+      // dann ändert sich hier nichts gegenüber vorher außer der leeren Konkatenation.
+      return '<div class="dt-row" role="row">' + cells + '</div>' + answerHTML;
+    }).join('');
+    const table = '<div class="dt-table" role="table">' + headRow + bodyRows + '</div>';
+    if (m.studyOnly){
+      // Reine Lesereferenz (makeDerivTable(): steps.length === 0, alle Zellen given - siehe Design-Doc,
+      // z. B. Entry A von b3-l16, das voll ausgearbeitete Hauptmodell). Kein aktiver-Zelle-Konzept, keine
+      // Eingaben/Buttons (bodyRows oben erreicht wegen given:true ohnehin nie den idx/ans/active-Zweig).
+      // Phase 3: ein Weiter-Button verkettet trotzdem zum nächsten Eintrag (continueDerivTable() unten) -
+      // ohne ihn wäre Entry A eine Sackgasse, weil m.done hier schon seit makeDerivTable() true ist und
+      // damit NIE über submitDerivTableCell()s Scoring-Pfad (der die Verkettung sonst auslöst) done wird.
+      // m.advanced ist ein eigenes, von dieser Aufgabe neu eingeführtes Feld (nicht Teil von
+      // makeDerivTable()s Rückgabe) - sobald gesetzt, verschwindet der Button aus dem Re-Render, damit ein
+      // zweiter Klick (Doppel-Tap) die Kette nicht zweimal verlängert.
+      const continueHTML = m.advanced ? '' : '<div class="dt-continue"><button class="btn small" type="button" data-deriv-continue data-mi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + 'Weiter</button></div>';
+      return '<div class="msg derivTable studyOnly"><div class="t-head"><span class="dt-badge">Referenz — zum Lesen</span><span class="dt-title" dir="auto">' + esc(m.de) + '</span></div>' + table + continueHTML + '</div>';
+    }
+    // Phase-2-Kennzeichnung, analog zum 'table'-Zweig (siehe dort .t-phase2-label) - hier aber einmal über
+    // der gesamten Tabelle statt pro aktiver Zeile, weil eine Zeile hier mehrere Spalten/Zellen hat und ein
+    // Label MITTEN in einer .dt-row das .dt-cell-Spaltenzahl-Contract brechen würde (siehe
+    // test_deriv_table_row_has_no_duplicate_leading_root_column in tests/test_deriv_table_render.py).
+    const phase2Label = (m.phase === 2 && !m.done) ? '<p class="t-phase2-label">Wiederholung, zufällige Reihenfolge</p>' : '';
+    const doneTagDt = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + 'Tabelle abgeschlossen</span></p>' : '';
+    return '<div class="msg derivTable"><div class="t-head"><span class="dt-title" dir="auto">' + esc(m.de) + '</span></div>' + phase2Label + table + doneTagDt + '</div>';
+  }
   return '';
 }
 function fbHTML(d){
@@ -1907,9 +2158,42 @@ function ensureTutorTable(restartIfFinished){
   }
   return true;
 }
+// Analog zu ensureTutorTable() oben, aber für DERIV_TABLES (Typ 3, Buch 3 ab Lektion 16). Dieselbe
+// geteilte Bedingung zwischen practiceTopic() (ausdrückliche Themenwahl) und ensureTutorQuiz() (beiläufig
+// beim Anzeigen des Tutor-Tabs) aus denselben Gründen wie bei ensureTutorTable() - siehe dort für die volle
+// Begründung (restartIfFinished-Unterschied, Prüfung des GESAMTEN msgs-Arrays statt nur der letzten
+// Nachricht). "Blockiert" heißt hier: irgendeine derivTable-Nachricht dieses Themas existiert bereits -
+// für restartIfFinished=false (beiläufiger Aufruf) blockiert das IMMER, unabhängig von done (identisch zu
+// ensureTutorTable()), was auch eine studyOnly-Karte (sofort done:true) wirksam vor einem doppelten
+// Re-Push schützt, bis die lernende Person über continueDerivTable() selbst weitergeht. Für
+// restartIfFinished=true (ausdrückliche Themenwahl) blockiert nur eine noch unfertige Nachricht - eine
+// komplett durchlaufene Kette darf auf ausdrücklichen Wunsch neu beginnen.
+// "Unfertig" ist dabei NICHT einfach !m.done: eine studyOnly-Referenzkarte ist seit makeDerivTable()
+// done:true, ohne dass die lernende Person irgendetwas getan hat ("done" heißt dort nur "nichts
+// abzufragen"). Mit !m.done als Maßstab galt sie sofort als abgeschlossene Lektion, und jede weitere
+// Themenwahl legte eine zweite, identische Referenzkarte mitsamt zweitem Weiter-Knopf in den Chat (zwei
+// Knöpfe, die die Kette doppelt verlängern konnten) - ein Loch, das Typ 2 nicht hat, weil dort eine
+// Tabelle nur durch echtes Durchspielen done wird. Erledigt ist eine studyOnly-Karte erst, wenn die
+// lernende Person sie über "Weiter" verlassen hat (m.advanced).
+// Rückgabe true = ctx.topic IST ein Typ-3-Thema; der Aufrufer darf dann niemals in die Typ-1/Typ-2-Logik
+// durchfallen, auch wenn hier wegen einer defekten Lektion (makeDerivTable() liefert null) nichts angehängt
+// wurde - mirrorrt den Robustheits-Fallback von ensureTutorTable() 1:1.
+function ensureTutorDerivTable(restartIfFinished){
+  const ctx = CHAT.tutor;
+  const list = DERIV_TABLES[ctx.topic];
+  if (!ctx.topic || !Array.isArray(list) || !list.length) return false;
+  const finished = m => (m.studyOnly ? !!m.advanced : m.done);
+  const blocked = ctx.msgs.some(m => m.role === 'derivTable' && m.topicId === ctx.topic && !(restartIfFinished && finished(m)));
+  if (!blocked){
+    const tbl = makeDerivTable(ctx.topic, 0);
+    if (tbl){ ctx.msgs.push(tbl); saveChats(); }
+  }
+  return true;
+}
 function ensureTutorQuiz(){
   const ctx = CHAT.tutor;
   if (ensureTutorTable(false)) return;
+  if (ensureTutorDerivTable(false)) return;
   const last = ctx.msgs[ctx.msgs.length - 1];
   if (last && last.role === 'quiz' && !last.answered) return;
   const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
@@ -1987,6 +2271,80 @@ function submitTableCell(kind, mi, rawInput){
 // Für Playwright-Tests (tests/test_table_submit.py) global erreichbar machen: siehe Kommentar bei
 // window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
 window.submitTableCell = submitTableCell;
+
+// Hängt den nächsten Eintrag einer Ableitungstabellen-Kette an (DERIV_TABLES[topicId][tableIndex + 1]),
+// oder bei Kettenende dieselbe Abschluss-Notiz wie Typ 2 (siehe submitTableCell()s Verkettung oben) -
+// bewusst exakt dieselbe Rolle/Text wiederverwendet, keine neue Notiz-Variante erfunden. Gemeinsam genutzt
+// von ZWEI Aufrufstellen: submitDerivTableCell() (eine normale Drill-Tabelle wird nach Phase 2 fertig) UND
+// continueDerivTable() (der Weiter-Button einer studyOnly-Karte, z. B. Entry A von b3-l16) - dort gibt es
+// kein Scoring-Ereignis, das done auslösen könnte, weil m.done bei einer studyOnly-Karte schon seit
+// makeDerivTable() true ist, also braucht es einen eigenen, expliziten Fortsetzungsschritt mit derselben
+// Verkettungslogik.
+function chainNextDerivTable(ctx, topicId, tableIndex){
+  const nxt = makeDerivTable(topicId, tableIndex + 1);
+  if (nxt) ctx.msgs.push(nxt);
+  else ctx.msgs.push({role:'note', text:'Tabellen dieser Lektion abgeschlossen.'});
+}
+// Grading für eine Typ-3-Ableitungstabellen-Zelle (Buch 3, Verbformen-Ableitungen). Spiegelt
+// submitTableCell() oben so genau wie möglich: mi adressiert wie dort die NACHRICHT in ctx.msgs (nicht den
+// Zell-Cursor), zwei Versuche pro Zelle, dann Aufdecken + Weiterschalten, norm()-Vergleich, derselbe
+// Phasenübergang (Phase 1 -> Phase 2 mit shuffle(), Phase 2 -> done) und dieselbe Verkettung am Ende
+// (siehe chainNextDerivTable() oben statt des Inline-Codes bei submitTableCell(), weil continueDerivTable()
+// unten dieselbe Verkettung von einer zweiten Stelle aus braucht).
+// Eine Zelle hier wird zusätzlich über (rowIdx, colIdx) adressiert (ri/ci, aus den data-ri/data-ci-
+// Attributen des Senden-Knopfs), weil mehrere Zellen pro Nachricht existieren (anders als bei Typ 2, wo
+// eine Nachricht = eine Zelle pro aktivem Zeitpunkt ist). Der Abgleich `step.rowIdx === ri && step.colIdx
+// === ci` ist der Doppel-/Stale-Submit-Schutz: ein zweiter (verspäteter oder doppelt getippter) Klick auf
+// den Senden-Knopf der VORHERIGEN aktiven Zelle trifft nach einem bereits erfolgten Advance nicht mehr auf
+// dieselbe Zelle wie m.order[m.pos] (die ist jetzt eine andere, mit anderen ri/ci) und wird dadurch
+// deterministisch zum No-Op, statt sich auf eine zufällig falsche Eingabe zu verlassen.
+function submitDerivTableCell(kind, mi, ri, ci, rawInput){
+  const ctx = CHAT[kind]; const m = ctx.msgs[mi];
+  if (!m || m.role !== 'derivTable' || m.done) return;
+  const given = norm(rawInput);
+  if (!given) return;
+  const idx = m.order[m.pos], step = m.steps[idx];
+  if (!step || step.rowIdx !== ri || step.colIdx !== ci) return;
+  m.attempt++;
+  const correct = given === norm(step.form);
+  if (correct || m.attempt >= 2){
+    m.answers[idx] = {given:rawInput, correct, attempts:m.attempt};
+    m.pos++; m.attempt = 0;
+    // Phasenübergang: läuft synchron im selben Aufruf wie der Advance oben, exakt wie bei
+    // submitTableCell() - damit m.pos === m.order.length nie mit m.done noch false von einem anderen
+    // Aufruf aus beobachtet werden kann.
+    if (m.pos === m.order.length){
+      if (m.phase === 1){
+        m.phase = 2;
+        m.order = shuffle(m.steps.map((_, k) => k));
+        m.pos = 0;
+        m.answers = {}; // Phase 2 ist eine eigene Durchlauf-Zählung, siehe submitTableCell() für die
+                         // identische Begründung (alte Phase-1-Antworten dürfen Zellen in Phase 2 nicht
+                         // fälschlich als "schon beantwortet" rendern).
+      } else {
+        m.done = true;
+        chainNextDerivTable(ctx, m.topicId, m.tableIndex);
+      }
+    }
+  }
+  renderChat(kind); saveChats();
+}
+// Für Playwright-Tests (tests/test_deriv_table_submit.py u. a.) global erreichbar machen: siehe Kommentar
+// bei window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
+window.submitDerivTableCell = submitDerivTableCell;
+// Weiter-Button einer studyOnly-Referenzkarte (z. B. Entry A von b3-l16: 100% given, nichts zum Abfragen).
+// m.done ist dort schon seit makeDerivTable() true, submitDerivTableCell() greift also nie für diese Karte
+// - ohne diese Funktion gäbe es keinen Weg, zum nächsten Kettenglied (Entry B) weiterzugehen. m.advanced
+// verhindert, dass ein zweiter Klick (Doppel-Tap) dieselbe Kette zweimal verlängert; siehe auch den
+// Render-Zweig in msgHTML(), der den Button nach dem Setzen von m.advanced nicht mehr zeichnet.
+function continueDerivTable(kind, mi){
+  const ctx = CHAT[kind]; const m = ctx.msgs[mi];
+  if (!m || m.role !== 'derivTable' || !m.studyOnly || m.advanced) return;
+  m.advanced = true;
+  chainNextDerivTable(ctx, m.topicId, m.tableIndex);
+  renderChat(kind); saveChats();
+}
+window.continueDerivTable = continueDerivTable;
 function offlineFeedback(){
   const ctx = CHAT.role, s = SCENE[ctx.scene], f = S.settings.gender === 'f';
   const answers = ctx.msgs.filter(m => m.role === 'me');
@@ -2101,6 +2459,9 @@ function practiceTopic(id){
     // je nach aktuellem Hash synchron oder erst über das hashchange-Ereignis auslösen; beide Reihenfolgen
     // laufen über dieselbe Bedingung, es entsteht in keinem Fall eine zweite Tabelle.
     if (ensureTutorTable(true)){ renderChat('tutor'); return; }
+    // Typ-3-Thema (DERIV_TABLES, Buch 3 ab Lektion 16): exakt dieselbe Logik/Begründung wie der
+    // TABLES-Zweig direkt darüber, nur über ensureTutorDerivTable() statt ensureTutorTable() - siehe dort.
+    if (ensureTutorDerivTable(true)){ renderChat('tutor'); return; }
     const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); }
     return;
   }
@@ -2412,6 +2773,8 @@ document.addEventListener('click', e => {
   if (d.retry){ requestReply(d.retry); return; }
   if (d.opt !== undefined && d.qi !== undefined){ answerQuiz(d.kind, Number(d.qi), Number(d.opt)); return; }
   if (d.tableSubmit !== undefined){ submitTableCell(d.kind, Number(d.qi), $('#t-input-' + d.qi).value); return; }
+  if (d.derivSubmit !== undefined){ submitDerivTableCell(d.kind, Number(d.mi), Number(d.ri), Number(d.ci), $('#dt-input-' + d.mi + '-' + d.ri + '-' + d.ci).value); return; }
+  if (d.derivContinue !== undefined){ continueDerivTable(d.kind, Number(d.mi)); return; }
   if (d.keyInsert !== undefined){ const el = $('#' + d.keyTarget); el.value += d.keyInsert; el.focus(); return; }
   if (d.keyBack !== undefined){ const el = $('#' + d.keyBack); el.value = el.value.slice(0, -1); el.focus(); return; }
   if (d.mode){ setMode(d.mode); return; }
