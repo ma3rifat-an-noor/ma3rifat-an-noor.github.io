@@ -856,6 +856,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l17', book:3, ar:'بَابُ أَفْعَلَ', de:'Lektion 17: Verbstamm IV (أَفْعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm IV (أَفْعَلَ) - das Hamza-Präfix macht intransitive Verben transitiv bzw. verdoppelt bei schon transitiven Verben das Objekt. Übt المضارع und المصدر aus der Wurzel (الماضي), dazu eigene Tabellen für الأمر, اسم الفاعل und اسم المفعول - auch bei hohlen (أَقَامَ), defekten (أَلْقَى), hamzierten (آمَنَ) und verdoppelten (أَعَدَّ) Wurzeln, siehe die Übungstabellen im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l19', book:3, ar:'بَابُ فَاعَلَ', de:'Lektion 19: Verbstamm III (فَاعَلَ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm III (فَاعَلَ) - das nach dem ersten Radikal eingeschobene Alif drückt meist eine Handlung AN/MIT einer anderen Person aus (Reziprozität) oder den bloßen Versuch einer Handlung: شَاهَدَ (etwas ansehen), قَابَلَ (jemanden treffen). Der Stamm hat zwei parallele Masdar-Muster, مُفَاعَلَةٌ und فِعَالٌ (z. B. قَاتَلَ: مُقَاتَلَةٌ/قِتَالٌ) - beide werden geübt. Übt المضارع, الأمر und المصدر aus der Wurzel (الماضي) sowie اسم الفاعل (bei خَاطَبَ zusätzlich اسم المفعول) - auch bei Wurzeln mit schwachem Mittelradikal (حَاوَلَ bleibt hier ein normaler Konsonant, keine Aushöhlung wie bei Stamm I), hamziertem Erstradikal (آخَذَ, Hamza+Alif verschmelzen zu آ wie bei أَفْعَلَ) und defektem Letztradikal (لَاقَى, بَارَى: المضارع يُفَاعِي, der Amr verliert das finale ي, der Masdar مُفَاعَاةٌ entsteht aus مُفَاعَيَةٌ durch denselben ي-zwischen-zwei-a-Lauten-wird-zu-ا-Wandel wie bei إِجَابَةٌ in Lektion 17), siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1311,6 +1314,71 @@ const DERIV_TABLES = {
    {root:'أَعْجَبَ', values:['أَعْجَبَ','يُعْجِبُ','مُعْجَبٌ'], given:[true,true,false]},
    {root:'أَصَابَ', values:['أَصَابَ','يُصِيبُ','مُصَابٌ'], given:[true,true,false]},
    {root:'أَعَدَّ', values:['أَعَدَّ','يُعِدُّ','مُعَدٌّ'], given:[true,true,false]}
+ ]}
+],
+// Buch 3, Lektion 19: باب فَاعَلَ (Verbstamm III). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 163-171 (gedruckte Seite = PDF-0-Index + 2, geprüft gegen die gedruckten Kopfzeilen
+// "الدرس التاسع عشر"/"١٦٣" bzw. "الدرس العشرون"/"١٧٢"). Die Lektion ist eine gemischte Lese-/Sammellektion
+// (Dialog S.163-165, danach Übungen 1-19 S.166-171): NUR die Übungen 2-6 behandeln باب فاعَلَ, ab Übung 8
+// folgen völlig unabhängige Grammatikthemen (لام المزحلقة, قد, ذوو-Deklination, أخت إنّ لكِنّ, كاف الخطاب,
+// جزم, مصدر وزن فِعَالة bei Stamm-I-Verben, جمع التكسير-Muster) - diese sind NICHT Teil dieser Aufgabe
+// (analog zur separat behandelten Lektion 18) und wurden bewusst NICHT in DERIV_TABLES aufgenommen, obwohl
+// sie im selben Seitenbereich gedruckt sind. Übung 2 (nur Verben aus dem Dialog extrahieren) und Übung 7
+// (Formen in echten Sätzen benennen) sind nicht tabellenförmig und daher ebenfalls kein DERIV_TABLES-
+// Eintrag. Vier gedruckte Tabellen zu باب فاعَلَ:
+// Übung 3 (S.166): Haupttabelle, 10 Wurzeln, Spalten الماضي/المضارع/الأمر/المصدر. Reihen 1-2 (شَاهَدَ,
+// قَابَلَ) sind das gedruckte Hauptmodell (alle 4 Spalten gegeben) - ungewöhnlich zwei volle Modellreihen
+// statt der sonst üblichen einen. آخَذَ (Reihe 8, hamzierte Wurzel): Hamza+Alif-Verschmelzung zu آ exakt wie
+// bei آمَنَ in Lektion 17 (آخَذَ, يُؤَاخِذُ - المضارع-Form mit تُ- als تُؤَاخِذْنَا in [٢/٢٨٦] belegt -, آخِذْ,
+// مُؤَاخَذَةٌ - alle vier Formen gegen reale, geläufige Wörter/Koranbeleg geprüft). لَاقَى/بَارَى (Reihen 9-10,
+// defekte Wurzeln auf ي): المصدر مُلَاقَاةٌ ist für لَاقَى gedruckt vorgegeben MIT أصله-Hinweis (مُلَاقَيَةٌ)
+// exakt wie im Buch; المضارع/الأمر bleiben dort Lückenzellen (يُلَاقِي/لَاقِ, der Amr verliert das ي wie bei
+// جزم der Defektiva). بَارَى hat im Buch für المصدر ein eigenes Blankformat "(..........)", das den
+// Studenten auffordert, auch den أصله-Hinweis selbst zu ergänzen - die Engine fragt hier (wie bei jeder
+// anderen Lückenzelle und wie in Lektion 17 bei jeder given:false-Zelle) nur die reine Oberflächenform ab
+// (مُبَارَاةٌ), ohne Klammerzusatz, weil das Scoring einen exakten norm()-Abgleich macht und ein
+// erzwungener Klammerzusatz unlösbar wäre.
+// Übung 4 (S.167): مصدر وزن فِعَال-Drill, 3 Wurzeln, Spalten الماضي/المصدر. نَادَى ist als Hinweiszeile MIT
+// أصله-Anmerkung (نِدَاءٌ، أصله: نِدَايٌ) vorgegeben, obwohl sie NACH den beiden Lückenzeilen (جَاهَدَ، عَالَجَ)
+// gedruckt ist - kein Fehler, dasselbe Streumuster wie schon in Lektion 16/17 belegt.
+// Übung 5 (S.167): اسم الفاعل-Drill, 6 Wurzeln, Spalten الماضي/المضارع/اسم الفاعل (ماضي+مضارع gegeben, اسم
+// الفاعل Lückenzelle). جَاهَدَ und شَاهَدَ tauchen auch in anderen Tabellen dieser Lektion auf, hier aber mit
+// eigener Abfrage (اسم الفاعل statt مصدر/الأمر) - keine Dopplung im Sinne der Engine.
+// Übung 6 (S.167): اسم الفاعل + اسم المفعول von خَاطَبَ (eine einzige Wurzel), Spalten
+// الماضي/المضارع/اسم الفاعل/اسم المفعول (ماضي+مضارع gegeben, beide Partizipien Lückenzellen).
+// Alle abgeleiteten (given:false) Formen wurden mechanisch nach den Stamm-III-Regeln nachgerechnet und
+// gegen real belegte, geläufige Wörter gegengeprüft (مُسَامَحَةٌ, مُسَاعَدَةٌ, مُرَاسَلَةٌ, مُرَاجَعَةٌ,
+// مُحَاوَلَةٌ, مُؤَاخَذَةٌ, يُلَاقِي/لَاقِ, يُبَارِي/بَارِ/مُبَارَاةٌ, جِهَادٌ, عِلَاجٌ, مُرَاسِلٌ, مُسَاعِدٌ,
+// مُسَافِرٌ, مُشَاهِدٌ, مُجَاهِدٌ, مُرَاقِبٌ, مُخَاطِبٌ, مُخَاطَبٌ - alles geläufige, eindeutig belegte
+// moderne/klassische Wörter, keine erfundenen Formen).
+'b3-l19':[
+ {de:'فَاعَلَ — Hauptmodell', columns:['الماضي','المضارع','الأمر','المصدر'], rows:[
+   {root:'شَاهَدَ', values:['شَاهَدَ','يُشَاهِدُ','شَاهِدْ','مُشَاهَدَةٌ'], given:[true,true,true,true]},
+   {root:'قَابَلَ', values:['قَابَلَ','يُقَابِلُ','قَابِلْ','مُقَابَلَةٌ'], given:[true,true,true,true]},
+   {root:'سَامَحَ', values:['سَامَحَ','يُسَامِحُ','سَامِحْ','مُسَامَحَةٌ'], given:[true,false,false,false]},
+   {root:'سَاعَدَ', values:['سَاعَدَ','يُسَاعِدُ','سَاعِدْ','مُسَاعَدَةٌ'], given:[true,false,false,false]},
+   {root:'رَاسَلَ', values:['رَاسَلَ','يُرَاسِلُ','رَاسِلْ','مُرَاسَلَةٌ'], given:[true,false,false,false]},
+   {root:'رَاجَعَ', values:['رَاجَعَ','يُرَاجِعُ','رَاجِعْ','مُرَاجَعَةٌ'], given:[true,false,false,false]},
+   {root:'حَاوَلَ', values:['حَاوَلَ','يُحَاوِلُ','حَاوِلْ','مُحَاوَلَةٌ'], given:[true,false,false,false]},
+   {root:'آخَذَ', values:['آخَذَ','يُؤَاخِذُ','آخِذْ','مُؤَاخَذَةٌ'], given:[true,false,false,false]},
+   {root:'لَاقَى', values:['لَاقَى','يُلَاقِي','لَاقِ','مُلَاقَاةٌ (أصله: مُلَاقَيَةٌ)'], given:[true,false,false,true]},
+   {root:'بَارَى', values:['بَارَى','يُبَارِي','بَارِ','مُبَارَاةٌ'], given:[true,false,false,false]}
+ ]},
+ {de:'مصدر وزن فِعَال من باب فاعَلَ', columns:['الماضي','المصدر'], rows:[
+   {root:'جَاهَدَ', values:['جَاهَدَ','جِهَادٌ'], given:[true,false]},
+   {root:'عَالَجَ', values:['عَالَجَ','عِلَاجٌ'], given:[true,false]},
+   {root:'نَادَى', values:['نَادَى','نِدَاءٌ (أصله: نِدَايٌ)'], given:[true,true]}
+ ]},
+ {de:'اسم الفاعل من فَاعَلَ', columns:['الماضي','المضارع','اسم الفاعل'], rows:[
+   {root:'رَاسَلَ', values:['رَاسَلَ','يُرَاسِلُ','مُرَاسِلٌ'], given:[true,true,false]},
+   {root:'سَاعَدَ', values:['سَاعَدَ','يُسَاعِدُ','مُسَاعِدٌ'], given:[true,true,false]},
+   {root:'سَافَرَ', values:['سَافَرَ','يُسَافِرُ','مُسَافِرٌ'], given:[true,true,false]},
+   {root:'شَاهَدَ', values:['شَاهَدَ','يُشَاهِدُ','مُشَاهِدٌ'], given:[true,true,false]},
+   {root:'جَاهَدَ', values:['جَاهَدَ','يُجَاهِدُ','مُجَاهِدٌ'], given:[true,true,false]},
+   {root:'رَاقَبَ', values:['رَاقَبَ','يُرَاقِبُ','مُرَاقِبٌ'], given:[true,true,false]}
+ ]},
+ {de:'اسم الفاعل واسم المفعول من خَاطَبَ', columns:['الماضي','المضارع','اسم الفاعل','اسم المفعول'], rows:[
+   {root:'خَاطَبَ', values:['خَاطَبَ','يُخَاطِبُ','مُخَاطِبٌ','مُخَاطَبٌ'], given:[true,true,false,false]}
  ]}
 ]
 };
