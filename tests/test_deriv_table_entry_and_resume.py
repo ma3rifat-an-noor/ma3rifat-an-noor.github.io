@@ -1,13 +1,12 @@
 # Einstieg in ein Typ-3-Thema (Themenauswahl), Robustheit bei defekten Lektionsdaten und Fortschritt über
 # einen Reload hinweg - analog zu tests/test_table_entry_and_resume.py für Typ 2.
 #
-# 'b3-l16' ist (bewusst, siehe Aufgabenstellung dieser Phase) noch in KEINEM Themen-Picker/TOPICS-Eintrag
-# registriert - das Einpflegen in die echte Themenliste ist eine spätere Content-Aufgabe. Für den
-# Einstiegstest über den echten Eintrittspunkt (practiceTopic()) wird deshalb - exakt wie es
+# 'b3-l16' ist inzwischen (2026-11-14) ein echter TOPICS-Eintrag. Diese Laufzeit-Registrierung bleibt als
+# Fallback stehen (sie greift nur, falls der echte Eintrag fehlt - siehe `if (!TOPIC['b3-l16'])` unten),
+# damit der Test weiterhin unabhängig vom aktuellen Inhalt der echten Themenliste bleibt - exakt wie es
 # tests/test_table_entry_and_resume.py für seine eigenen künstlichen Themen ('broken', 'mini', ...) bereits
-# tut - ein TOPIC-Eintrag für 'b3-l16' zur Laufzeit der Testseite registriert, bevor practiceTopic()
-# aufgerufen wird. practiceTopic() selbst bricht sonst schon in Zeile 1 ab (`const t = TOPIC[id]; if (!t)
-# return;`), ohne das ist der echte Einstiegspfad gar nicht erreichbar.
+# tut. Ohne einen TOPIC-Eintrag bricht practiceTopic() schon in Zeile 1 ab (`const t = TOPIC[id]; if (!t)
+# return;`), ohne das wäre der echte Einstiegspfad gar nicht testbar.
 
 
 def _register_b3_l16_topic(page):
