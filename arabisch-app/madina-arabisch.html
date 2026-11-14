@@ -859,6 +859,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l19', book:3, ar:'بَابُ فَاعَلَ', de:'Lektion 19: Verbstamm III (فَاعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm III (فَاعَلَ) - das nach dem ersten Radikal eingeschobene Alif drückt meist eine Handlung AN/MIT einer anderen Person aus (Reziprozität) oder den bloßen Versuch einer Handlung: شَاهَدَ (etwas ansehen), قَابَلَ (jemanden treffen). Der Stamm hat zwei parallele Masdar-Muster, مُفَاعَلَةٌ und فِعَالٌ (z. B. قَاتَلَ: مُقَاتَلَةٌ/قِتَالٌ) - beide werden geübt. Übt المضارع, الأمر und المصدر aus der Wurzel (الماضي) sowie اسم الفاعل (bei خَاطَبَ zusätzlich اسم المفعول) - auch bei Wurzeln mit schwachem Mittelradikal (حَاوَلَ bleibt hier ein normaler Konsonant, keine Aushöhlung wie bei Stamm I), hamziertem Erstradikal (آخَذَ, Hamza+Alif verschmelzen zu آ wie bei أَفْعَلَ) und defektem Letztradikal (لَاقَى, بَارَى: المضارع يُفَاعِي, der Amr verliert das finale ي, der Masdar مُفَاعَاةٌ entsteht aus مُفَاعَيَةٌ durch denselben ي-zwischen-zwei-a-Lauten-wird-zu-ا-Wandel wie bei إِجَابَةٌ in Lektion 17), siehe die Übungstabellen im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l20', book:3, ar:'بَابُ تَفَعَّلَ', de:'Lektion 20: Verbstamm V (تَفَعَّلَ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm V (تَفَعَّلَ) - gebildet durch Vorsetzen von تَ vor باب فَعَّلَ (تَ+فَعَّلَ), meist reflexiv/mutawaʿa zu Stamm II: عَلَّمَ (lehren) → تَعَلَّمَ (lernen). Übt المضارع, الأمر, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (تَحَدَّثَ, تَكَلَّمَ, تَذَكَّرَ, auch hamziert تَأَخَّرَ) - der Amr wird gebildet, indem حرف المضارعة UND die Kasusendung wegfallen (تَتَكَلَّمُ → تَكَلَّمْ), der Masdar folgt dem Muster تَفَعُّلٌ. Dazu eine zweite Tabelle für Wurzeln mit defektem Letztradikal (ناقص, Modell تَغَدَّى „zu Mittag essen", dazu تَعَشَّى, تَلَقَّى, تَمَنَّى, تَأَنَّى): im Amr fällt zusätzlich zum حرف المضارعة auch das finale schwache ي/Alif weg (تَتَغَدَّى → تَغَدَّى → تَغَدَّ), der Masdar تَفَعُّلٌ wird durch das schwache Letztradikal zu einem اسم منقوص (تَغَدٍّ, bestimmt: التَّغَدِّي) - die Tabelle zeigt dazu eigens die Zwischenstufe أصله (تَغَدُّيٌ) vor dieser Lautung, siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1379,6 +1382,65 @@ const DERIV_TABLES = {
  ]},
  {de:'اسم الفاعل واسم المفعول من خَاطَبَ', columns:['الماضي','المضارع','اسم الفاعل','اسم المفعول'], rows:[
    {root:'خَاطَبَ', values:['خَاطَبَ','يُخَاطِبُ','مُخَاطِبٌ','مُخَاطَبٌ'], given:[true,true,false,false]}
+ ]}
+],
+// Buch 3, Lektion 20: باب تَفَعَّلَ (Verbstamm V). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 172-177 (gedruckte Seite = PDF-0-Index + 2, geprüft gegen die gedruckten Kopfzeilen
+// "الدرس العشرون"/"١٧٢" bzw. "الدرس الحادي والعشرون"/"١٧٨"). Dialog S.172-173, danach Übungen 1-13
+// S.173-177. NUR Übungen 3 und 4 sind Ableitungstabellen im Sinne dieser Engine (Zeile=Wurzel,
+// Spalte=Ableitungsform); alle anderen Übungen dieser Lektion sind Lückensätze, Grammatiknotizen oder
+// freie Listen (Übung 2: Verben aus dem Dialog extrahieren; Übung 5/6: Hinweise zu تُوُفِّيَ/المجهول bzw.
+// freie Satz-Umformung; Übung 7: optionaler Wegfall einer der beiden تاء in تَتَفَعَّلُ, nur 2
+// Koran-/Beispielpaare, keine Tabelle; Übung 8: ناقص-Satzumformung; Übung 9: لَمَّا-Grammatik mit
+// Lückensätzen; Übung 10: الاختصاص-Grammatik mit Lückensätzen; Übung 11: schlichte Liste "هات المضارع"
+// aus gemischten Bāb-Verben بَلَّغَ/تَوَجَّهَ/تَجَسَّسَ/أَسْرَعَ/بَزَغَ, keine Zeilen/Spalten-Tabelle; Übung
+// 12/13: Singular/Plural-Listen, kein Verbstamm-V-Bezug) - analog zu den bewusst ausgelassenen
+// Nicht-Tabellen-Übungen in Lektion 17/19.
+// Übung 3 (S.174): Haupttabelle, gesunde Wurzeln, Spalten الماضي/المضارع/الأمر/اسم الفاعل/المصدر.
+// Zeile 1 (تَعَلَّمَ) ist das gedruckte Hauptmodell (alle 5 Spalten gegeben) - WICHTIG: im Druck tragen
+// اسم الفاعل und المصدر dort nur ein einfaches Dammah (مُتَعَلِّمُ/تَعَلُّمُ), KEIN Tanwin - mehrfach gegen
+// eine im selben Druck eindeutig doppelstrichige Tanwin-Dammah (جَلِيلٌ, S.172) und Tanwin-Kasra (تَغَدٍّ,
+// S.174 Tabelle 2) gegengeprüft, es ist also kein Scan-Artefakt, sondern die gedruckte Form dieser
+// Modellzeile. Die vier Lückenzeilen (تَحَدَّثَ, تَكَلَّمَ, تَذَكَّرَ, تَأَخَّرَ) sind alle gesunde Wurzeln ohne
+// Hohlheit/Defekt (auch تَأَخَّرَ mit hamziertem Erstradikal braucht keine Sonderbehandlung, da kein Alif
+// nach dem Hamza folgt wie bei آخَذَ in Lektion 19) - Amr durch Wegfall von حرف المضارعة + Kasusendung
+// (تَتَحَدَّثُ → تَحَدَّثْ), اسم الفاعل durch مُ-Präfix + Kasra auf dem verdoppelten Mittelradikal
+// (مُتَحَدِّثُ), المصدر nach dem Muster تَفَعُّلٌ (تَحَدُّثُ, تَذَكُّرٌ „Erinnern" exakt wie im englischen
+// Schlüssel belegt) - alle Formen gegen die Grammatikerklärung im englischen Schlüssel (S.87f: amr=
+// حرف المضارعة+Kasusendung weglassen, اسم الفاعل=حرف المضارعة durch مُ ersetzen+Kasra auf 2. Radikal,
+// مصدر=Muster تَفَعُّلٌ) nachgerechnet, keine erfundenen Formen.
+// Übung 4 (S.174): زweite Tabelle, ناقص-Wurzeln (defektes ي-Letztradikal), Spalten
+// الماضي/المضارع/الأمر/المصدر/أصله - fünfte Spalte أصله NUR in dieser Tabelle, ersetzt اسم الفاعل (im
+// Druck bestätigt, keine Annahme). Zeile 1 (تَغَدَّى, "zu Mittag essen") ist das gedruckte Hauptmodell
+// (alle 5 Spalten gegeben): Amr تَغَدَّ (حرف المضارعة UND das finale ي/Alif fallen weg, تَتَغَدَّى → تَغَدَّى →
+// تَغَدَّ - exakt wie im englischen Schlüssel S.87 belegt: "ta-taghaddâ : taghadda"), المصدر مit zwei
+// gedruckt nebeneinanderstehenden Formen تَغَدٍّ (unbestimmt, منقوص-Tanwin-Kasra) / التَّغَدِّي (bestimmt) -
+// im englischen Schlüssel exakt mit demselben Mechanismus für تَلَقَّى belegt ("talaqqin for talaqquyun"),
+// أصله تَغَدُّيُ zeigt die hypothetische Zwischenstufe vor dem Dammah-zu-Kasra-Wandel des منقوص-Nomens,
+// gedruckt mit einfachem Dammah ohne Tanwin (keine echte Zitierform, nur Lautskizze). Die vier
+// Lückenzeilen (تَعَشَّى "zu Abend essen", تَلَقَّى "empfangen" - identisch mit dem Verb aus dem Dialog
+// dieser Lektion "تَلَقَّيْتُ رسالة" -, تَمَنَّى "wünschen", تَأَنَّى "sich Zeit lassen" - aus dem Sprichwort
+// dieser Lektion "في التأني السلامة" -) sind alle defekte ي-Wurzeln nach demselben Muster wie تَغَدَّى.
+// Für die Lückenzellen der المصدر-Spalte wird NUR die unbestimmte Zitierform (تَعَشٍّ, تَلَقٍّ, تَمَنٍّ,
+// تَأَنٍّ) als Lösung hinterlegt, NIE die bestimmte Alternativform oder ein Klammerzusatz, weil das
+// Scoring einen exakten norm()-Abgleich macht und zwei gültige, aber unterschiedlich buchstabierte
+// Formen in einer Zelle unlösbar wären (exakt dieselbe Begründung wie in Lektion 19 bei بَارَى/نَادَى
+// angewandt). norm() entfernt ohnehin alle Tashkeel (inkl. Tanwin/Dammah/Kasra), sodass die Wahl
+// Tanwin vs. einfaches Dammah für die Bewertung selbst irrelevant ist - sie betrifft nur die Textanzeige.
+'b3-l20':[
+ {de:'تَفَعَّلَ — سالِم (Hauptmodell)', columns:['الماضي','المضارع','الأمر','اسم الفاعل','المصدر'], rows:[
+   {root:'تَعَلَّمَ', values:['تَعَلَّمَ','يَتَعَلَّمُ','تَعَلَّمْ','مُتَعَلِّمُ','تَعَلُّمُ'], given:[true,true,true,true,true]},
+   {root:'تَحَدَّثَ', values:['تَحَدَّثَ','يَتَحَدَّثُ','تَحَدَّثْ','مُتَحَدِّثُ','تَحَدُّثُ'], given:[true,false,false,false,false]},
+   {root:'تَكَلَّمَ', values:['تَكَلَّمَ','يَتَكَلَّمُ','تَكَلَّمْ','مُتَكَلِّمُ','تَكَلُّمُ'], given:[true,false,false,false,false]},
+   {root:'تَذَكَّرَ', values:['تَذَكَّرَ','يَتَذَكَّرُ','تَذَكَّرْ','مُتَذَكِّرُ','تَذَكُّرُ'], given:[true,false,false,false,false]},
+   {root:'تَأَخَّرَ', values:['تَأَخَّرَ','يَتَأَخَّرُ','تَأَخَّرْ','مُتَأَخِّرُ','تَأَخُّرُ'], given:[true,false,false,false,false]}
+ ]},
+ {de:'تَفَعَّلَ — نَاقِص (تَغَدَّى)', columns:['الماضي','المضارع','الأمر','المصدر','أصله'], rows:[
+   {root:'تَغَدَّى', values:['تَغَدَّى','يَتَغَدَّى','تَغَدَّ','تَغَدٍّ / التَّغَدِّي','تَغَدُّيُ'], given:[true,true,true,true,true]},
+   {root:'تَعَشَّى', values:['تَعَشَّى','يَتَعَشَّى','تَعَشَّ','تَعَشٍّ','تَعَشُّيُ'], given:[true,false,false,false,false]},
+   {root:'تَلَقَّى', values:['تَلَقَّى','يَتَلَقَّى','تَلَقَّ','تَلَقٍّ','تَلَقُّيُ'], given:[true,false,false,false,false]},
+   {root:'تَمَنَّى', values:['تَمَنَّى','يَتَمَنَّى','تَمَنَّ','تَمَنٍّ','تَمَنُّيُ'], given:[true,false,false,false,false]},
+   {root:'تَأَنَّى', values:['تَأَنَّى','يَتَأَنَّى','تَأَنَّ','تَأَنٍّ','تَأَنُّيُ'], given:[true,false,false,false,false]}
  ]}
 ]
 };
