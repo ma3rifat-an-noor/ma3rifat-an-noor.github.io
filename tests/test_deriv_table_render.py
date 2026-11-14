@@ -20,6 +20,10 @@ def test_deriv_table_entry_b_renders_header_and_first_active_cell(page, served_a
     # .dt-cell.active ist seitdem nur noch ein schmaler visueller Marker, siehe .dt-active-marker).
     assert page.locator(".msg.derivTable .dt-answer input[type=text]").count() == 1
     assert page.locator(".msg.derivTable .dt-cell.active input[type=text]").count() == 0
+    # Regression: wie beim Typ-2-Eingabefeld (siehe test_table_render.py) muss inputmode="none" gesetzt
+    # sein, damit auf Touch-Geräten nur die eigene arabicKeysHTML()-Tastatur erscheint, nicht zusätzlich
+    # die native OS-Tastatur.
+    assert page.locator(".msg.derivTable .dt-answer input[type=text]").get_attribute("inputmode") == "none"
     assert page.locator(".msg.derivTable").get_attribute("class") == "msg derivTable"
     # Das aktive Feld muss zur ERSTEN Lückenzelle in gedruckter Reihenfolge gehören (erster Step von
     # buildDerivTableSteps für diesen Eintrag), adressiert über die data-ri/data-ci-Attribute am

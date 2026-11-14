@@ -4,6 +4,9 @@ def test_table_starts_with_header_and_first_cell_active(page, served_app):
     assert page.locator(".msg.table .t-head").inner_text().strip() != ""
     assert page.locator(".msg.table .t-row.active input[type=text]").count() == 1
     assert page.locator(".msg.table .t-row.done").count() == 0
+    # Regression: das Eingabefeld muss inputmode="none" tragen, damit auf Touch-Geräten nur die
+    # eigene arabicKeysHTML()-Tastatur erscheint und nicht zusätzlich die native OS-Tastatur.
+    assert page.locator(".msg.table .t-row.active input[type=text]").get_attribute("inputmode") == "none"
 
 def test_make_table_returns_null_for_missing_topic(page, served_app):
     page.goto(served_app)
