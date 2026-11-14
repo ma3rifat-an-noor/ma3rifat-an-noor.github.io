@@ -853,6 +853,9 @@ const TOPICS = [
  words:[['كُتِبَ','kutiba','wurde geschrieben'],['فُتِحَ','futiḥa','wurde geöffnet'],['قُرِئَ','quriʾa','wurde gelesen'],['سُئِلَ','suʾila','wurde gefragt'],['خُلِقَ','khuliqa','wurde erschaffen'],['وُلِدَ','wulida','wurde geboren','وُلِدْتُ فِي أَلْمَانِيَا.','Ich wurde in Deutschland geboren.'],['أُرْسِلَ','ursila','wurde gesandt'],['يُكْتَبُ','yuktabu','wird geschrieben'],['يُقَالُ','yuqālu','man sagt'],['سَبُّورَةٌ','sabbūratun','Tafel']]},
 {id:'b3-l16', book:3, ar:'بَابُ فَعَّلَ', de:'Lektion 16: Ableitungen (مصدر, اسم الفاعل, اسم المفعول)',
  gram:'Typ-3-Übung: eine Ableitungstabelle über mehrere Wurzeln (Zeile = Wurzel, Spalte = Ableitungsform) statt einer einzelnen Personenkonjugation. Übt Masdar und Partizipien von باب فَعَّلَ sowie die Masdar-Muster فَعْل/فِعَال einiger Hohlverben, siehe die Übungstabelle im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l17', book:3, ar:'بَابُ أَفْعَلَ', de:'Lektion 17: Verbstamm IV (أَفْعَلَ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm IV (أَفْعَلَ) - das Hamza-Präfix macht intransitive Verben transitiv bzw. verdoppelt bei schon transitiven Verben das Objekt. Übt المضارع und المصدر aus der Wurzel (الماضي), dazu eigene Tabellen für الأمر, اسم الفاعل und اسم المفعول - auch bei hohlen (أَقَامَ), defekten (أَلْقَى), hamzierten (آمَنَ) und verdoppelten (أَعَدَّ) Wurzeln, siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1253,6 +1256,61 @@ const DERIV_TABLES = {
    {root:'قَامَ', values:['قَامَ','يَقُومُ','قِيَامٌ'], given:[true,true,false]},
    {root:'آبَ', values:['آبَ','يَؤُوبُ','إِيَابٌ'], given:[true,true,false]},
    {root:'قَاسَ', values:['قَاسَ','يَقِيسُ','قِيَاسٌ'], given:[true,true,false]}
+ ]}
+],
+// Buch 3, Lektion 17: باب أَفْعَلَ (Verbstamm IV). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 144-146 (PDF-Index 142-144, Offset +2). Vier gedruckte Tabellen/Übungen:
+// Übung 2 (S.144): Haupttabelle, 12 Wurzeln, Spalten الماضي/المضارع/المصدر, EINE durchgehende Liste (keine
+// Links/Rechts-Gruppierung wie bei Übung 4/5 unten). Reihen 1-2 (أَرْسَلَ, أَسْلَمَ) sind das gedruckte
+// Hauptmodell; zusätzlich sind أَجَابَ (Reihe 6, Hohlwurzel) und أَتَمَّ (Reihe 8, verdoppelte Wurzel) als
+// vollständig vorgegebene Lehrbeispiele VOR ihrer analogen Lückenzeile gedruckt (أَقَامَ Reihe 7, أَعَدَّ
+// Reihe 9) - kein Fehler, sondern exakt dasselbe Muster wie b3-l16s 'اسم المفعول'-Tabelle (dort: سَجَّلَ
+// voll vorgegeben, Rest Lückenzeilen). Reihen 10-12 (أَلْقَى, آمَنَ, أَوْجَبَ) geben nur die المصدر-Zelle
+// als Hinweis vor (mit أصله-Hinweis auf die Ausgangsform vor dem Lautwandel, exakt wie im Buch gedruckt),
+// المضارع bleibt dort Lückenzelle. Alle abgeleiteten (given:false) Formen wurden mechanisch nach den
+// Stamm-IV-Regeln nachgerechnet UND, wo möglich, gegen echte Vorkommen im selben Lektionstext
+// gegengeprüft (z. B. أَغْلِقْ/أَطْفِئْ in Übung 6 S.146 Satz 1-2, مُكْرَه in Satz 5, مُعْرَبٌ in Satz 7,
+// مُصَابٌ in der Dialogszene S.141 und in Satz 8, مُعْجَبٌ in Satz 10 - siehe Design-Review-Notiz unten).
+'b3-l17':[
+ {de:'أَفْعَلَ — Hauptmodell', columns:['الماضي','المضارع','المصدر'], rows:[
+   {root:'أَرْسَلَ', values:['أَرْسَلَ','يُرْسِلُ','إِرْسَالٌ'], given:[true,true,true]},
+   {root:'أَسْلَمَ', values:['أَسْلَمَ','يُسْلِمُ','إِسْلَامٌ'], given:[true,true,true]},
+   {root:'أَغْلَقَ', values:['أَغْلَقَ','يُغْلِقُ','إِغْلَاقٌ'], given:[true,false,false]},
+   {root:'أَخْبَرَ', values:['أَخْبَرَ','يُخْبِرُ','إِخْبَارٌ'], given:[true,false,false]},
+   {root:'أَطْفَأَ', values:['أَطْفَأَ','يُطْفِئُ','إِطْفَاءٌ'], given:[true,false,false]},
+   {root:'أَجَابَ', values:['أَجَابَ','يُجِيبُ','إِجَابَةٌ (أصله: إِجْوَابٌ)'], given:[true,true,true]},
+   {root:'أَقَامَ', values:['أَقَامَ','يُقِيمُ','إِقَامَةٌ'], given:[true,false,false]},
+   {root:'أَتَمَّ', values:['أَتَمَّ','يُتِمُّ','إِتْمَامٌ'], given:[true,true,true]},
+   {root:'أَعَدَّ', values:['أَعَدَّ','يُعِدُّ','إِعْدَادٌ'], given:[true,false,false]},
+   {root:'أَلْقَى', values:['أَلْقَى','يُلْقِي','إِلْقَاءٌ (أصله: إِلْقَايٌ)'], given:[true,false,true]},
+   {root:'آمَنَ (أصله: أَأْمَنَ)', values:['آمَنَ (أصله: أَأْمَنَ)','يُؤْمِنُ','إِيمَانٌ (أصله: إِئْمَانٌ)'], given:[true,false,true]},
+   {root:'أَوْجَبَ', values:['أَوْجَبَ','يُوجِبُ','إِيجَابٌ (أصله: إِوْجَابٌ)'], given:[true,false,true]}
+ ]},
+ {de:'الأمر من أَفْعَلَ', columns:['المضارع','الأمر'], rows:[
+   {root:'أَرْسَلَ', values:['تُرْسِلُ','أَرْسِلْ'], given:[true,true]},
+   {root:'أَغْلَقَ', values:['تُغْلِقُ','أَغْلِقْ'], given:[true,false]},
+   {root:'أَسْلَمَ', values:['تُسْلِمُ','أَسْلِمْ'], given:[true,false]},
+   {root:'أَعَدَّ', values:['تُعَدُّ','أَعِدَّ'], given:[true,false]},
+   {root:'آمَنَ', values:['تُؤْمِنُ','آمِنْ'], given:[true,false]},
+   {root:'أَجَابَ', values:['تُجِيبُ','أَجِبْ'], given:[true,false]}
+ ]},
+ {de:'اسم الفاعل من أَفْعَلَ', columns:['الماضي','المضارع','اسم الفاعل'], rows:[
+   {root:'أَسْلَمَ', values:['أَسْلَمَ','يُسْلِمُ','مُسْلِمٌ'], given:[true,true,false]},
+   {root:'أَحْرَمَ', values:['أَحْرَمَ','يُحْرِمُ','مُحْرِمٌ'], given:[true,true,false]},
+   {root:'أَرْسَلَ', values:['أَرْسَلَ','يُرْسِلُ','مُرْسِلٌ'], given:[true,true,false]},
+   {root:'أَمْكَنَ', values:['أَمْكَنَ','يُمْكِنُ','مُمْكِنٌ'], given:[true,true,false]},
+   {root:'آمَنَ', values:['آمَنَ','يُؤْمِنُ','مُؤْمِنٌ'], given:[true,true,false]},
+   {root:'أَتَمَّ', values:['أَتَمَّ','يُتِمُّ','مُتِمٌّ'], given:[true,true,false]},
+   {root:'أَدَارَ', values:['أَدَارَ','يُدِيرُ','مُدِيرٌ'], given:[true,true,false]},
+   {root:'أَلْقَى', values:['أَلْقَى','يُلْقِي','مُلْقٍ'], given:[true,true,false]}
+ ]},
+ {de:'اسم المفعول من أَفْعَلَ', columns:['الماضي','المضارع','اسم المفعول'], rows:[
+   {root:'أَغْلَقَ', values:['أَغْلَقَ','يُغْلِقُ','مُغْلَقٌ'], given:[true,true,false]},
+   {root:'أَكْرَهَ', values:['أَكْرَهَ','يُكْرِهُ','مُكْرَهٌ'], given:[true,true,false]},
+   {root:'أَعْرَبَ', values:['أَعْرَبَ','يُعْرِبُ','مُعْرَبٌ'], given:[true,true,false]},
+   {root:'أَعْجَبَ', values:['أَعْجَبَ','يُعْجِبُ','مُعْجَبٌ'], given:[true,true,false]},
+   {root:'أَصَابَ', values:['أَصَابَ','يُصِيبُ','مُصَابٌ'], given:[true,true,false]},
+   {root:'أَعَدَّ', values:['أَعَدَّ','يُعِدُّ','مُعَدٌّ'], given:[true,true,false]}
  ]}
 ]
 };
