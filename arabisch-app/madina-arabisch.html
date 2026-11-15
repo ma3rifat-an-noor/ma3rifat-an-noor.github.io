@@ -3625,7 +3625,7 @@ function renderStart(){
   const next = pool.find(t => knownCount(TOPIC_CARDS[t.id]) / TOPIC_CARDS[t.id].length < 0.8) || TOPICS[0];
   $('#start-next').innerHTML = '<div class="next"><span class="n-ar" lang="ar">' + esc(next.ar) + '</span><span class="n-lab">Als Nächstes · ' + esc(BOOKS[next.book - 1].de.split(' · ')[0]) + '</span><span class="n-de">' + esc(next.de) + '</span>'
     + '<div class="n-act"><button class="btn gold small" type="button" data-practice="' + next.id + '">' + icon('i-chat', 'ico sm') + 'Mit dem Tutor üben</button><button class="btn small" type="button" data-study="' + next.id + '">' + icon('i-cards', 'ico sm') + 'Karteikarten</button></div></div>';
-  $('#start-books').innerHTML = BOOKS.map(bk => '<section><div class="book-head"><h2>' + esc(bk.de) + (bk.n === b ? '<span class="here">Du bist hier</span>' : '') + '</h2><span class="b-ar" lang="ar">' + esc(bk.ar) + '</span></div><div class="topics">'
+  $('#start-books').innerHTML = BOOKS.filter(bk => bk.n === b).map(bk => '<section><div class="book-head"><h2>' + esc(bk.de) + '</h2><span class="b-ar" lang="ar">' + esc(bk.ar) + '</span></div><div class="topics">'
     + TOPICS.filter(t => t.book === bk.n).map(t => {
         const ids = TOPIC_CARDS[t.id], k = knownCount(ids);
         return '<details class="topic" data-topic="' + t.id + '"' + (openTopics.has(t.id) ? ' open' : '') + '><summary><span class="t-ar" lang="ar">' + esc(t.ar) + '</span><span class="t-main"><span class="t-de">' + esc(t.de) + '</span><span class="t-meta">' + ids.length + ' Wörter · ' + k + ' gelernt</span><span class="t-bar"><i style="width:' + Math.round(100 * k / Math.max(1, ids.length)) + '%"></i></span></span>' + icon('i-down', 'ico chev') + '</summary>'
