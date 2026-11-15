@@ -461,13 +461,13 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
 <div class="app" id="app">
   <header class="top">
     <div class="bar">
-      <a class="brand" href="#start" aria-label="Madina Arabisch, Start">
+      <a class="brand" href="#start" aria-label="Madina Arabisch, Start" data-i18n-aria="brandHome">
         <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-star"/></svg><span>ع</span></span>
         <span class="brand-txt"><span class="brand-name">Madina Arabisch</span><span class="brand-sub" id="brand-sub">Start</span></span>
       </a>
       <a class="pill due" id="due-pill" href="#karten" hidden></a>
-      <button class="pill" id="book-pill" type="button" aria-label="Buch wählen">Buch 1</button>
-      <button class="icon-btn" id="open-settings" type="button" aria-label="Einstellungen"><svg class="ico"><use href="#i-gear"/></svg></button>
+      <button class="pill" id="book-pill" type="button" aria-label="Buch wählen" data-i18n-aria="chooseBook">Buch 1</button>
+      <button class="icon-btn" id="open-settings" type="button" aria-label="Einstellungen" data-i18n-aria="settingsLabel"><svg class="ico"><use href="#i-gear"/></svg></button>
     </div>
   </header>
 
@@ -477,17 +477,17 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
       <div class="wrap stack">
         <section class="hello">
           <p class="hello-ar" lang="ar">أَهْلًا وَسَهْلًا</p>
-          <h1>Arabisch mit den Madina-Büchern</h1>
-          <p class="lede">Sprich mit deinem Tutor, spiel Alltagsszenen durch und wiederhole die Wörter, die du falsch hattest. Für Anfänger.</p>
-          <p class="lab">Ich lerne gerade mit</p>
-          <div class="seg" id="book-seg" role="group" aria-label="Buch">
+          <h1 data-i18n="heroTitle">Arabisch mit den Madina-Büchern</h1>
+          <p class="lede" data-i18n="heroLede">Sprich mit deinem Tutor, spiel Alltagsszenen durch und wiederhole die Wörter, die du falsch hattest. Für Anfänger.</p>
+          <p class="lab" data-i18n="learningWith">Ich lerne gerade mit</p>
+          <div class="seg" id="book-seg" role="group" aria-label="Buch" data-i18n-aria="bookGroup">
             <button type="button" data-book="1">Buch 1</button><button type="button" data-book="2">Buch 2</button><button type="button" data-book="3">Buch 3</button>
           </div>
         </section>
         <div class="tiles" id="start-tiles"></div>
         <div id="start-next"></div>
         <div id="start-books" class="stack"></div>
-        <p class="source">Die Themen folgen dem Aufbau der Reihe <em>Durūs al-Lugha al-ʿArabiyya</em> (Madina-Bücher, Islamische Universität Medina). Erklärungen und Beispielsätze sind eigene, vereinfachte Fassungen, keine Kopie der Bücher.</p>
+        <p class="source" data-i18n-html="sourceHtml">Die Themen folgen dem Aufbau der Reihe <em>Durūs al-Lugha al-ʿArabiyya</em> (Madina-Bücher, Islamische Universität Medina). Erklärungen und Beispielsätze sind eigene, vereinfachte Fassungen, keine Kopie der Bücher.</p>
       </div>
     </section>
 
@@ -587,31 +587,33 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
 
     <div class="sheet-bg" id="sheet" hidden>
       <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-        <div class="sheet-head"><h2 class="h" id="sheet-title">Einstellungen</h2><button class="icon-btn" type="button" id="close-settings" aria-label="Schließen"><svg class="ico"><use href="#i-x"/></svg></button></div>
-        <div class="set col"><div class="l"><b>Mein Buch</b><span>Der Tutor nutzt Wörter und Grammatik bis zu diesem Buch.</span></div>
-          <div class="seg" id="set-book" role="group" aria-label="Buch"><button type="button" data-book="1">Buch 1</button><button type="button" data-book="2">Buch 2</button><button type="button" data-book="3">Buch 3</button></div></div>
-        <div class="set col"><div class="l"><b>Anrede auf Arabisch</b><span>Arabisch unterscheidet „du" für Männer und Frauen.</span></div>
-          <div class="seg" id="set-gender" role="group" aria-label="Anrede"><button type="button" data-gender="m">männlich · أَنْتَ</button><button type="button" data-gender="f">weiblich · أَنْتِ</button></div></div>
-        <div class="set"><label class="l" for="set-showDe"><b>Übersetzung sofort zeigen</b><span>Aus: tippe auf den verschwommenen Text.</span></label><input class="sw" type="checkbox" id="set-showDe"></div>
-        <div class="set"><label class="l" for="set-showTl"><b>Umschrift zeigen</b><span>Lateinische Lautschrift unter dem Arabischen.</span></label><input class="sw" type="checkbox" id="set-showTl"></div>
-        <div class="set"><label class="l" for="set-autoSpeak"><b>Antworten vorlesen</b><span>Der Tutor spricht seine Antworten laut.</span></label><input class="sw" type="checkbox" id="set-autoSpeak"></div>
-        <div class="set"><label class="l" for="set-autoSend"><b>Nach dem Sprechen senden</b><span>Spracheingabe geht direkt an den Tutor.</span></label><input class="sw" type="checkbox" id="set-autoSend"></div>
-        <div class="set"><label class="l" for="set-spar"><b>Sparmodus: ohne Claude üben</b><span>Tutor und Rollenspiele mit vorbereiteten Übungen, Übersetzer als Wörterbuch. Kostet nichts.</span></label><input class="sw" type="checkbox" id="set-spar"></div>
-        <div class="set"><label class="l" for="set-precise"><b>Genauere Korrektur</b><span>Gründlicher, aber langsamer.</span></label><input class="sw" type="checkbox" id="set-precise"></div>
-        <div class="set col"><label class="l" for="set-rate"><b>Sprechtempo</b><span id="rate-val"></span></label><input type="range" id="set-rate" min="0.6" max="1.1" step="0.05"></div>
-        <div class="set col"><div class="l"><b>Fortschritt</b><span id="sync-state">Wird auf diesem Gerät gespeichert.</span></div>
+        <div class="sheet-head"><h2 class="h" id="sheet-title" data-i18n="settingsTitle">Einstellungen</h2><button class="icon-btn" type="button" id="close-settings" aria-label="Schließen" data-i18n-aria="closeLabel"><svg class="ico"><use href="#i-x"/></svg></button></div>
+        <div class="set col"><div class="l"><b data-i18n="appLangTitle">Sprache der App</b><span data-i18n="appLangDesc">Wechselt Menüs und Knöpfe. Die Lektionen selbst bleiben vorerst auf Deutsch.</span></div>
+          <div class="seg" id="set-applang" role="group" aria-label="Sprache der App" data-i18n-aria="appLangTitle"><button type="button" data-applang="de">Deutsch</button><button type="button" data-applang="en">English</button></div></div>
+        <div class="set col"><div class="l"><b data-i18n="myBookTitle">Mein Buch</b><span data-i18n="myBookDesc">Der Tutor nutzt Wörter und Grammatik bis zu diesem Buch.</span></div>
+          <div class="seg" id="set-book" role="group" aria-label="Buch" data-i18n-aria="bookGroup"><button type="button" data-book="1">Buch 1</button><button type="button" data-book="2">Buch 2</button><button type="button" data-book="3">Buch 3</button></div></div>
+        <div class="set col"><div class="l"><b data-i18n="addressTitle">Anrede auf Arabisch</b><span data-i18n="addressDesc">Arabisch unterscheidet „du" für Männer und Frauen.</span></div>
+          <div class="seg" id="set-gender" role="group" aria-label="Anrede" data-i18n-aria="addressGroup"><button type="button" data-gender="m" data-i18n="genderM">männlich · أَنْتَ</button><button type="button" data-gender="f" data-i18n="genderF">weiblich · أَنْتِ</button></div></div>
+        <div class="set"><label class="l" for="set-showDe"><b data-i18n="showDeTitle">Übersetzung sofort zeigen</b><span data-i18n="showDeDesc">Aus: tippe auf den verschwommenen Text.</span></label><input class="sw" type="checkbox" id="set-showDe"></div>
+        <div class="set"><label class="l" for="set-showTl"><b data-i18n="showTlTitle">Umschrift zeigen</b><span data-i18n="showTlDesc">Lateinische Lautschrift unter dem Arabischen.</span></label><input class="sw" type="checkbox" id="set-showTl"></div>
+        <div class="set"><label class="l" for="set-autoSpeak"><b data-i18n="autoSpeakTitle">Antworten vorlesen</b><span data-i18n="autoSpeakDesc">Der Tutor spricht seine Antworten laut.</span></label><input class="sw" type="checkbox" id="set-autoSpeak"></div>
+        <div class="set"><label class="l" for="set-autoSend"><b data-i18n="autoSendTitle">Nach dem Sprechen senden</b><span data-i18n="autoSendDesc">Spracheingabe geht direkt an den Tutor.</span></label><input class="sw" type="checkbox" id="set-autoSend"></div>
+        <div class="set"><label class="l" for="set-spar"><b data-i18n="sparTitle">Sparmodus: ohne Claude üben</b><span data-i18n="sparDesc">Tutor und Rollenspiele mit vorbereiteten Übungen, Übersetzer als Wörterbuch. Kostet nichts.</span></label><input class="sw" type="checkbox" id="set-spar"></div>
+        <div class="set"><label class="l" for="set-precise"><b data-i18n="preciseTitle">Genauere Korrektur</b><span data-i18n="preciseDesc">Gründlicher, aber langsamer.</span></label><input class="sw" type="checkbox" id="set-precise"></div>
+        <div class="set col"><label class="l" for="set-rate"><b data-i18n="rateTitle">Sprechtempo</b><span id="rate-val"></span></label><input type="range" id="set-rate" min="0.6" max="1.1" step="0.05"></div>
+        <div class="set col"><div class="l"><b data-i18n="progressTitle">Fortschritt</b><span id="sync-state">Wird auf diesem Gerät gespeichert.</span></div>
           <div id="reset-zone"><button class="btn small danger" type="button" id="reset-ask">Fortschritt zurücksetzen</button></div></div>
       </div>
     </div>
   </main>
 
-  <nav class="tabs" aria-label="Bereiche">
+  <nav class="tabs" aria-label="Bereiche" data-i18n-aria="navLabel">
     <div class="row">
-      <a class="tab" href="#start" data-view="start"><svg class="ico"><use href="#i-book"/></svg><span>Bücher</span></a>
+      <a class="tab" href="#start" data-view="start"><svg class="ico"><use href="#i-book"/></svg><span data-i18n="tabBooks">Bücher</span></a>
       <a class="tab" href="#tutor" data-view="tutor"><svg class="ico"><use href="#i-chat"/></svg><span>Tutor</span></a>
-      <a class="tab" href="#rollen" data-view="rollen"><svg class="ico"><use href="#i-people"/></svg><span>Rollenspiel</span></a>
-      <a class="tab" href="#karten" data-view="karten"><svg class="ico"><use href="#i-cards"/></svg><span>Karten</span></a>
-      <a class="tab" href="#uebersetzer" data-view="uebersetzer"><svg class="ico"><use href="#i-lang"/></svg><span>Übersetzer</span></a>
+      <a class="tab" href="#rollen" data-view="rollen"><svg class="ico"><use href="#i-people"/></svg><span data-i18n="tabRollen">Rollenspiel</span></a>
+      <a class="tab" href="#karten" data-view="karten"><svg class="ico"><use href="#i-cards"/></svg><span data-i18n="tabKarten">Karten</span></a>
+      <a class="tab" href="#uebersetzer" data-view="uebersetzer"><svg class="ico"><use href="#i-lang"/></svg><span data-i18n="tabUebersetzer">Übersetzer</span></a>
     </div>
   </nav>
 </div>
@@ -2529,7 +2531,7 @@ const SCENE = Object.fromEntries(SCENES.map(s => [s.id, s]));
 const LS = 'madina-arabisch-v1';
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar', mode:'offline'}, srs:{}, mistakes:[], custom:[]});
+const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', lang:'de', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar', mode:'offline'}, srs:{}, mistakes:[], custom:[]});
 function mergeState(x){
   const d = DEFAULTS(); x = x && typeof x === 'object' ? x : {};
   return {...d, ...x, settings:{...d.settings, ...(x.settings || {})}, srs:(x.srs && typeof x.srs === 'object') ? x.srs : {},
@@ -2554,8 +2556,13 @@ async function flush(){
   catch (e) { setSync(false); }
   finally { writing = false; if (dirty){ clearTimeout(wTimer); wTimer = setTimeout(flush, 1500); } }
 }
+let syncCloud = false;
 function setSync(cloud){
-  $('#sync-state').textContent = cloud ? 'Wird in deinem Claude-Konto gespeichert und ist auf all deinen Geräten verfügbar.' : 'Wird auf diesem Gerät gespeichert.';
+  syncCloud = cloud;
+  const en = S.settings.lang === 'en';
+  $('#sync-state').textContent = cloud
+    ? (en ? 'Saved in your Claude account and available on all your devices.' : 'Wird in deinem Claude-Konto gespeichert und ist auf all deinen Geräten verfügbar.')
+    : (en ? 'Saved on this device.' : 'Wird auf diesem Gerät gespeichert.');
 }
 async function initRemote(){
   if (!window.claude || typeof window.claude.use !== 'function') return;
@@ -3614,38 +3621,83 @@ function markAdded(root){
 /* ---------- Start ---------- */
 const openTopics = new Set();
 function renderStart(){
-  const b = Number(S.settings.book) || 1;
+  const b = Number(S.settings.book) || 1, en = S.settings.lang === 'en';
   $$('#book-seg button').forEach(x => x.setAttribute('aria-pressed', String(Number(x.dataset.book) === b)));
   const mist = mistakeIds().length, due = dueIds().length, known = knownCount(Object.keys(CARDS).filter(id => CARDS[id].topic !== 'custom'));
   $('#start-tiles').innerHTML =
-      '<a class="tile red" href="#karten"><b>' + mist + '</b><span>im Fehler-Stapel</span></a>'
-    + '<a class="tile gold" href="#karten"><b>' + due + '</b><span>heute fällig</span></a>'
-    + '<a class="tile green" href="#karten"><b>' + known + '</b><span>von ' + BASE_TOTAL + ' Wörtern gelernt</span></a>';
+      '<a class="tile red" href="#karten"><b>' + mist + '</b><span>' + (en ? 'in the mistake pile' : 'im Fehler-Stapel') + '</span></a>'
+    + '<a class="tile gold" href="#karten"><b>' + due + '</b><span>' + (en ? 'due today' : 'heute fällig') + '</span></a>'
+    + '<a class="tile green" href="#karten"><b>' + known + '</b><span>' + (en ? 'of ' + BASE_TOTAL + ' words learned' : 'von ' + BASE_TOTAL + ' Wörtern gelernt') + '</span></a>';
   const pool = TOPICS.filter(t => t.book >= b);
   const next = pool.find(t => knownCount(TOPIC_CARDS[t.id]) / TOPIC_CARDS[t.id].length < 0.8) || TOPICS[0];
-  $('#start-next').innerHTML = '<div class="next"><span class="n-ar" lang="ar">' + esc(next.ar) + '</span><span class="n-lab">Als Nächstes · ' + esc(BOOKS[next.book - 1].de.split(' · ')[0]) + '</span><span class="n-de">' + esc(next.de) + '</span>'
-    + '<div class="n-act"><button class="btn gold small" type="button" data-practice="' + next.id + '">' + icon('i-chat', 'ico sm') + 'Mit dem Tutor üben</button><button class="btn small" type="button" data-study="' + next.id + '">' + icon('i-cards', 'ico sm') + 'Karteikarten</button></div></div>';
+  const practiceBtn = id => '<button class="btn gold small" type="button" data-practice="' + id + '">' + icon('i-chat', 'ico sm') + (en ? 'Practice with the tutor' : 'Mit dem Tutor üben') + '</button>';
+  $('#start-next').innerHTML = '<div class="next"><span class="n-ar" lang="ar">' + esc(next.ar) + '</span><span class="n-lab">' + (en ? 'Next up · ' : 'Als Nächstes · ') + esc(BOOKS[next.book - 1].de.split(' · ')[0]) + '</span><span class="n-de">' + esc(next.de) + '</span>'
+    + '<div class="n-act">' + practiceBtn(next.id) + '<button class="btn small" type="button" data-study="' + next.id + '">' + icon('i-cards', 'ico sm') + (en ? 'Flashcards' : 'Karteikarten') + '</button></div></div>';
   $('#start-books').innerHTML = BOOKS.filter(bk => bk.n === b).map(bk => '<section><div class="book-head"><h2>' + esc(bk.de) + '</h2><span class="b-ar" lang="ar">' + esc(bk.ar) + '</span></div><div class="topics">'
     + TOPICS.filter(t => t.book === bk.n).map(t => {
         const ids = TOPIC_CARDS[t.id], k = knownCount(ids);
-        return '<details class="topic" data-topic="' + t.id + '"' + (openTopics.has(t.id) ? ' open' : '') + '><summary><span class="t-ar" lang="ar">' + esc(t.ar) + '</span><span class="t-main"><span class="t-de">' + esc(t.de) + '</span><span class="t-meta">' + ids.length + ' Wörter · ' + k + ' gelernt</span><span class="t-bar"><i style="width:' + Math.round(100 * k / Math.max(1, ids.length)) + '%"></i></span></span>' + icon('i-down', 'ico chev') + '</summary>'
+        return '<details class="topic" data-topic="' + t.id + '"' + (openTopics.has(t.id) ? ' open' : '') + '><summary><span class="t-ar" lang="ar">' + esc(t.ar) + '</span><span class="t-main"><span class="t-de">' + esc(t.de) + '</span><span class="t-meta">' + ids.length + (en ? ' words · ' + k + ' learned' : ' Wörter · ' + k + ' gelernt') + '</span><span class="t-bar"><i style="width:' + Math.round(100 * k / Math.max(1, ids.length)) + '%"></i></span></span>' + icon('i-down', 'ico chev') + '</summary>'
           + '<div class="t-body"><p class="gram">' + rich(t.gram) + '</p>'
           + '<ul class="ex-list">' + t.ex.map(e => '<li><p class="ar" lang="ar">' + esc(e[0]) + '</p><p class="de">' + esc(e[1]) + '</p>' + speakBtn(e[0]) + '</li>').join('') + '</ul>'
           + '<div class="t-words">' + t.words.slice(0, 10).map(w => '<button class="chip" type="button" data-speak="' + esc(w[0]) + '"><span class="ar-s" lang="ar">' + esc(w[0]) + '</span><span class="de-s">' + esc(w[2]) + '</span></button>').join('') + '</div>'
-          + '<div class="t-actions"><button class="btn primary" type="button" data-practice="' + t.id + '">' + icon('i-chat', 'ico sm') + 'Mit dem Tutor üben</button><button class="btn" type="button" data-study="' + t.id + '">' + icon('i-cards', 'ico sm') + 'Karteikarten</button></div></div></details>';
+          + '<div class="t-actions">' + practiceBtn(t.id) + '<button class="btn" type="button" data-study="' + t.id + '">' + icon('i-cards', 'ico sm') + (en ? 'Flashcards' : 'Karteikarten') + '</button></div></div></details>';
       }).join('') + '</div></section>').join('');
+}
+
+/* ---------- Mehrsprachigkeit (App-Hülle) ----------
+   Phase 1 von 2 der Mehrsprachigkeits-Planung (siehe Vault, Madina Arabisch App.md): nur die App-Hülle
+   (Kopfzeile, Startseite, Navigation, Einstellungen) ist hier zweisprachig. Die eigentlichen Lektionsinhalte
+   (TOPICS/EX/DERIV_TABLES, Tutor-Chat, Karteikarten, Rollenspiel, Übersetzer) bleiben bewusst auf Deutsch,
+   das ist ein eigener, separater Schritt. data-i18n(-aria/-html) markiert Elemente, deren deutscher
+   Originaltext beim ersten Durchlauf aus dem DOM gesichert wird (dataset.deTxt/deAria/deHtml) - so muss das
+   Deutsche hier im Wörterbuch nicht doppelt gepflegt werden, nur die englische Gegenübersetzung. */
+const I18N_EN = {
+  brandHome:'Madina Arabic, Home', chooseBook:'Choose book', settingsLabel:'Settings',
+  heroTitle:'Arabic with the Madina Books',
+  heroLede:'Talk with your tutor, play through everyday scenes and repeat the words you got wrong. For beginners.',
+  learningWith:'I’m currently learning with',
+  bookGroup:'Book', addressGroup:'Form of address',
+  sourceHtml:'The topics follow the structure of the <em>Durūs al-Lugha al-ʿArabiyya</em> series (Madina books, Islamic University of Madinah). Explanations and example sentences are our own simplified versions, not a copy of the books.',
+  settingsTitle:'Settings', closeLabel:'Close',
+  appLangTitle:'App language', appLangDesc:'Switches menus and buttons. Lessons themselves stay German for now.',
+  myBookTitle:'My book', myBookDesc:'The tutor uses words and grammar up to this book.',
+  addressTitle:'Address in Arabic', addressDesc:'Arabic distinguishes „you“ for men and women.',
+  genderM:'male · أَنْتَ', genderF:'female · أَنْتِ',
+  showDeTitle:'Show translation immediately', showDeDesc:'Off: tap the blurred text.',
+  showTlTitle:'Show transliteration', showTlDesc:'Latin script under the Arabic.',
+  autoSpeakTitle:'Read answers aloud', autoSpeakDesc:'The tutor speaks its answers out loud.',
+  autoSendTitle:'Send after speaking', autoSendDesc:'Voice input goes straight to the tutor.',
+  sparTitle:'Saver mode: practice without Claude', sparDesc:'Tutor and roleplay with prepared exercises, translator as a dictionary. Costs nothing.',
+  preciseTitle:'More precise correction', preciseDesc:'More thorough, but slower.',
+  rateTitle:'Speaking speed', progressTitle:'Progress',
+  tabBooks:'Books', tabRollen:'Roleplay', tabKarten:'Cards', tabUebersetzer:'Translator', navLabel:'Areas'
+};
+function applyI18N(){
+  const en = S.settings.lang === 'en';
+  document.documentElement.lang = en ? 'en' : 'de';
+  $$('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (el.dataset.deTxt === undefined) el.dataset.deTxt = el.textContent; el.textContent = en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deTxt; });
+  $$('[data-i18n-html]').forEach(el => { const k = el.dataset.i18nHtml; if (el.dataset.deHtml === undefined) el.dataset.deHtml = el.innerHTML; el.innerHTML = en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deHtml; });
+  $$('[data-i18n-aria]').forEach(el => { const k = el.dataset.i18nAria; if (el.dataset.deAria === undefined) el.dataset.deAria = el.getAttribute('aria-label') || ''; el.setAttribute('aria-label', en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deAria); });
+  $$('[data-book]').forEach(b => { if (b.closest('#book-seg, #set-book')) b.textContent = (en ? 'Book ' : 'Buch ') + b.dataset.book; });
+}
+function setLang(l){
+  if (S.settings.lang === l) return;
+  S.settings.lang = l; save(); applySettingsUI(); refreshCurrent();
 }
 
 /* ---------- Einstellungen ---------- */
 function applySettingsUI(){
-  const st = S.settings;
-  $('#book-pill').textContent = 'Buch ' + st.book;
+  const st = S.settings, en = st.lang === 'en';
+  applyI18N();
+  $('#book-pill').textContent = (en ? 'Book ' : 'Buch ') + st.book;
+  $$('#set-applang button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.applang === st.lang)));
   $$('#set-book button').forEach(x => x.setAttribute('aria-pressed', String(Number(x.dataset.book) === Number(st.book))));
   $$('#set-gender button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.gender === st.gender)));
   for (const k of ['showDe', 'showTl', 'autoSpeak', 'autoSend', 'precise']) $('#set-' + k).checked = !!st[k];
   applyModeUI();
   $('#set-rate').value = st.rate;
-  $('#rate-val').textContent = st.rate <= 0.7 ? 'Langsam' : st.rate >= 1 ? 'Normal' : 'Etwas langsamer';
+  $('#rate-val').textContent = st.rate <= 0.7 ? (en ? 'Slow' : 'Langsam') : st.rate >= 1 ? 'Normal' : (en ? 'A bit slower' : 'Etwas langsamer');
+  setSync(syncCloud);
   updateDuePill();
 }
 function setBook(n){ S.settings.book = n; save(); applySettingsUI(); if (currentView === 'start') renderStart(); }
@@ -3662,14 +3714,16 @@ function setGender(g){
 function openSheet(){ $('#sheet').hidden = false; $('#close-settings').focus(); }
 function closeSheet(){ $('#sheet').hidden = true; resetZone(false); }
 function resetZone(ask){
+  const en = S.settings.lang === 'en';
   $('#reset-zone').innerHTML = ask
-    ? '<div class="confirm"><span>Alle Karten, den Fehler-Stapel und „Meine Wörter" löschen?</span><button class="btn small" type="button" id="reset-no">Abbrechen</button><button class="btn small danger" type="button" id="reset-yes">Löschen</button></div>'
-    : '<button class="btn small danger" type="button" id="reset-ask">Fortschritt zurücksetzen</button>';
+    ? '<div class="confirm"><span>' + (en ? 'Delete all cards, the mistake pile and “My words”?' : 'Alle Karten, den Fehler-Stapel und „Meine Wörter" löschen?') + '</span><button class="btn small" type="button" id="reset-no">' + (en ? 'Cancel' : 'Abbrechen') + '</button><button class="btn small danger" type="button" id="reset-yes">' + (en ? 'Delete' : 'Löschen') + '</button></div>'
+    : '<button class="btn small danger" type="button" id="reset-ask">' + (en ? 'Reset progress' : 'Fortschritt zurücksetzen') + '</button>';
 }
 
 /* ---------- Navigation ---------- */
 const VIEWS = ['start', 'tutor', 'rollen', 'karten', 'uebersetzer'];
-const TITLES = {start:'Bücher & Themen', tutor:'Tutor · Gespräch', rollen:'Rollenspiele', karten:'Karteikarten', uebersetzer:'Übersetzer'};
+const TITLES_DE = {start:'Bücher & Themen', tutor:'Tutor · Gespräch', rollen:'Rollenspiele', karten:'Karteikarten', uebersetzer:'Übersetzer'};
+const TITLES_EN = {start:'Books & Topics', tutor:'Tutor · Conversation', rollen:'Roleplay', karten:'Flashcards', uebersetzer:'Translator'};
 let currentView = 'start';
 function go(v){ if (location.hash.slice(1) !== v) location.hash = v; else show(v); }
 function show(v){
@@ -3681,7 +3735,7 @@ function show(v){
   if (v === 'rollen') showRole(!!CHAT.role.scene && rolePlaying);
   else { $('#v-rollen-pick').hidden = true; $('#v-rollen-play').hidden = true; }
   $$('.tab').forEach(t => { if (t.dataset.view === v) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current'); });
-  $('#brand-sub').textContent = TITLES[v];
+  $('#brand-sub').textContent = (S.settings.lang === 'en' ? TITLES_EN : TITLES_DE)[v];
   if (v === 'start') renderStart();
   if (v === 'karten'){ if (session) renderSession(); else renderDecks(); }
   if (v === 'tutor'){ if (offline()) ensureTutorQuiz(); renderChat('tutor'); }
@@ -3724,6 +3778,7 @@ document.addEventListener('click', e => {
   if (d.scene){ startScene(d.scene); rolePlaying = true; return; }
   if (d.resume !== undefined){ rolePlaying = true; showRole(true); return; }
   if (d.closeHelp !== undefined){ t.closest('[data-mic-help]').hidden = true; return; }
+  if (d.applang){ setLang(d.applang); return; }
   if (d.book && t.closest('#book-seg, #set-book')){ setBook(Number(d.book)); return; }
   if (d.gender){ setGender(d.gender); return; }
   if (d.lang){ $$('#tr-lang button').forEach(x => x.setAttribute('aria-pressed', String(x === t))); return; }
@@ -3744,7 +3799,7 @@ document.addEventListener('click', e => {
   if (t.id === 'reset-yes'){
     const keep = S.settings; S = DEFAULTS(); S.settings = keep;
     for (const id of Object.keys(CARDS)) if (CARDS[id].topic === 'custom') delete CARDS[id];
-    session = null; save(); resetZone(false); toast('Fortschritt gelöscht.'); refreshCurrent(); return;
+    session = null; save(); resetZone(false); toast(S.settings.lang === 'en' ? 'Progress deleted.' : 'Fortschritt gelöscht.'); refreshCurrent(); return;
   }
 });
 document.addEventListener('click', e => {
