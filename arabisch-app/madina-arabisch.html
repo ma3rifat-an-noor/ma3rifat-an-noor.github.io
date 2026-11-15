@@ -868,6 +868,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l22', book:3, ar:'بَابُ انْفَعَلَ', de:'Lektion 22: Verbstamm VII (اِنْفَعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabelle für den Verbstamm VII (اِنْفَعَلَ) - gebildet durch Vorsetzen von اِنْ vor den bloßen Stamm (اِنْ+فَعَلَ), drückt fast immer مُطَاوَعَة aus: das unwillkürliche Eintreten der Handlung von Stamm I, meist als dessen Intransitiv-Gegenstück (كَسَرَ „etwas zerbrechen" → اِنْكَسَرَ „zerbrechen"). Weil Stamm VII praktisch nie transitiv ist, fehlen anders als bei den meisten anderen Stämmen sowohl اسم المفعول als auch - in dieser Lektion - ein eigener أمر-Drill; die Tabelle übt nur المضارع, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (اِنْفَتَحَ, اِنْقَلَبَ, اِنْقَطَعَ, اِنْصَرَفَ), bei einer مضعّف-Wurzel (اِنْشَقَّ, durch Idgham مُنْشَقٌّ/اِنْشِقَاقٌ - letzteres der Name von Sure 84) und bei einer ناقص-واوي-Wurzel (اِنْجَلَى, المضارع يَنْجَلِي direkt belegt durch das in dieser Lektion zitierte Hadith „حَتَّى يَنْجَلِيَ", المصدر اِنْجِلاَءٌ aus اِنْجِلاَوٌ durch denselben و-nach-Alif-wird-Hamza-Wandel wie bei إِجَابَةٌ/مُفَاعَاةٌ in den Lektionen 17/19), siehe die Übungstabelle im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l23', book:3, ar:'بَابُ افْتَعَلَ', de:'Lektion 23: Verbstamm VIII (اِفْتَعَلَ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm VIII (اِفْتَعَلَ) - gebildet durch Einschub eines ت nach dem ersten Radikal (R1+ت+عَلَ), meist reflexiv/reziprok oder mit eigener Spezialbedeutung gegenüber Stamm I (جَمَعَ „sammeln" → اِجْتَمَعَ „sich versammeln"). Die Haupttabelle übt المضارع, الأمر, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (اِشْتَرَكَ, اِمْتَحَنَ, اِجْتَمَعَ), einer ناقص-ي-Wurzel (اِلْتَقَى, اسم الفاعل durch منقوص-Kürzung مُلْتَقٍ - nicht zu verwechseln mit dem gleich geschriebenen اسم المكان مُلْتَقًى „Treffpunkt") und einer أجوف-Wurzel (اِخْتَارَ, المضارع/الأمر يَخْتَارُ/اِخْتَرْ). Das eingeschobene ت unterliegt festen Assimilationsregeln je nach Erstradikal, geübt in drei eigenen Drilltabellen (bloße Wurzel → اِفْتَعَلَ-Form): bei فاء د/ز/ذ wird ت zu د (اِزْدَحَمَ، اِزْدَانَ، dazu die Sonderfälle اِدَّكَرَ [ذ assimiliert zusätzlich in das د] und اِدَّعَى [zwei gleiche د verschmelzen]); bei فاء ص/ض/ط/ظ wird ت zu ط (اِصْطَبَرَ، اِضْطَرَبَ، اِظْطَلَمَ ohne Verschmelzung, aber اِطَّلَعَ mit Verschmelzung, da hier Erstradikal und verwandeltes ت identisch sind); bei فاء و verschmilzt das و selbst mit dem ت zu تّ (اتَّقَى، اتَّصَلَ، اتَّحَدَ، اتَّفَقَ). Bewusste Verwechslungsfalle (nicht als Tabelle gebaut): ن-anlautende Wurzeln wie اِنْتَظَرَ/اِنْتَقَلَ/اِنْتَصَرَ sehen oberflächlich wie Stamm VII (اِنْفَعَلَ, z. B. اِنْكَسَرَ) aus, sind aber Stamm VIII ohne jede ت-Assimilation (ن löst keine Umwandlung aus). Übrige Grammatikpunkte dieser Lektion (nicht tabellarisch): إذا الفجائية (unerwartetes Ereignis), ظَنَّ mit zwei Akkusativobjekten, siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1559,6 +1562,105 @@ const DERIV_TABLES = {
    {root:'اِنْصَرَفَ', values:['اِنْصَرَفَ','يَنْصَرِفُ','مُنْصَرِفٌ','اِنْصِرَافٌ'], given:[true,false,false,false]},
    {root:'اِنْشَقَّ', values:['اِنْشَقَّ','يَنْشَقُّ','مُنْشَقٌّ','اِنْشِقَاقٌ'], given:[true,false,true,false]},
    {root:'اِنْجَلَى', values:['اِنْجَلَى','يَنْجَلِي','مُنْجَلٍ','اِنْجِلاَءٌ (أصله: اِنْجِلاَوٌ)'], given:[true,false,true,true]}
+ ]}
+],
+// Buch 3, Lektion 23: باب افْتَعَلَ (Verbstamm VIII). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 195-203 (gedruckte Seite = PDF-0-Index + 2, gegengeprüft gegen die gedruckten Kopfzeilen
+// "الدرس الثالث والعشرون"/"١٩٥" und die nächste Lektionsgrenze "الدرس الرابع والعشرون"/"٢٠٤"). Dialog
+// S.195-196, danach Übungen 1-16 S.196-203, Seite für Seite vollständig gegengelesen, zusätzlich gegen den
+// englischen Schlüssel (madina-book-3-english-key.pdf, "LESSON 23", S.101-105 im PDF) abgeglichen, der die
+// Assimilationsregeln UND mehrere Modellwörter wortwörtlich vorgibt. Die Vault-Schätzung ("5 Spalten, MIT
+// أمر") war für die Haupttabelle richtig, hat aber - genau wie bei L16/17/19/21 - die drei zusätzlichen
+// ت-Assimilationsdrilltabellen (Übungen 4, 5, 6) übersehen: jede ist eine eigene Wurzel→اِفْتَعَلَ-Tabelle
+// (bloße Wurzel gegeben, assimilierte Stamm-VIII-Form Lückenzelle), nicht nur eine Erklärungsbox. Insgesamt
+// VIER Tabellen im Sinne dieser Engine, nicht eine.
+// Übung 3 (S.197): Haupttabelle, Spalten الماضي/المضارع/الأمر/اسم الفاعل/المصدر. Zeile 1 (اِنْتَظَرَ) ist
+// das gedruckte Hauptmodell (alle 5 Spalten gegeben). Zeilen 2-4 (اِشْتَرَكَ, اِمْتَحَنَ, اِجْتَمَعَ) sind
+// gesunde Wurzeln ohne jeden Hinweis (volle Lückenzeilen) - اِمْتِحَانٌ ("Prüfung") und اِجْتِمَاعٌ
+// ("Versammlung/Treffen") sind beide zusätzlich im englischen Schlüssel S.101/104 als Musterbeispiele für
+// das Masdar-Muster اِفْتِعَال wörtlich bestätigt (ebenso اِخْتِيَارٌ und اِلْتِقَاءٌ, siehe unten). Zeile 5
+// (اِلْتَقَى, ناقص-ي-Wurzel ل-ق-ي) hat im Druck NUR die المصدر-Zelle MIT أصله-Hinweis vorgegeben
+// ("اِلْتِقَاءٌ (أصله: اِلْتِقَايُ)", exakt so auch im Schlüssel bestätigt: "التقاء ... for الِتقاي"),
+// المضارع/الأمر/اسم الفاعل sind Lückenzellen - المضارع يَلْتَقِي und الأمر اِلْتَقِ (ي fällt weg) nach
+// demselben Muster wie لَاقَى/بَارَى in Lektion 19, اسم الفاعل مُلْتَقٍ ist (wie مُنْجَلٍ in Lektion 22) ein
+// اسم منقوص, NICHT zu verwechseln mit dem gleich geschriebenen, aber andersbetonten اسم المكان مُلْتَقًى
+// ("Treffpunkt", Fatha-Muster, hier nicht gefragt, da die Spalte ausdrücklich اسم الفاعل heißt). Zeile 6
+// (اِخْتَارَ, أجوف-ي-Wurzel خ-ي-ر) hat im Druck الماضي, اسم الفاعل (مُخْتَارٌ) UND المصدر (اِخْتِيَارٌ)
+// vorgegeben, nur المضارع (يَخْتَارُ) und الأمر (اِخْتَرْ) sind Lückenzellen - beide direkt im englischen
+// Schlüssel S.102 bestätigt ("اختار 'he selected' : يختار 'he selects' for يخْتَيِر" sowie "اخترْ 'he
+// selected' : يختار 'he selects'" in der مضارع-Beispielliste derselben Seite).
+// Übungen 4-6 (S.197-198): drei getrennte ت-Assimilationsdrilltabellen, je Spalten
+// [الفعل المجرد, اِفْتَعَلَ] (bloße Wurzel gegeben, Stamm-VIII-Form Lückenzelle) - vom englischen Schlüssel
+// S.101f ausdrücklich als dieselbe Regelgruppe bestätigt ("The extra ت changes to د or ط as explained
+// below"). Übung 4 (فاء د/ز/ذ ← د): Modellzeile زَحَمَ→اِزْدَحَمَ (keine Verschmelzung, da ز und د
+// unterschiedliche Artikulationsstellen haben) ist im Druck komplett vorgegeben. Lückenzeilen: زَانَ→اِزْدَانَ
+// (ز-Wurzel, "geschmückt werden", real belegtes Wort, Hans Wehr: izdāna), ذَكَرَ→اِدَّكَرَ (ذ-Wurzel - die ت
+// wird zunächst zu د, dann verschmilzt ذ zusätzlich MIT diesem د zu einem einzigen دّ, exakt wie im
+// Schlüssel S.101 vorgerechnet: "idhtakara → idhdakara → iddakara" - bekannt aus dem Koranvers [القمر] "فهل
+// من مُدَّكِر", NICHT اذدكر), دَعَا→اِدَّعَى (د-Wurzel, د+د sind hier identische Buchstaben und verschmelzen
+// daher zwingend, Schlüssel-Beispiel "idtaʿā → iddaʿā", reales, geläufiges Wort "behaupten/vorgeben").
+// Übung 5 (فاء ص/ض/ط/ظ ← ط): Modellzeile صَبَرَ→اِصْطَبَرَ (keine Verschmelzung) komplett vorgegeben.
+// Lückenzeilen: صَفَا→اِصْطَفَى (ص-Wurzel, "auswählen", Koran [آل عمران/33] "إنَّ اللَّهَ اصْطَفَى..."),
+// ضَرَبَ→اِضْطَرَبَ (ض-Wurzel, "aufgewühlt/beunruhigt sein", geläufiges Wort اضطراب) - WICHTIG: das im Buch
+// selbst gedruckte Regelzitat auf S.198 nennt für diese Übung nur "صاداً، أو طاءً، أو ظاءً" (3 Buchstaben,
+// ض fehlt in der gedruckten Regel), obwohl ضَرَبَ direkt als viertes Übungswort in derselben Liste steht;
+// der englische Schlüssel S.102 stellt klar, dass die Regel tatsächlich VIER Buchstaben umfasst (ص، ض، ط،
+// ظ) und bestätigt اِضْطَرَبَ wörtlich - die gedruckte arabische Regelzeile selbst ist also unvollständig,
+// nicht das Aufgabenwort. طَلَعَ→اِطَّلَعَ (ط-Wurzel, ط und das verwandelte ت sind identische Buchstaben,
+// daher zwingende Verschmelzung zu طّ, Schlüssel: "ittalaʿa", geläufiges Wort "herausfinden/sich
+// informieren"). ظَلَمَ→اِظْطَلَمَ (ظ-Wurzel, KEINE Verschmelzung trotz naher Artikulation mit ط - explizit
+// im Schlüssel S.102 belegt: "iztalama" bleibt اظطلم, nicht اظّلم; "er erlitt Unrecht", selteneres, aber
+// korrekt belegtes Wort).
+// Übung 6 (فاء و ← verschmilzt mit dem eingeschobenen ت zu تّ): Modellzeile وَقَى→اتَّقَى komplett
+// vorgegeben. Lückenzeilen: وَصَلَ→اتَّصَلَ ("anrufen/sich verbinden", direkt im Dialog dieser Lektion S.199
+// belegt: "اتَّصَلْتُ بأبي هاتفياً"), وَحَدَ→اتَّحَدَ ("sich vereinigen", Schlüssel-Beispiel S.101 "iwtahada →
+// ittahada"), وَفَقَ→اتَّفَقَ ("übereinstimmen/sich einigen", sehr geläufiges Wort).
+// Bewusst NICHT als eigene Tabelle gebaut (siehe Übung 7, S.198f): "اذكر أصل كل مما يأتي، ثم بيّن بابه" ist
+// eine Identifikations-Übung (Wurzel + Stammname zu einem bereits fertigen Wort NENNEN), keine
+// Wurzel→Form-Ableitungstabelle mit Lückenzellen - analog zu den bereits in L16/17/19/21/22 ausgeschlossenen
+// Identifikations-Übungen. Sie testet gezielt genau die vom Vault-Scouting erwähnte Verwechslungsfalle:
+// اِنْكَسَرَ/اِنْفَتَحَ/اِنْقَطَعَ sind Stamm VII (اِنْفَعَلَ) von كسر/فتح/قطع, während اِنْتَقَلَ/اِنْتَشَرَ/
+// اِنْتَصَرَ Stamm VIII (اِفْتَعَلَ) von ن-anlautenden Wurzeln نقل/نشر/نصر sind (kein ت-Wandel nötig, da ن
+// keine Assimilationsregel auslöst, exakt wie bei اِنْتَظَرَ selbst) - beide Gruppen sehen oberflächlich
+// identisch aus ("ان-" + Rest), sind aber grammatisch verschieden. Übrige Übungen dieser Lektion (nicht als
+// Tabelle gebaut, da kein Zeile=Wurzel/Spalte=Form-Format, obwohl im selben Seitenbereich gedruckt): Übung 1
+// (Verständnisfragen zum Dialog). Übung 2 (freie Verb-Extraktion aus dem Dialog, offene Liste). Übung 8
+// (معاني باب افتعل: المطاوعة-Bedeutung an 4 Satzpaaren + Lückensatz-Vervollständigung, kein Wurzelraster).
+// Übung 9 (Identifikations-Übung: Maḍi/Muḍariʿ/Amr/Ableitungen in 10 vollständigen Kontextsätzen markieren,
+// u. a. die Koranbelege لَيْتَني/آمَنوا, kein Lückenformat). Übung 10 (أ+افتعل=أفتعل-Orthographie-Notiz zur
+// Verschmelzung von Hamzat-al-istifham mit Hamzat-al-wasl, Koranbeleg "أَصْطَفَى الْبَنَاتِ"). Übung 11
+// (إذا الفجائية-Grammatik + 5 Beispielsätze, u. a. Qur'an [الأعراف ١٠٧-١٠٨]). Übung 12 (ظَنَّ mit zwei
+// Akkusativobjekten, Grammatik + Lückensatz-Drill an 10 Sätzen + أنّ-Alternative). Übung 13 (Pluralbildung,
+// freie Wortliste). Übung 14 (مضارع-Bildung einer gemischten Liste عَضَّ/اجْتَنَبْ/اغْتَابَ, kein reiner
+// Stamm-VIII-Drill). Übung 15 (صيغ مبالغة اسم الفاعل: فعّال/فعيل/فعول/فعل/مفعال an 9 Stamm-I-Wurzeln, hat
+// nichts mit Stamm VIII zu tun). Übung 16 (dieselben مبالغة-Muster فعّال/فعيل/فعول an weiteren Wurzeln).
+'b3-l23':[
+ {de:'اِفْتَعَلَ — Hauptmodell', columns:['الماضي','المضارع','الأمر','اسم الفاعل','المصدر'], rows:[
+   {root:'اِنْتَظَرَ', values:['اِنْتَظَرَ','يَنْتَظِرُ','اِنْتَظِرْ','مُنْتَظِرٌ','اِنْتِظَارٌ'], given:[true,true,true,true,true]},
+   {root:'اِشْتَرَكَ', values:['اِشْتَرَكَ','يَشْتَرِكُ','اِشْتَرِكْ','مُشْتَرِكٌ','اِشْتِرَاكٌ'], given:[true,false,false,false,false]},
+   {root:'اِمْتَحَنَ', values:['اِمْتَحَنَ','يَمْتَحِنُ','اِمْتَحِنْ','مُمْتَحِنٌ','اِمْتِحَانٌ'], given:[true,false,false,false,false]},
+   {root:'اِجْتَمَعَ', values:['اِجْتَمَعَ','يَجْتَمِعُ','اِجْتَمِعْ','مُجْتَمِعٌ','اِجْتِمَاعٌ'], given:[true,false,false,false,false]},
+   {root:'اِلْتَقَى', values:['اِلْتَقَى','يَلْتَقِي','اِلْتَقِ','مُلْتَقٍ','اِلْتِقَاءٌ (أصله: اِلْتِقَايُ)'], given:[true,false,false,false,true]},
+   {root:'اِخْتَارَ', values:['اِخْتَارَ','يَخْتَارُ','اِخْتَرْ','مُخْتَارٌ','اِخْتِيَارٌ'], given:[true,false,false,true,true]}
+ ]},
+ {de:'ت-إبدال: فاء د/ز/ذ ← د', columns:['الفعل المجرد','اِفْتَعَلَ'], rows:[
+   {root:'زَحَمَ', values:['زَحَمَ','اِزْدَحَمَ'], given:[true,true]},
+   {root:'زَانَ', values:['زَانَ','اِزْدَانَ'], given:[true,false]},
+   {root:'ذَكَرَ', values:['ذَكَرَ','اِدَّكَرَ'], given:[true,false]},
+   {root:'دَعَا', values:['دَعَا','اِدَّعَى'], given:[true,false]}
+ ]},
+ {de:'ت-إبدال: فاء ص/ض/ط/ظ ← ط', columns:['الفعل المجرد','اِفْتَعَلَ'], rows:[
+   {root:'صَبَرَ', values:['صَبَرَ','اِصْطَبَرَ'], given:[true,true]},
+   {root:'صَفَا', values:['صَفَا','اِصْطَفَى'], given:[true,false]},
+   {root:'ضَرَبَ', values:['ضَرَبَ','اِضْطَرَبَ'], given:[true,false]},
+   {root:'ظَلَمَ', values:['ظَلَمَ','اِظْطَلَمَ'], given:[true,false]},
+   {root:'طَلَعَ', values:['طَلَعَ','اِطَّلَعَ'], given:[true,false]}
+ ]},
+ {de:'ت-إبدال: فاء و ← تّ (إدغام)', columns:['الفعل المجرد','اِفْتَعَلَ'], rows:[
+   {root:'وَقَى', values:['وَقَى','اتَّقَى'], given:[true,true]},
+   {root:'وَصَلَ', values:['وَصَلَ','اتَّصَلَ'], given:[true,false]},
+   {root:'وَحَدَ', values:['وَحَدَ','اتَّحَدَ'], given:[true,false]},
+   {root:'وَفَقَ', values:['وَفَقَ','اتَّفَقَ'], given:[true,false]}
  ]}
 ]
 };
