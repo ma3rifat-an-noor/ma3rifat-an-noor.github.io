@@ -862,6 +862,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l20', book:3, ar:'بَابُ تَفَعَّلَ', de:'Lektion 20: Verbstamm V (تَفَعَّلَ)',
  gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm V (تَفَعَّلَ) - gebildet durch Vorsetzen von تَ vor باب فَعَّلَ (تَ+فَعَّلَ), meist reflexiv/mutawaʿa zu Stamm II: عَلَّمَ (lehren) → تَعَلَّمَ (lernen). Übt المضارع, الأمر, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (تَحَدَّثَ, تَكَلَّمَ, تَذَكَّرَ, auch hamziert تَأَخَّرَ) - der Amr wird gebildet, indem حرف المضارعة UND die Kasusendung wegfallen (تَتَكَلَّمُ → تَكَلَّمْ), der Masdar folgt dem Muster تَفَعُّلٌ. Dazu eine zweite Tabelle für Wurzeln mit defektem Letztradikal (ناقص, Modell تَغَدَّى „zu Mittag essen", dazu تَعَشَّى, تَلَقَّى, تَمَنَّى, تَأَنَّى): im Amr fällt zusätzlich zum حرف المضارعة auch das finale schwache ي/Alif weg (تَتَغَدَّى → تَغَدَّى → تَغَدَّ), der Masdar تَفَعُّلٌ wird durch das schwache Letztradikal zu einem اسم منقوص (تَغَدٍّ, bestimmt: التَّغَدِّي) - die Tabelle zeigt dazu eigens die Zwischenstufe أصله (تَغَدُّيٌ) vor dieser Lautung, siehe die Übungstabellen im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l21', book:3, ar:'بَابُ تَفَاعَلَ', de:'Lektion 21: Verbstamm VI (تَفَاعَلَ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm VI (تَفَاعَلَ) - gebildet durch Vorsetzen von تَ vor باب فَاعَلَ (تَ+فَاعَلَ), meist reziprok/gegenseitig (تَعَاوَنَ „einander helfen, kooperieren") oder als vorgetäuschte Handlung (تَعَامَى „sich blind stellen"). Haupttabelle übt المضارع, الأمر und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (تَعَاوَنَ, hamziert تَسَاءَلَ, تَشَاجَرَ) und defekten Wurzeln (ناقص: تَبَاكَى „sich weinend stellen", تَعَامَى) - der Amr wird wie bei Stamm V gebildet (حرف المضارعة + Kasusendung fallen weg, bei defekten Wurzeln zusätzlich das finale ى: تَتَبَاكَى → تَبَاكَى → تَبَاكَ), der Masdar folgt dem Muster تَفَاعُلٌ und wird bei defekten Wurzeln zu einem اسم منقوص (تَبَاكٍ, أصله تَبَاكُيٌ). Dazu eine zweite Tabelle für اسم الفاعل (Muster مُتَفَاعِلٌ), siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1441,6 +1444,62 @@ const DERIV_TABLES = {
    {root:'تَلَقَّى', values:['تَلَقَّى','يَتَلَقَّى','تَلَقَّ','تَلَقٍّ','تَلَقُّيُ'], given:[true,false,false,false,false]},
    {root:'تَمَنَّى', values:['تَمَنَّى','يَتَمَنَّى','تَمَنَّ','تَمَنٍّ','تَمَنُّيُ'], given:[true,false,false,false,false]},
    {root:'تَأَنَّى', values:['تَأَنَّى','يَتَأَنَّى','تَأَنَّ','تَأَنٍّ','تَأَنُّيُ'], given:[true,false,false,false,false]}
+ ]}
+],
+// Buch 3, Lektion 21: باب تَفَاعَلَ (Verbstamm VI). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 178-187 (PDF 1-indexiert 177-186, Offset +1 bzw. 0-Index+2 wie in den Vorlektionen;
+// gegengeprüft gegen die gedruckten Kopfzeilen "الدرس الحادى والعشرون"/"١٧٨" und die nächste Lektionsgrenze
+// "الدرس الثاني والعشرون"/"١٨٨"). Dialog S.178-179, danach Übungen 1-14 S.179-185, dann ein eigener,
+// unnummerierter Grammatikblock "الأحرف المشبهة بالفعل" (إنّ وأخواتها) S.186-187. NUR Übungen 3 und 4
+// (beide S.180) sind Ableitungstabellen im Sinne dieser Engine (Zeile=Wurzel, Spalte=Ableitungsform) -
+// die Lektionsübersicht in der Vault hatte ursprünglich nur die Haupttabelle (Übung 3) erfasst und Übung 4
+// übersehen, exakt derselbe Undercount-Fehler wie bei L16/17/19. Alle anderen Übungen dieser Lektion sind
+// Lückensätze, freie Wortlisten oder Grammatiknotizen ohne Zeilen/Spalten-Format (Übung 1: Dialog-Fragen;
+// Übung 2: Verben aus dem Dialog extrahieren, keine Tabelle; Übung 5: Bedeutungs-Erklärung + Analyse von
+// 10 Beispielsätzen, keine Wurzel-Tabelle; Übung 6: optionaler Wegfall einer der beiden تاء in تَتَفَاعَلُ,
+// 3 Koranbeispiele; Übung 7: ليت-Grammatik + Lückensätze; Übung 8: لا النافية للجنس + Lückensätze;
+// Übung 9: ناقص-Lückensatz-Vervollständigung; Übung 10: أفعل-Farb-/Mangelmuster, freie Wortliste
+// (أعرج/عرجاء/عُرج-Analogie); Übung 11: مصدر وَثِقَ (ثِقَةٌ/وُثُوقٌ), freie Wortliste; Übung 12: جمع حُجْرَة،
+// freie Wortliste; Übung 13: إياك-Lückensatz; Übung 14: البدل-Arten + Lückensätze; der Grammatikblock
+// إنّ وأخواتها (6 Partikel, نون الوقاية) ist reiner Fließtext mit Beispielsätzen, keine Ableitungstabelle)
+// - analog zu den bewusst ausgelassenen Nicht-Tabellen-Übungen in Lektion 17/19/20.
+// Übung 3 (S.180): Haupttabelle, Spalten الماضي/المضارع/الأمر/المصدر. Zeile 1 (تَنَاوَلَ) ist das gedruckte
+// Hauptmodell (alle 4 Spalten gegeben). Die Lückenzeilen تَعَاوَنَ, تَسَاءَلَ (hamziert, Qur'an 78:1 عَمَّ
+// يَتَسَاءَلُونَ, auf S.181 derselben Lektion zitiert - bestätigt المضارع يَتَسَاءَلُ), تَشَاجَرَ (im Dialog
+// dieser Lektion S.178 belegt: "هذين الطالبين يَتَشَاجَرَانِ دائماً") sind gesunde Wurzeln - Amr durch
+// Wegfall von حرف المضارعة + Kasusendung (يَتَعَاوَنُ → تَعَاوَنْ), المصدر nach dem Muster تَفَاعُلٌ
+// (تَعَاوُنٌ, تَسَاؤُلٌ - Hamza-Sitz و nach Alif+folgendem Dammah, exakt wie تَشَاؤُمٌ im englischen Schlüssel
+// S.90 belegt -, تَشَاجُرٌ). Zeile 5 (تَبَاكَى, "sich weinend stellen") ist eine ناقص-Wurzel: die المصدر-Zelle
+// ist im Druck MIT أصله-Hinweis vorgegeben ("تباكٍ (أصله: تَبَاكُيٌ)"), المضارع/الأمر bleiben Lückenzellen -
+// der englische Schlüssel (S.90) bestätigt wörtlich sowohl die Amr-Regel (حرف المضارعة UND das finale
+// Alif/ي fallen weg: تَتَبَاكَى → [حرف المضارعة weg] تَبَاكَى → [finales Alif weg] تَبَاكَ) als auch die
+// Masdar-Form (تَبَاكُيٌ → تَبَاكٍ). Zeile 6
+// (تَعَامَى, "sich blind stellen") ist dieselbe ناقص-Wurzelklasse, aber OHNE jeden Hinweis (volle
+// Lückenzeile) - المضارع يَتَعَامَى ist direkt in Übung 9 dieser Lektion belegt ("إنما يَتَعَامَى حتى
+// يتصدق عليه الناس", S.182), الأمر تَعَامَ nach derselben Regel wie تَبَاكَ, المصدر تَعَامٍ nach demselben
+// Muster wie تَبَاكٍ (OHNE die أصله-Klammer, da das eine reine Druck-Referenzanmerkung einer GEGEBENEN
+// Zelle ist, keine erwartete Nutzereingabe - exakt wie بَارَى/نَادَى in Lektion 19 gehandhabt: نَادَى
+// trägt die أصله-Klammer nur, weil es die gegebene Hinweiszeile ist, بَارَى als Lückenzeile bekommt sie
+// nicht). Übung 4 (S.180): zweite Tabelle, "هات أسماء الفاعلين من الأفعال الآتية" - 3 Wurzelpaare
+// (ماضي/مضارع gegeben, keine gedruckten Lückenlinien im Buch, da mündliche/freie Übung; hier als Spalte
+// اسم الفاعل modelliert, analog zu Lektion 19s "اسم الفاعل من فَاعَلَ"-Tabelle). اسم الفاعل-Muster
+// مُتَفَاعِلٌ (حرف المضارعة → مُ, Fatha vor dem Letztradikal) ist im englischen Schlüssel S.90 explizit
+// belegt (مُتَنَاوِلٌ "einer, der nimmt"). تَفَاعَلَ selbst (als generisches Platzhalter-Verb, exakt wie im
+// Buch gedruckt) → مُتَفَاعِلٌ; تَشَاءَمَ ("pessimistisch sein") → مُتَشَائِمٌ ("Pessimist", reales Wort);
+// تَعَاوَنَ → مُتَعَاوِنٌ ("kooperierend", reales Wort).
+'b3-l21':[
+ {de:'تَفَاعَلَ — Hauptmodell', columns:['الماضي','المضارع','الأمر','المصدر'], rows:[
+   {root:'تَنَاوَلَ', values:['تَنَاوَلَ','يَتَنَاوَلُ','تَنَاوَلْ','تَنَاوُلٌ'], given:[true,true,true,true]},
+   {root:'تَعَاوَنَ', values:['تَعَاوَنَ','يَتَعَاوَنُ','تَعَاوَنْ','تَعَاوُنٌ'], given:[true,false,false,false]},
+   {root:'تَسَاءَلَ', values:['تَسَاءَلَ','يَتَسَاءَلُ','تَسَاءَلْ','تَسَاؤُلٌ'], given:[true,false,false,false]},
+   {root:'تَشَاجَرَ', values:['تَشَاجَرَ','يَتَشَاجَرُ','تَشَاجَرْ','تَشَاجُرٌ'], given:[true,false,false,false]},
+   {root:'تَبَاكَى', values:['تَبَاكَى','يَتَبَاكَى','تَبَاكَ','تَبَاكٍ (أصله: تَبَاكُيٌ)'], given:[true,false,false,true]},
+   {root:'تَعَامَى', values:['تَعَامَى','يَتَعَامَى','تَعَامَ','تَعَامٍ'], given:[true,false,false,false]}
+ ]},
+ {de:'اسم الفاعل من تَفَاعَلَ', columns:['الماضي','المضارع','اسم الفاعل'], rows:[
+   {root:'تَفَاعَلَ', values:['تَفَاعَلَ','يَتَفَاعَلُ','مُتَفَاعِلٌ'], given:[true,true,false]},
+   {root:'تَشَاءَمَ', values:['تَشَاءَمَ','يَتَشَاءَمُ','مُتَشَائِمٌ'], given:[true,true,false]},
+   {root:'تَعَاوَنَ', values:['تَعَاوَنَ','يَتَعَاوَنُ','مُتَعَاوِنٌ'], given:[true,true,false]}
  ]}
 ]
 };
