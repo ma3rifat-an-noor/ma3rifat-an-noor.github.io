@@ -495,24 +495,24 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
     <section class="view chat" id="v-tutor" aria-label="Tutor" hidden>
       <div class="chat-head">
         <div class="wrap">
-          <label class="sr" for="tutor-topic">Übungsthema</label>
+          <label class="sr" for="tutor-topic" data-i18n="exerciseTopic">Übungsthema</label>
           <select class="select" id="tutor-topic"></select>
-          <button class="btn small" type="button" id="tutor-reset"><svg class="ico sm"><use href="#i-refresh"/></svg>Neu</button>
-          <div class="seg" data-mode-seg role="group" aria-label="Modus"><button type="button" data-mode="offline">Übungen</button><button type="button" data-mode="claude">Frei mit Claude</button></div>
+          <button class="btn small" type="button" id="tutor-reset"><svg class="ico sm"><use href="#i-refresh"/></svg><span data-i18n="newBtn">Neu</span></button>
+          <div class="seg" data-mode-seg role="group" aria-label="Modus" data-i18n-aria="modeGroup"><button type="button" data-mode="offline" data-i18n="modeOffTutor">Übungen</button><button type="button" data-mode="claude" data-i18n="modeClaudeBtn">Frei mit Claude</button></div>
         </div>
       </div>
       <div class="msgs" id="tutor-scroll"><div class="wrap" id="tutor-msgs"></div></div>
       <div class="dock">
         <div class="wrap">
-          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag">Übungsmodus · kostenlos</span><span>Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude">Frei mit Claude sprechen</button></div>
+          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag" data-i18n="modeTag">Übungsmodus · kostenlos</span><span data-i18n="modeTapHint">Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude" data-i18n="modeFreeBtn">Frei mit Claude sprechen</button></div>
           <div data-claude-ui>
           <div class="mic-help" data-mic-help hidden></div>
           <div class="scroller" id="tutor-chips"></div>
           <form class="composer" id="tutor-form" autocomplete="off">
-            <button class="mic" type="button" data-mic="tutor" aria-label="Sprechen" aria-pressed="false"><svg class="ico"><use href="#i-mic"/></svg></button>
-            <label class="sr" for="tutor-input">Deine Nachricht</label>
-            <textarea id="tutor-input" rows="1" dir="auto" placeholder="Sprich oder schreib …"></textarea>
-            <button class="send" type="submit" id="tutor-send" aria-label="Senden"><svg class="ico"><use href="#i-send"/></svg></button>
+            <button class="mic" type="button" data-mic="tutor" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <label class="sr" for="tutor-input" data-i18n="yourMessage">Deine Nachricht</label>
+            <textarea id="tutor-input" rows="1" dir="auto" placeholder="Sprich oder schreib …" data-i18n-ph="speakOrWrite"></textarea>
+            <button class="send" type="submit" id="tutor-send" aria-label="Senden" data-i18n-aria="sendLabel"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
           </div>
         </div>
@@ -522,9 +522,9 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
     <!-- ROLLENSPIEL -->
     <section class="view" id="v-rollen-pick" aria-label="Rollenspiel wählen" hidden>
       <div class="wrap">
-        <h2 class="h">Rollenspiele</h2>
-        <p class="lede">Wähle eine Situation. Der Tutor spielt die andere Rolle, korrigiert dich und hilft mit fertigen Sätzen.</p>
-        <div class="mode-seg"><span class="lab">Modus</span><div class="seg" data-mode-seg role="group" aria-label="Modus"><button type="button" data-mode="offline">Dialog-Übung · kostenlos</button><button type="button" data-mode="claude">Frei mit Claude</button></div></div>
+        <h2 class="h" data-i18n="roleplayTitle">Rollenspiele</h2>
+        <p class="lede" data-i18n="roleplayLede">Wähle eine Situation. Der Tutor spielt die andere Rolle, korrigiert dich und hilft mit fertigen Sätzen.</p>
+        <div class="mode-seg"><span class="lab" data-i18n="modeLab">Modus</span><div class="seg" data-mode-seg role="group" aria-label="Modus" data-i18n-aria="modeGroup"><button type="button" data-mode="offline" data-i18n="modeOffRollen">Dialog-Übung · kostenlos</button><button type="button" data-mode="claude" data-i18n="modeClaudeBtn">Frei mit Claude</button></div></div>
         <div id="role-resume"></div>
         <div class="scenes" id="scenes"></div>
       </div>
@@ -532,24 +532,24 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
     <section class="view chat" id="v-rollen-play" aria-label="Rollenspiel" hidden>
       <div class="chat-head role-head">
         <div class="wrap">
-          <button class="icon-btn" type="button" id="role-back" aria-label="Zurück zur Auswahl"><svg class="ico"><use href="#i-back"/></svg></button>
+          <button class="icon-btn" type="button" id="role-back" aria-label="Zurück zur Auswahl" data-i18n-aria="backToPick"><svg class="ico"><use href="#i-back"/></svg></button>
           <div class="role-title" id="role-title"></div>
-          <button class="btn small" type="button" id="role-feedback">Auswertung</button>
+          <button class="btn small" type="button" id="role-feedback" data-i18n="feedbackBtn">Auswertung</button>
           <p class="goal" id="role-goal"></p>
         </div>
       </div>
       <div class="msgs" id="role-scroll"><div class="wrap" id="role-msgs"></div></div>
       <div class="dock">
         <div class="wrap">
-          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag">Übungsmodus · kostenlos</span><span>Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude">Frei mit Claude sprechen</button></div>
+          <div class="mode-bar" data-offline-ui hidden><span class="mode-tag" data-i18n="modeTag">Übungsmodus · kostenlos</span><span data-i18n="modeTapHint">Tippe oben auf eine Antwort.</span><button class="link" type="button" data-mode="claude" data-i18n="modeFreeBtn">Frei mit Claude sprechen</button></div>
           <div data-claude-ui>
           <div class="mic-help" data-mic-help hidden></div>
           <div class="scroller" id="role-chips"></div>
           <form class="composer" id="role-form" autocomplete="off">
-            <button class="mic" type="button" data-mic="role" aria-label="Sprechen" aria-pressed="false"><svg class="ico"><use href="#i-mic"/></svg></button>
-            <label class="sr" for="role-input">Deine Antwort</label>
-            <textarea id="role-input" rows="1" dir="auto" placeholder="Deine Antwort …"></textarea>
-            <button class="send" type="submit" id="role-send" aria-label="Senden"><svg class="ico"><use href="#i-send"/></svg></button>
+            <button class="mic" type="button" data-mic="role" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <label class="sr" for="role-input" data-i18n="yourAnswer">Deine Antwort</label>
+            <textarea id="role-input" rows="1" dir="auto" placeholder="Deine Antwort …" data-i18n-ph="yourAnswerPh"></textarea>
+            <button class="send" type="submit" id="role-send" aria-label="Senden" data-i18n-aria="sendLabel"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
           </div>
         </div>
@@ -2504,7 +2504,7 @@ function norm(s){
 }
 function slug(s){ return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9]+/g, '').toLowerCase() || 'x'; }
 const icon = (id, cls = 'ico') => '<svg class="' + cls + '" aria-hidden="true"><use href="#' + id + '"/></svg>';
-const speakBtn = (text, label = 'Vorlesen') => '<button class="speak" type="button" data-speak="' + esc(text) + '" aria-label="' + label + '">' + icon('i-speak', 'ico sm') + '</button>';
+const speakBtn = (text, label) => '<button class="speak" type="button" data-speak="' + esc(text) + '" aria-label="' + (label || (S.settings.lang === 'en' ? 'Listen' : 'Vorlesen')) + '">' + icon('i-speak', 'ico sm') + '</button>';
 const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 let toastTimer = null;
 function toast(msg){
@@ -2631,7 +2631,8 @@ function loadVoices(){
 if ('speechSynthesis' in window){ loadVoices(); try { speechSynthesis.addEventListener('voiceschanged', loadVoices); } catch (e) {} }
 function speak(text){
   const t = String(text || '').replace(/…/g, ' ').trim(); if (!t) return;
-  if (!('speechSynthesis' in window)){ toast('Vorlesen wird auf diesem Gerät nicht unterstützt.'); return; }
+  const en = S.settings.lang === 'en';
+  if (!('speechSynthesis' in window)){ toast(en ? 'Reading aloud isn’t supported on this device.' : 'Vorlesen wird auf diesem Gerät nicht unterstützt.'); return; }
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(t);
@@ -2639,7 +2640,7 @@ function speak(text){
     u.rate = Number(S.settings.rate) || 0.85;
     speechSynthesis.speak(u);
   } catch (e) {}
-  if (!arVoice && voices.length && !voiceWarned){ voiceWarned = true; toast('Auf diesem Gerät ist keine arabische Stimme installiert. Du kannst sie in den Systemeinstellungen unter Sprache hinzufügen.'); }
+  if (!arVoice && voices.length && !voiceWarned){ voiceWarned = true; toast(en ? 'No Arabic voice is installed on this device. You can add one in system settings under Language.' : 'Auf diesem Gerät ist keine arabische Stimme installiert. Du kannst sie in den Systemeinstellungen unter Sprache hinzufügen.'); }
 }
 document.addEventListener('pointerdown', function unlock(){
   document.removeEventListener('pointerdown', unlock);
@@ -2652,11 +2653,18 @@ let rec = null;
 const micBlocked = () => lsGet(LS + ':mic') === 'blocked';
 function showMicHelp(btn){
   const box = btn.closest('.dock, .tr-form').querySelector('[data-mic-help]');
-  box.innerHTML = '<strong>Sprechen über die Handy-Tastatur</strong>'
-    + '<p>Das Mikrofon ist in dieser Ansicht gesperrt. Die Diktierfunktion deiner Tastatur funktioniert trotzdem:</p>'
-    + '<ul><li><b>iPhone:</b> Einstellungen › Allgemein › Tastatur › Tastaturen › „Arabisch" hinzufügen. Im Textfeld mit der Globus-Taste zu Arabisch wechseln und auf das Mikrofon tippen.</li>'
-    + '<li><b>Android (Gboard):</b> Gboard › Sprachen › „Arabisch" hinzufügen. Zur arabischen Tastatur wechseln und auf das Mikrofon tippen.</li></ul>'
-    + '<p>Danach auf Senden tippen.</p><div class="row"><button class="btn small" type="button" data-close-help>Verstanden</button></div>';
+  const en = S.settings.lang === 'en';
+  box.innerHTML = en
+    ? '<strong>Speak via the phone keyboard</strong>'
+      + '<p>The microphone is locked in this view. Your keyboard\'s dictation still works:</p>'
+      + '<ul><li><b>iPhone:</b> Settings › General › Keyboard › Keyboards › add „Arabic". In the text field, switch to Arabic with the globe key and tap the microphone.</li>'
+      + '<li><b>Android (Gboard):</b> Gboard › Languages › add „Arabic". Switch to the Arabic keyboard and tap the microphone.</li></ul>'
+      + '<p>Then tap Send.</p><div class="row"><button class="btn small" type="button" data-close-help>Got it</button></div>'
+    : '<strong>Sprechen über die Handy-Tastatur</strong>'
+      + '<p>Das Mikrofon ist in dieser Ansicht gesperrt. Die Diktierfunktion deiner Tastatur funktioniert trotzdem:</p>'
+      + '<ul><li><b>iPhone:</b> Einstellungen › Allgemein › Tastatur › Tastaturen › „Arabisch" hinzufügen. Im Textfeld mit der Globus-Taste zu Arabisch wechseln und auf das Mikrofon tippen.</li>'
+      + '<li><b>Android (Gboard):</b> Gboard › Sprachen › „Arabisch" hinzufügen. Zur arabischen Tastatur wechseln und auf das Mikrofon tippen.</li></ul>'
+      + '<p>Danach auf Senden tippen.</p><div class="row"><button class="btn small" type="button" data-close-help>Verstanden</button></div>';
   box.hidden = false;
 }
 function toggleMic(btn, input, lang, onDone){
@@ -2674,8 +2682,8 @@ function toggleMic(btn, input, lang, onDone){
   };
   r.onerror = e => {
     if (['not-allowed', 'service-not-allowed', 'audio-capture', 'language-not-supported'].includes(e.error)){ lsSet(LS + ':mic', 'blocked'); showMicHelp(btn); input.focus(); }
-    else if (e.error === 'no-speech') toast('Ich habe nichts gehört. Tippe aufs Mikrofon und sprich.');
-    else if (e.error !== 'aborted') toast('Die Spracherkennung wurde unterbrochen. Versuch es noch einmal.');
+    else if (e.error === 'no-speech') toast(S.settings.lang === 'en' ? 'I didn’t hear anything. Tap the microphone and speak.' : 'Ich habe nichts gehört. Tippe aufs Mikrofon und sprich.');
+    else if (e.error !== 'aborted') toast(S.settings.lang === 'en' ? 'Speech recognition was interrupted. Try again.' : 'Die Spracherkennung wurde unterbrochen. Versuch es noch einmal.');
   };
   r.onend = () => { btn.classList.remove('rec'); btn.setAttribute('aria-pressed', 'false'); rec = null; if (heard && input.value.trim() && onDone) onDone(); };
   try { r.start(); } catch (e) { rec = null; btn.classList.remove('rec'); lsSet(LS + ':mic', 'blocked'); showMicHelp(btn); }
@@ -2691,21 +2699,41 @@ function getSample(){
 }
 const PERMANENT = new Set(['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed']);
 function errText(e){
+  const en = S.settings.lang === 'en';
   switch (e && e.code){
-    case 'not_granted': return 'Du hast der App den Zugriff auf Claude nicht erlaubt. Über das Menü der App unter „Berechtigungen" kannst du ihn später freigeben.';
-    case 'sampling_disabled': return 'Claude ist für dieses Konto gerade nicht verfügbar.';
-    case 'rate_limited': return 'Gerade kamen zu viele Anfragen. Warte einen Moment und tippe dann auf „Nochmal".';
-    case 'session_expired': return 'Bitte melde dich bei Claude neu an und tippe dann auf „Nochmal".';
-    case 'invalid_json': case 'empty_completion': return 'Die Antwort kam unvollständig an. Tippe auf „Nochmal".';
-    case 'refused': return 'Darauf kann der Tutor nicht antworten. Formuliere es bitte anders.';
-    case 'prompt_too_large': return 'Das Gespräch ist zu lang geworden. Starte mit „Neu" ein neues Gespräch.';
-    default: return 'Die Verbindung wurde unterbrochen. Tippe auf „Nochmal".';
+    case 'not_granted': return en ? 'You haven’t allowed the app to access Claude. You can grant it later via the app menu under „Permissions“.' : 'Du hast der App den Zugriff auf Claude nicht erlaubt. Über das Menü der App unter „Berechtigungen" kannst du ihn später freigeben.';
+    case 'sampling_disabled': return en ? 'Claude isn’t available for this account right now.' : 'Claude ist für dieses Konto gerade nicht verfügbar.';
+    case 'rate_limited': return en ? 'Too many requests just now. Wait a moment, then tap „Retry“.' : 'Gerade kamen zu viele Anfragen. Warte einen Moment und tippe dann auf „Nochmal".';
+    case 'session_expired': return en ? 'Please sign in to Claude again, then tap „Retry“.' : 'Bitte melde dich bei Claude neu an und tippe dann auf „Nochmal".';
+    case 'invalid_json': case 'empty_completion': return en ? 'The answer arrived incomplete. Tap „Retry“.' : 'Die Antwort kam unvollständig an. Tippe auf „Nochmal".';
+    case 'refused': return en ? 'The tutor can’t answer that. Please phrase it differently.' : 'Darauf kann der Tutor nicht antworten. Formuliere es bitte anders.';
+    case 'prompt_too_large': return en ? 'The conversation got too long. Start a new one with „New“.' : 'Das Gespräch ist zu lang geworden. Starte mit „Neu" ein neues Gespräch.';
+    default: return en ? 'The connection was interrupted. Tap „Retry“.' : 'Die Verbindung wurde unterbrochen. Tippe auf „Nochmal".';
   }
 }
-const NO_CLAUDE = 'Der Tutor braucht Claude. Öffne diese App in Claude (im Browser oder in der Claude-App), dann antwortet er dir.';
+const NO_CLAUDE = () => S.settings.lang === 'en'
+  ? 'The tutor needs Claude. Open this app in Claude (in the browser or the Claude app), then it will reply to you.'
+  : 'Der Tutor braucht Claude. Öffne diese App in Claude (im Browser oder in der Claude-App), dann antwortet er dir.';
 
 function tutorRules(extra){
-  const f = S.settings.gender === 'f', b = Number(S.settings.book) || 1;
+  const f = S.settings.gender === 'f', b = Number(S.settings.book) || 1, en = S.settings.lang === 'en';
+  if (en) return [
+'You are a friendly, patient Arabic teacher. The learner speaks English and is a complete beginner. The basis is the textbook series „Durūs al-Lugha al-ʿArabiyya li-ghayr an-nāṭiqīn bihā" (the Madina books of the Islamic University of Madinah). The learner is currently working with book ' + b + ' of 3.',
+extra || '',
+'Rules:\n'
++ '1. Reply only in Modern Standard Arabic (Fuṣḥā), never in dialect. At most 2 very short, simple sentences, about 12 words total. Mainly use vocabulary and grammar from book 1' + (b > 1 ? ' through ' + b : '') + ' of the Madina series.\n'
++ '2. Write ALL Arabic text with full diacritics (Taschkīl).\n'
++ '3. Address the learner ' + (f ? 'as female (أَنْتِ، ـكِ).' : 'as male (أَنْتَ، ـكَ).') + '\n'
++ '4. Keep the conversation going and mostly end with a simple question.\n'
++ '5. Check the learner\'s LAST message for real mistakes: grammar, gender (e.g. هٰذَا/هٰذِهِ), noun-adjective agreement, case (only if endings are written), word choice, word order. NOT mistakes: missing diacritics, hamza spelling, ة/ه, ى/ي, missing punctuation. If everything is correct, "correction" is null.\n'
++ '6. On a mistake: "wrong" = the learner\'s sentence exactly as written; "correct" = the same sentence corrected, with full diacritics, changed as little as possible; "correct_de" = English meaning of the corrected sentence; "explanation" = 1–2 short, simple sentences in English explaining the mistake.\n'
++ '7. If the learner writes in English or asks something like „How do you say …?", that is not a mistake: answer the question briefly in English in "tip" (including the Arabic expression with diacritics) and continue in "reply" in Arabic.\n'
++ '8. Otherwise "tip" is a short English hint for how the learner could respond, with an Arabic example, or "" if not needed.\n'
++ 'Reply only with a JSON object of this form:\n'
++ '{"correction": null, "reply": "Arabic reply", "translation": "English translation of the reply", "translit": "simple Latin transliteration of the reply", "tip": ""}\n'
++ 'or on a mistake:\n'
++ '{"correction": {"wrong": "…", "correct": "…", "correct_de": "…", "explanation": "…"}, "reply": "…", "translation": "…", "translit": "…", "tip": ""}'
+  ].filter(Boolean).join('\n\n');
   return [
 'Du bist ein freundlicher, geduldiger Arabischlehrer. Die lernende Person spricht Deutsch und steht ganz am Anfang. Grundlage ist die Lehrbuchreihe „Durūs al-Lugha al-ʿArabiyya li-ghayr an-nāṭiqīn bihā" (die Madina-Bücher der Islamischen Universität Medina). Die Person arbeitet gerade mit Buch ' + b + ' von 3.',
 extra || '',
@@ -2746,12 +2774,12 @@ function saveChats(){
   lsSet(LS + ':chats', JSON.stringify({tutor:{topic:CHAT.tutor.topic, recent:CHAT.tutor.recent, msgs:CHAT.tutor.msgs.filter(keep).slice(-60)}, role:{scene:CHAT.role.scene, step:CHAT.role.step, msgs:CHAT.role.msgs.filter(keep).slice(-60)}}));
 }
 function tutorOpening(){
-  const f = S.settings.gender === 'f';
+  const f = S.settings.gender === 'f', en = S.settings.lang === 'en';
   return {role:'tutor', opening:true,
     ar: f ? 'السَّلَامُ عَلَيْكُمْ! أَنَا مُعَلِّمُكِ. مَا اسْمُكِ؟' : 'السَّلَامُ عَلَيْكُمْ! أَنَا مُعَلِّمُكَ. مَا اسْمُكَ؟',
-    de:'Friede sei mit dir! Ich bin dein Lehrer. Wie heißt du?',
+    de: en ? 'Peace be upon you! I am your teacher. What is your name?' : 'Friede sei mit dir! Ich bin dein Lehrer. Wie heißt du?',
     tl: f ? 'as-salāmu ʿalaykum! anā muʿallimuki. ma smuki?' : 'as-salāmu ʿalaykum! anā muʿallimuka. ma smuka?',
-    tip:'Antworte zum Beispiel mit وَعَلَيْكُمُ السَّلَامُ، اِسْمِي … (Und Friede sei mit dir, ich heiße …). Tippe aufs Mikrofon oder schreib.'};
+    tip: en ? 'Reply for example with وَعَلَيْكُمُ السَّلَامُ، اِسْمِي … (And peace be upon you, my name is …). Tap the microphone or write.' : 'Antworte zum Beispiel mit وَعَلَيْكُمُ السَّلَامُ، اِسْمِي … (Und Friede sei mit dir, ich heiße …). Tippe aufs Mikrofon oder schreib.'};
 }
 function sceneOpening(id){
   const s = SCENE[id]; const o = S.settings.gender === 'f' && s.openF ? s.openF : s.open;
@@ -2801,17 +2829,19 @@ const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', '�
 // eine Taste je Buchstabe plus eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyBack unten,
 // die auf data-key-insert/data-key-target bzw. data-key-back reagieren.
 function arabicKeysHTML(targetInputId){
+  const en = S.settings.lang === 'en';
   const letterKeys = ARABIC_LETTERS.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
-  const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="Zeichen löschen">⌫</button>';
-  return '<div class="t-keys" role="group" aria-label="Arabische Tastatur">' + letterKeys + backKey + '</div>';
+  const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
+  return '<div class="t-keys" role="group" aria-label="' + (en ? 'Arabic keyboard' : 'Arabische Tastatur') + '">' + letterKeys + backKey + '</div>';
 }
 function msgHTML(m, i, kind){
-  const st = S.settings;
+  const st = S.settings, en = st.lang === 'en';
+  const unveilTitle = en ? 'Tap to show' : 'Antippen zum Anzeigen';
   if (m.role === 'tutor'){
-    return '<div class="msg tutor"><span class="who">' + (kind === 'role' ? 'Rolle' : 'Tutor') + '</span><div class="bubble">'
+    return '<div class="msg tutor"><span class="who">' + (kind === 'role' ? (en ? 'Role' : 'Rolle') : 'Tutor') + '</span><div class="bubble">'
       + '<p class="b-ar" lang="ar" dir="rtl">' + esc(m.ar) + '</p>'
       + (st.showTl && m.tl ? '<p class="b-tl">' + esc(m.tl) + '</p>' : '')
-      + (m.de ? '<p class="b-de' + (st.showDe ? '' : ' veil') + '"' + (st.showDe ? '' : ' data-unveil title="Antippen zum Anzeigen"') + '>' + rich(m.de) + '</p>' : '')
+      + (m.de ? '<p class="b-de' + (st.showDe ? '' : ' veil') + '"' + (st.showDe ? '' : ' data-unveil title="' + unveilTitle + '"') + '>' + rich(m.de) + '</p>' : '')
       + '<div class="b-row">' + speakBtn(m.ar) + '<span class="grow"></span></div>'
       + '</div>' + (m.tip ? '<div class="tip">' + rich(m.tip) + '</div>' : '') + '</div>';
   }
@@ -2820,29 +2850,29 @@ function msgHTML(m, i, kind){
     let h = '<div class="msg me"><div class="bubble"><p class="b-ar' + (isArabic(m.text) ? '' : ' latin') + '" dir="auto">' + esc(m.text) + '</p></div>';
     if (m.fix){
       const d = diffMark(m.fix.wrong || m.text, m.fix.correct);
-      h += '<div class="fix" role="group" aria-label="Korrektur"><span class="fix-lab">' + icon('i-x', 'ico sm') + 'Korrektur</span>'
-        + '<div class="fx w"><span class="mk">' + icon('i-x', 'ico sm') + '</span><p lang="ar"><span class="sr">Falsch: </span>' + d.w + '</p></div>'
-        + '<div class="fx r"><span class="mk">' + icon('i-check', 'ico sm') + '</span><p lang="ar"><span class="sr">Richtig: </span>' + d.r + '</p></div>'
+      h += '<div class="fix" role="group" aria-label="' + (en ? 'Correction' : 'Korrektur') + '"><span class="fix-lab">' + icon('i-x', 'ico sm') + (en ? 'Correction' : 'Korrektur') + '</span>'
+        + '<div class="fx w"><span class="mk">' + icon('i-x', 'ico sm') + '</span><p lang="ar"><span class="sr">' + (en ? 'Wrong: ' : 'Falsch: ') + '</span>' + d.w + '</p></div>'
+        + '<div class="fx r"><span class="mk">' + icon('i-check', 'ico sm') + '</span><p lang="ar"><span class="sr">' + (en ? 'Correct: ' : 'Richtig: ') + '</span>' + d.r + '</p></div>'
         + (m.fix.correct_de ? '<p class="meaning">' + rich(m.fix.correct_de) + '</p>' : '')
         + (m.fix.explanation ? '<p class="why">' + rich(m.fix.explanation) + '</p>' : '')
-        + '<p class="saved">' + speakBtn(m.fix.correct, 'Richtigen Satz vorlesen') + 'Liegt jetzt im Fehler-Stapel deiner Karteikarten.</p></div>';
+        + '<p class="saved">' + speakBtn(m.fix.correct, en ? 'Listen to the correct sentence' : 'Richtigen Satz vorlesen') + (en ? 'Now in the mistake pile of your flashcards.' : 'Liegt jetzt im Fehler-Stapel deiner Karteikarten.') + '</p></div>';
     } else if (m.ok){
-      h += '<span class="ok-tag">' + icon('i-check', 'ico sm') + 'Fehlerfrei</span>';
+      h += '<span class="ok-tag">' + icon('i-check', 'ico sm') + (en ? 'No mistakes' : 'Fehlerfrei') + '</span>';
     }
     return h + '</div>';
   }
   if (m.role === 'quiz'){
     const q = m.q;
-    return '<div class="msg tutor"><span class="who">' + (kind === 'role' ? 'Rolle' : 'Tutor') + '</span><div class="bubble">'
+    return '<div class="msg tutor"><span class="who">' + (kind === 'role' ? (en ? 'Role' : 'Rolle') : 'Tutor') + '</span><div class="bubble">'
       + '<p class="b-ar" lang="ar" dir="rtl">' + esc(q.ar) + '</p>'
       + (st.showTl && q.tl ? '<p class="b-tl">' + esc(q.tl) + '</p>' : '')
-      + (q.de ? '<p class="b-de' + (st.showDe ? '' : ' veil') + '"' + (st.showDe ? '' : ' data-unveil title="Antippen zum Anzeigen"') + '>' + rich(q.de) + '</p>' : '')
+      + (q.de ? '<p class="b-de' + (st.showDe ? '' : ' veil') + '"' + (st.showDe ? '' : ' data-unveil title="' + unveilTitle + '"') + '>' + rich(q.de) + '</p>' : '')
       + '<div class="b-row">' + speakBtn(q.ar) + '<span class="grow"></span></div></div>'
-      + (m.answered ? '' : '<div class="opts" role="group" aria-label="Antworten">' + m.opts.map((o, k) => '<button class="opt" type="button" data-opt="' + k + '" data-qi="' + i + '" data-kind="' + kind + '"><span class="o-n">' + (k + 1) + '</span><span class="o-ar" lang="ar">' + esc(o.ar) + '</span></button>').join('') + '</div>')
+      + (m.answered ? '' : '<div class="opts" role="group" aria-label="' + (en ? 'Answers' : 'Antworten') + '">' + m.opts.map((o, k) => '<button class="opt" type="button" data-opt="' + k + '" data-qi="' + i + '" data-kind="' + kind + '"><span class="o-n">' + (k + 1) + '</span><span class="o-ar" lang="ar">' + esc(o.ar) + '</span></button>').join('') + '</div>')
       + (m.hint && !m.answered ? '<div class="tip">' + rich(m.hint) + '</div>' : '') + '</div>';
   }
   if (m.role === 'note') return '<p class="note">' + rich(m.text) + '</p>';
-  if (m.role === 'err') return '<div class="err" role="alert"><p>' + esc(m.text) + '</p>' + (m.retry ? '<button class="btn small" type="button" data-retry="' + kind + '">' + icon('i-refresh', 'ico sm') + 'Nochmal</button>' : '') + '</div>';
+  if (m.role === 'err') return '<div class="err" role="alert"><p>' + esc(m.text) + '</p>' + (m.retry ? '<button class="btn small" type="button" data-retry="' + kind + '">' + icon('i-refresh', 'ico sm') + (en ? 'Retry' : 'Nochmal') + '</button>' : '') + '</div>';
   if (m.role === 'fb') return fbHTML(m.data);
   if (m.role === 'table'){
     const activeIdx = (!m.done && m.pos < m.order.length) ? m.order[m.pos] : -1;
@@ -2862,15 +2892,15 @@ function msgHTML(m, i, kind){
         cls = ' active';
         cell = '<input type="text" dir="rtl" lang="ar" inputmode="none" id="' + inputId + '">'
           + '<button class="btn small" type="button" data-table-submit data-qi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
-          + (m.attempt === 1 ? '<span class="t-hint">Nicht ganz — versuch\'s noch mal.</span>' : '')
+          + (m.attempt === 1 ? '<span class="t-hint">' + (en ? 'Not quite — try again.' : 'Nicht ganz — versuch\'s noch mal.') + '</span>' : '')
           + arabicKeysHTML(inputId);
       } else {
         cell = '<span class="t-form empty"></span>';
       }
-      const label = (idx === activeIdx && m.phase === 2) ? '<p class="t-phase2-label">Wiederholung, zufällige Reihenfolge</p>' : '';
+      const label = (idx === activeIdx && m.phase === 2) ? '<p class="t-phase2-label">' + (en ? 'Review, random order' : 'Wiederholung, zufällige Reihenfolge') + '</p>' : '';
       return label + '<div class="t-row' + cls + '"><span class="t-pro" lang="ar" dir="rtl">' + esc(step.pronoun) + '</span><span class="t-cell">' + cell + '</span></div>';
     }).join('');
-    const doneTag = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + 'Tabelle abgeschlossen</span></p>' : '';
+    const doneTag = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + (en ? 'Table completed' : 'Tabelle abgeschlossen') + '</span></p>' : '';
     return '<div class="msg table"><div class="t-head"><span class="t-verb" lang="ar" dir="rtl">' + esc(m.verb) + '</span><span class="t-de">' + esc(m.de) + '</span></div>' + rows + doneTag + '</div>';
   }
   // Typ 3 (Buch 3, Ableitungstabellen) - eigener, paralleler Zweig zu role === 'table' oben, bewusst NICHT
@@ -2928,7 +2958,7 @@ function msgHTML(m, i, kind){
             + '<p class="dt-answer-label" lang="ar" dir="rtl">' + esc(row.root) + ' — ' + esc(col) + '</p>'
             + '<input type="text" dir="rtl" lang="ar" inputmode="none" id="' + inputId + '">'
             + '<button class="btn small" type="button" data-deriv-submit data-mi="' + i + '" data-ri="' + rowIdx + '" data-ci="' + colIdx + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
-            + (m.attempt === 1 ? '<span class="dt-hint">Nicht ganz — versuch\'s noch mal.</span>' : '')
+            + (m.attempt === 1 ? '<span class="dt-hint">' + (en ? 'Not quite — try again.' : 'Nicht ganz — versuch\'s noch mal.') + '</span>' : '')
             + arabicKeysHTML(inputId)
             + '</div>';
           return '<span class="dt-cell active" lang="ar" dir="rtl"><span class="dt-active-marker"></span></span>';
@@ -2952,30 +2982,31 @@ function msgHTML(m, i, kind){
       // m.advanced ist ein eigenes, von dieser Aufgabe neu eingeführtes Feld (nicht Teil von
       // makeDerivTable()s Rückgabe) - sobald gesetzt, verschwindet der Button aus dem Re-Render, damit ein
       // zweiter Klick (Doppel-Tap) die Kette nicht zweimal verlängert.
-      const continueHTML = m.advanced ? '' : '<div class="dt-continue"><button class="btn small" type="button" data-deriv-continue data-mi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + 'Weiter</button></div>';
-      return '<div class="msg derivTable studyOnly"><div class="t-head"><span class="dt-badge">Referenz — zum Lesen</span><span class="dt-title" dir="auto">' + esc(m.de) + '</span></div>' + table + continueHTML + '</div>';
+      const continueHTML = m.advanced ? '' : '<div class="dt-continue"><button class="btn small" type="button" data-deriv-continue data-mi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + (en ? 'Continue' : 'Weiter') + '</button></div>';
+      return '<div class="msg derivTable studyOnly"><div class="t-head"><span class="dt-badge">' + (en ? 'Reference — to read' : 'Referenz — zum Lesen') + '</span><span class="dt-title" dir="auto">' + esc(m.de) + '</span></div>' + table + continueHTML + '</div>';
     }
     // Phase-2-Kennzeichnung, analog zum 'table'-Zweig (siehe dort .t-phase2-label) - hier aber einmal über
     // der gesamten Tabelle statt pro aktiver Zeile, weil eine Zeile hier mehrere Spalten/Zellen hat und ein
     // Label MITTEN in einer .dt-row das .dt-cell-Spaltenzahl-Contract brechen würde (siehe
     // test_deriv_table_row_has_no_duplicate_leading_root_column in tests/test_deriv_table_render.py).
-    const phase2Label = (m.phase === 2 && !m.done) ? '<p class="t-phase2-label">Wiederholung, zufällige Reihenfolge</p>' : '';
-    const doneTagDt = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + 'Tabelle abgeschlossen</span></p>' : '';
+    const phase2Label = (m.phase === 2 && !m.done) ? '<p class="t-phase2-label">' + (en ? 'Review, random order' : 'Wiederholung, zufällige Reihenfolge') + '</p>' : '';
+    const doneTagDt = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + (en ? 'Table completed' : 'Tabelle abgeschlossen') + '</span></p>' : '';
     return '<div class="msg derivTable"><div class="t-head"><span class="dt-title" dir="auto">' + esc(m.de) + '</span></div>' + phase2Label + table + doneTagDt + '</div>';
   }
   return '';
 }
 function fbHTML(d){
+  const en = S.settings.lang === 'en';
   const li = arr => (Array.isArray(arr) ? arr : []).slice(0, 4).map(x => '<li>' + rich(x) + '</li>').join('');
   const words = (Array.isArray(d.words) ? d.words : []).slice(0, 6).filter(w => w && w.ar);
-  return '<div class="fb"><span class="eyebrow">Auswertung</span>'
+  return '<div class="fb"><span class="eyebrow">' + (en ? 'Feedback' : 'Auswertung') + '</span>'
     + (d.summary ? '<p>' + rich(d.summary) + '</p>' : '')
-    + (d.good && d.good.length ? '<h3>Gut gemacht</h3><ul class="good">' + li(d.good) + '</ul>' : '')
-    + (d.improve && d.improve.length ? '<h3>Das kannst du verbessern</h3><ul class="imp">' + li(d.improve) + '</ul>' : '')
-    + (words.length ? '<h3>Nützliche Wörter</h3><div class="t-words">' + words.map(w => {
+    + (d.good && d.good.length ? '<h3>' + (en ? 'Well done' : 'Gut gemacht') + '</h3><ul class="good">' + li(d.good) + '</ul>' : '')
+    + (d.improve && d.improve.length ? '<h3>' + (en ? 'You can improve on this' : 'Das kannst du verbessern') + '</h3><ul class="imp">' + li(d.improve) + '</ul>' : '')
+    + (words.length ? '<h3>' + (en ? 'Useful words' : 'Nützliche Wörter') + '</h3><div class="t-words">' + words.map(w => {
         const card = {ar:w.ar, de:w.de || '', tl:w.tl || '', src:'rolle'};
         return '<button class="chip" type="button" data-add="' + esc(JSON.stringify(card)) + '"><span class="ar-s" lang="ar">' + esc(w.ar) + '</span><span class="de-s">' + esc(w.de || '') + '</span>' + icon('i-plus', 'ico sm') + '</button>';
-      }).join('') + '</div><p class="source">Tippe auf ein Wort, um es zu deinen Karteikarten zu legen.</p>' : '')
+      }).join('') + '</div><p class="source">' + (en ? 'Tap a word to add it to your flashcards.' : 'Tippe auf ein Wort, um es zu deinen Karteikarten zu legen.') + '</p>' : '')
     + '</div>';
 }
 const CHAT_DOM = {
@@ -2983,13 +3014,16 @@ const CHAT_DOM = {
   role:{list:'#role-msgs', scroll:'#role-scroll', input:'#role-input', send:'#role-send'}
 };
 function renderChat(kind){
-  const ctx = CHAT[kind], dom = CHAT_DOM[kind];
-  let h = (noClaude && !offline() ? '<p class="notice"><strong>Hinweis:</strong> Tutor, Rollenspiele und Übersetzer brauchen Claude. Öffne diese App in Claude (im Browser oder in der Claude-App). Karteikarten und Lehrbuch-Themen funktionieren überall.</p>' : '') + ctx.msgs.map((m, i) => msgHTML(m, i, kind)).join('');
-  if (ctx.busy) h += '<div class="msg tutor"><div class="bubble typing" aria-label="Tutor schreibt"><i></i><i></i><i></i><span>schreibt …</span></div></div>';
+  const ctx = CHAT[kind], dom = CHAT_DOM[kind], en = S.settings.lang === 'en';
+  let h = (noClaude && !offline() ? (en
+      ? '<p class="notice"><strong>Note:</strong> Tutor, roleplay and translator need Claude. Open this app in Claude (in the browser or the Claude app). Flashcards and textbook topics work everywhere.</p>'
+      : '<p class="notice"><strong>Hinweis:</strong> Tutor, Rollenspiele und Übersetzer brauchen Claude. Öffne diese App in Claude (im Browser oder in der Claude-App). Karteikarten und Lehrbuch-Themen funktionieren überall.</p>') : '')
+    + ctx.msgs.map((m, i) => msgHTML(m, i, kind)).join('');
+  if (ctx.busy) h += '<div class="msg tutor"><div class="bubble typing" aria-label="' + (en ? 'Tutor is typing' : 'Tutor schreibt') + '"><i></i><i></i><i></i><span>' + (en ? 'typing …' : 'schreibt …') + '</span></div></div>';
   $(dom.list).innerHTML = h;
   const btn = $(dom.send);
   btn.classList.toggle('stop', ctx.busy);
-  btn.setAttribute('aria-label', ctx.busy ? 'Stopp' : 'Senden');
+  btn.setAttribute('aria-label', ctx.busy ? (en ? 'Stop' : 'Stopp') : (en ? 'Send' : 'Senden'));
   btn.innerHTML = icon(ctx.busy ? 'i-stop' : 'i-send');
   requestAnimationFrame(() => { const sc = $(dom.scroll); sc.scrollTop = sc.scrollHeight; });
 }
@@ -3011,7 +3045,7 @@ async function requestReply(kind){
   if (offline()) return;
   ctx.msgs = ctx.msgs.filter(m => m.role !== 'err');
   const sample = await getSample();
-  if (!sample || aiOff){ ctx.msgs.push({role:'err', text:NO_CLAUDE, retry:false}); renderChat(kind); return; }
+  if (!sample || aiOff){ ctx.msgs.push({role:'err', text:NO_CLAUDE(), retry:false}); renderChat(kind); return; }
   ctx.busy = true; ctx.ctl = new AbortController(); renderChat(kind);
   try {
     const rules = tutorRules(kind === 'tutor' ? topicExtra(ctx.topic) : sceneExtra(ctx.scene));
@@ -3061,7 +3095,7 @@ function tutorQuiz(){
   ctx.recent.push(pick.key); if (ctx.recent.length > Math.max(1, pool.length - 1)) ctx.recent.shift();
   const ex = pick.ex;
   const first = !ctx.msgs.some(m => m.role === 'quiz');
-  const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.' : '');
+  const m = makeQuiz({ar:(f && ex.qF) || ex.q, de:ex.qde, tl:''}, ex.ok, ex.bad, first ? (S.settings.lang === 'en' ? 'Choose the correct answer. Wrong answers are explained and go into your mistake pile.' : 'Wähle die richtige Antwort. Falsche Antworten werden erklärt und landen in deinem Fehler-Stapel.') : '');
   m.topic = pick.topic; return m;
 }
 // Einstieg für Typ-2-Themen (TABLES). Gemeinsam genutzt von den ZWEI Stellen, über die im Sparmodus eine
@@ -3140,14 +3174,14 @@ function ensureTutorQuiz(){
   const m = tutorQuiz(); if (m){ ctx.msgs.push(m); saveChats(); }
 }
 function roleStepQuiz(){
-  const ctx = CHAT.role, s = SCENE[ctx.scene], steps = STEPS[ctx.scene] || [], f = S.settings.gender === 'f';
+  const ctx = CHAT.role, s = SCENE[ctx.scene], steps = STEPS[ctx.scene] || [], f = S.settings.gender === 'f', en = S.settings.lang === 'en';
   const st = steps[ctx.step];
   if (!st){
     const e = ENDS[ctx.scene]; if (!e) return null;
-    return {role:'tutor', ar:(f && e[3]) || e[0], de:e[1], tl:e[2], tip:'Ziel erreicht! Du hast die Szene durchgespielt. Tippe auf „Auswertung" oder spiel sie noch einmal.'};
+    return {role:'tutor', ar:(f && e[3]) || e[0], de:e[1], tl:e[2], tip:en ? 'Goal reached! You played through the scene. Tap „Feedback" or play it again.' : 'Ziel erreicht! Du hast die Szene durchgespielt. Tippe auf „Auswertung" oder spiel sie noch einmal.'};
   }
   const t = st.t ? {ar:(f && st.t[3]) || st.t[0], de:st.t[1], tl:st.t[2]} : (() => { const o = f && s.openF ? s.openF : s.open; return {ar:o[0], de:o[1], tl:o[2]}; })();
-  return makeQuiz(t, st.ok, st.bad, ctx.step === 0 ? 'Wähle deine Antwort. Falsche Antworten werden erklärt.' : '');
+  return makeQuiz(t, st.ok, st.bad, ctx.step === 0 ? (en ? 'Choose your answer. Wrong answers are explained.' : 'Wähle deine Antwort. Falsche Antworten werden erklärt.') : '');
 }
 function answerQuiz(kind, qi, k){
   const ctx = CHAT[kind]; const m = ctx.msgs[qi]; if (!m || m.role !== 'quiz' || m.answered) return;
@@ -3287,28 +3321,31 @@ function continueDerivTable(kind, mi){
 }
 window.continueDerivTable = continueDerivTable;
 function offlineFeedback(){
-  const ctx = CHAT.role, s = SCENE[ctx.scene], f = S.settings.gender === 'f';
+  const ctx = CHAT.role, s = SCENE[ctx.scene], f = S.settings.gender === 'f', en = S.settings.lang === 'en';
   const answers = ctx.msgs.filter(m => m.role === 'me');
-  if (answers.length < 2){ toast('Beantworte zuerst ein paar Fragen. Dann gibt es eine Auswertung.'); return; }
+  if (answers.length < 2){ toast(en ? 'Answer a few questions first. Then you’ll get feedback.' : 'Beantworte zuerst ein paar Fragen. Dann gibt es eine Auswertung.'); return; }
   const wrong = answers.filter(m => m.fix);
-  const good = wrong.length ? [answers.length - wrong.length + ' von ' + answers.length + ' Antworten waren richtig.'] : ['Alle ' + answers.length + ' Antworten waren richtig!'];
-  if (!wrong.length) good.push('Du hast das Ziel „' + s.goal + '" ohne Fehler erreicht.');
+  const good = wrong.length
+    ? [en ? (answers.length - wrong.length) + ' of ' + answers.length + ' answers were correct.' : answers.length - wrong.length + ' von ' + answers.length + ' Antworten waren richtig.']
+    : [en ? 'All ' + answers.length + ' answers were correct!' : 'Alle ' + answers.length + ' Antworten waren richtig!'];
+  if (!wrong.length) good.push(en ? 'You reached the goal „' + s.goal + '" with no mistakes.' : 'Du hast das Ziel „' + s.goal + '" ohne Fehler erreicht.');
   const improve = []; for (const m of wrong){ if (!improve.includes(m.fix.explanation)) improve.push(m.fix.explanation); }
   const words = s.phrases.slice(0, 5).map(p => ({ar:(f && p[3]) || p[0], de:(f && p[4]) || p[1], tl:(f && p[5]) || p[2]}));
-  ctx.msgs.push({role:'fb', data:{summary:'Auswertung aus der Übung, ohne Claude.', good, improve:improve.slice(0, 4), words}});
+  ctx.msgs.push({role:'fb', data:{summary:en ? 'Feedback from the exercise, without Claude.' : 'Auswertung aus der Übung, ohne Claude.', good, improve:improve.slice(0, 4), words}});
   renderChat('role'); saveChats();
 }
 function setMode(m){
   if (S.settings.mode === m) return;
+  const en = S.settings.lang === 'en';
   S.settings.mode = m; save(); applyModeUI();
   if (m === 'offline'){
     if (currentView === 'tutor') ensureTutorQuiz();
-    if (CHAT.role.scene && !CHAT.role.msgs.some(x => x.role === 'quiz')){ CHAT.role.step = 0; const q = roleStepQuiz(); if (q){ CHAT.role.msgs.push({role:'note', text:'Weiter als Dialog-Übung'}); CHAT.role.msgs.push(q); } }
-    toast('Sparmodus an: Übungen ohne Claude.');
+    if (CHAT.role.scene && !CHAT.role.msgs.some(x => x.role === 'quiz')){ CHAT.role.step = 0; const q = roleStepQuiz(); if (q){ CHAT.role.msgs.push({role:'note', text:en ? 'Continuing as dialogue practice' : 'Weiter als Dialog-Übung'}); CHAT.role.msgs.push(q); } }
+    toast(en ? 'Saver mode on: exercises without Claude.' : 'Sparmodus an: Übungen ohne Claude.');
   } else {
     for (const kind of ['tutor', 'role']){ const ctx = CHAT[kind]; const last = ctx.msgs[ctx.msgs.length - 1]; if (last && last.role === 'quiz' && !last.answered){ ctx.msgs.pop(); } }
     if (!CHAT.tutor.msgs.length) CHAT.tutor.msgs = [tutorOpening()];
-    toast('Frei mit Claude: Antworten verbrauchen dein Claude-Kontingent.');
+    toast(en ? 'Free with Claude: answers use up your Claude quota.' : 'Frei mit Claude: Antworten verbrauchen dein Claude-Kontingent.');
   }
   renderChat('tutor'); if (CHAT.role.scene) renderChat('role'); saveChats();
 }
@@ -3383,16 +3420,17 @@ function offlineTranslate(text){
 
 /* Tutor */
 function renderTutorHead(){
-  const sel = $('#tutor-topic');
-  sel.innerHTML = '<option value="">' + (offline() ? 'Gemischte Übungen' : 'Freies Gespräch') + '</option>' + BOOKS.map(b => '<optgroup label="' + esc(b.de) + '">'
+  const sel = $('#tutor-topic'), en = S.settings.lang === 'en';
+  sel.innerHTML = '<option value="">' + (offline() ? (en ? 'Mixed exercises' : 'Gemischte Übungen') : (en ? 'Free conversation' : 'Freies Gespräch')) + '</option>' + BOOKS.map(b => '<optgroup label="' + esc(b.de) + '">'
     + TOPICS.filter(t => t.book === b.n).map(t => '<option value="' + t.id + '">' + esc(t.de) + ' · ' + esc(t.ar) + '</option>').join('') + '</optgroup>').join('');
   sel.value = CHAT.tutor.topic || '';
   $('#tutor-chips').innerHTML = TUTOR_CHIPS.map(c => '<button class="chip" type="button" data-insert="#tutor-input" data-text="' + esc(c[0]) + '"><span class="ar-s" lang="ar">' + esc(c[0]) + '</span><span class="de-s">' + esc(c[1]) + '</span></button>').join('');
 }
 function practiceTopic(id){
   const t = TOPIC[id]; if (!t) return;
+  const en = S.settings.lang === 'en';
   CHAT.tutor.topic = id; $('#tutor-topic').value = id;
-  CHAT.tutor.msgs.push({role:'note', text:'Neues Thema: ' + t.de + ' · ' + t.ar});
+  CHAT.tutor.msgs.push({role:'note', text:(en ? 'New topic: ' : 'Neues Thema: ') + t.de + ' · ' + t.ar});
   go('tutor'); renderChat('tutor'); saveChats();
   if (offline()){
     // Typ-2-Thema (TABLES): Tabelle über den gemeinsamen Einstieg starten und NICHT nach tutorQuiz()
@@ -3406,7 +3444,9 @@ function practiceTopic(id){
     const q = tutorQuiz(); if (q){ CHAT.tutor.msgs.push(q); renderChat('tutor'); saveChats(); if (S.settings.autoSpeak) speak(q.q.ar); }
     return;
   }
-  sendChat('tutor', '(Neues Übungsthema: ' + t.de + ' – ' + t.ar + '. Bitte beginne eine kurze, einfache Übung dazu mit einer ersten Frage. Diese Nachricht kommt von der App, nicht von der lernenden Person: keine Korrektur.)', true);
+  sendChat('tutor', en
+    ? '(New exercise topic: ' + t.de + ' – ' + t.ar + '. Please start a short, simple exercise about it with a first question. This message comes from the app, not from the learner: no correction.)'
+    : '(Neues Übungsthema: ' + t.de + ' – ' + t.ar + '. Bitte beginne eine kurze, einfache Übung dazu mit einer ersten Frage. Diese Nachricht kommt von der App, nicht von der lernenden Person: keine Korrektur.)', true);
 }
 // Für Playwright-Tests (tests/test_table_entry_and_resume.py) global erreichbar machen: siehe Kommentar bei
 // window.makeTable oben. Ändert das Laufzeitverhalten der App nicht. TOPIC kommt dazu, damit ein Test ein
@@ -3418,14 +3458,15 @@ window.TOPIC = TOPIC;
 
 /* Rollenspiel */
 function renderScenes(){
+  const en = S.settings.lang === 'en';
   $('#scenes').innerHTML = SCENES.map(s => {
     const f = S.settings.gender === 'f';
     return '<button class="scene" type="button" data-scene="' + s.id + '"><span class="s-top"><span class="s-ico">' + icon(s.icon) + '</span><span class="s-ar" lang="ar">' + esc(s.ar) + '</span></span>'
-      + '<span class="s-de">' + esc(s.de) + '</span><span class="s-role">Du: ' + esc(f ? s.youF : s.you) + '<br>Tutor: ' + esc(f && s.tutorF ? s.tutorF : s.tutor) + '</span></button>';
+      + '<span class="s-de">' + esc(s.de) + '</span><span class="s-role">' + (en ? 'You: ' : 'Du: ') + esc(f ? s.youF : s.you) + '<br>Tutor: ' + esc(f && s.tutorF ? s.tutorF : s.tutor) + '</span></button>';
   }).join('');
   const r = CHAT.role;
   $('#role-resume').innerHTML = r.scene && r.msgs.some(m => m.role === 'me')
-    ? '<div class="resume"><span>Angefangen: <b>' + esc(SCENE[r.scene].de) + '</b></span><button class="btn small" type="button" data-resume>Weiterspielen</button></div>' : '';
+    ? '<div class="resume"><span>' + (en ? 'Started: ' : 'Angefangen: ') + '<b>' + esc(SCENE[r.scene].de) + '</b></span><button class="btn small" type="button" data-resume>' + (en ? 'Continue playing' : 'Weiterspielen') + '</button></div>' : '';
 }
 function startScene(id){
   CHAT.role = {scene:id, msgs:[], busy:false, ctl:null, step:0};
@@ -3438,8 +3479,11 @@ function showRole(play){
   $('#v-rollen-pick').hidden = play; $('#v-rollen-play').hidden = !play;
   if (!play){ renderScenes(); return; }
   const s = SCENE[CHAT.role.scene]; const f = S.settings.gender === 'f';
+  const en = S.settings.lang === 'en';
   $('#role-title').innerHTML = '<b>' + esc(s.de) + '</b><span lang="ar">' + esc(s.ar) + '</span>';
-  $('#role-goal').innerHTML = '<b>Dein Ziel:</b> ' + esc(s.goal) + ' Du bist ' + esc(f ? s.youF : s.you) + '.';
+  $('#role-goal').innerHTML = en
+    ? '<b>Your goal:</b> ' + esc(s.goal) + ' You are ' + esc(f ? s.youF : s.you) + '.'
+    : '<b>Dein Ziel:</b> ' + esc(s.goal) + ' Du bist ' + esc(f ? s.youF : s.you) + '.';
   $('#role-chips').innerHTML = s.phrases.map(p => {
     const ar = f && p[3] ? p[3] : p[0], de = f && p[4] ? p[4] : p[1];
     return '<button class="chip" type="button" data-insert="#role-input" data-text="' + esc(ar) + '" data-say="1"><span class="ar-s" lang="ar">' + esc(ar) + '</span><span class="de-s">' + esc(de) + '</span></button>';
@@ -3447,19 +3491,24 @@ function showRole(play){
   renderChat('role');
 }
 async function roleFeedback(){
-  const ctx = CHAT.role, s = SCENE[ctx.scene];
+  const ctx = CHAT.role, s = SCENE[ctx.scene], en = S.settings.lang === 'en';
   if (ctx.busy) return;
   if (offline()){ offlineFeedback(); return; }
   const lines = ctx.msgs.filter(m => (m.role === 'tutor' || m.role === 'me') && !m.hidden).map(m => (m.role === 'tutor' ? 'T: ' + m.ar : 'P: ' + m.text));
-  if (lines.filter(l => l.startsWith('P:')).length < 2){ toast('Sprich zuerst ein paar Sätze. Dann gibt es eine Auswertung.'); return; }
+  if (lines.filter(l => l.startsWith('P:')).length < 2){ toast(en ? 'Speak a few sentences first. Then you’ll get feedback.' : 'Sprich zuerst ein paar Sätze. Dann gibt es eine Auswertung.'); return; }
   const sample = await getSample();
-  if (!sample || aiOff){ toast(NO_CLAUDE); return; }
+  if (!sample || aiOff){ toast(NO_CLAUDE()); return; }
   ctx.busy = true; ctx.ctl = new AbortController(); renderChat('role');
   try {
-    const prompt = 'Du bist Arabischlehrer für deutschsprachige Anfänger (Madina-Bücher). Hier ist ein Rollenspiel „' + s.de + '" zwischen Tutor (T) und lernender Person (P). Ziel der Person: ' + s.goal + '\n'
-      + 'Gib kurzes, ermutigendes Feedback auf Deutsch. Arabische Beispiele immer mit vollständigen Vokalzeichen. Antworte nur mit JSON:\n'
-      + '{"summary":"1–2 Sätze","good":["…"],"improve":["… mit arabischem Beispiel"],"words":[{"ar":"…","tl":"Umschrift","de":"Bedeutung"}]}\n'
-      + 'Höchstens 3 Punkte pro Liste und 5 Wörter, die in dieser Situation nützlich sind.\n\nDialog:\n' + lines.join('\n');
+    const prompt = en
+      ? 'You are an Arabic teacher for English-speaking beginners (Madina books). Here is a roleplay „' + s.de + '" between tutor (T) and learner (P). The learner\'s goal: ' + s.goal + '\n'
+        + 'Give brief, encouraging feedback in English. Arabic examples always with full diacritics. Reply only with JSON:\n'
+        + '{"summary":"1–2 sentences","good":["…"],"improve":["… with an Arabic example"],"words":[{"ar":"…","tl":"transliteration","de":"meaning"}]}\n'
+        + 'At most 3 points per list and 5 words useful in this situation.\n\nDialogue:\n' + lines.join('\n')
+      : 'Du bist Arabischlehrer für deutschsprachige Anfänger (Madina-Bücher). Hier ist ein Rollenspiel „' + s.de + '" zwischen Tutor (T) und lernender Person (P). Ziel der Person: ' + s.goal + '\n'
+        + 'Gib kurzes, ermutigendes Feedback auf Deutsch. Arabische Beispiele immer mit vollständigen Vokalzeichen. Antworte nur mit JSON:\n'
+        + '{"summary":"1–2 Sätze","good":["…"],"improve":["… mit arabischem Beispiel"],"words":[{"ar":"…","tl":"Umschrift","de":"Bedeutung"}]}\n'
+        + 'Höchstens 3 Punkte pro Liste und 5 Wörter, die in dieser Situation nützlich sind.\n\nDialog:\n' + lines.join('\n');
     const d = await sample.json(prompt, {modelTier:'default', signal:ctx.ctl.signal});
     if (!d || typeof d !== 'object') throw {code:'invalid_json'};
     ctx.msgs.push({role:'fb', data:{summary:String(d.summary || ''), good:Array.isArray(d.good) ? d.good.map(String) : [], improve:Array.isArray(d.improve) ? d.improve.map(String) : [], words:Array.isArray(d.words) ? d.words : []}});
@@ -3670,7 +3719,14 @@ const I18N_EN = {
   sparTitle:'Saver mode: practice without Claude', sparDesc:'Tutor and roleplay with prepared exercises, translator as a dictionary. Costs nothing.',
   preciseTitle:'More precise correction', preciseDesc:'More thorough, but slower.',
   rateTitle:'Speaking speed', progressTitle:'Progress',
-  tabBooks:'Books', tabRollen:'Roleplay', tabKarten:'Cards', tabUebersetzer:'Translator', navLabel:'Areas'
+  tabBooks:'Books', tabRollen:'Roleplay', tabKarten:'Cards', tabUebersetzer:'Translator', navLabel:'Areas',
+  exerciseTopic:'Exercise topic', newBtn:'New', modeGroup:'Mode',
+  modeOffTutor:'Exercises', modeOffRollen:'Dialogue practice · free', modeClaudeBtn:'Free with Claude',
+  modeTag:'Exercise mode · free', modeTapHint:'Tap an answer above.', modeFreeBtn:'Speak freely with Claude',
+  speakLabel:'Speak', yourMessage:'Your message', speakOrWrite:'Speak or write …', sendLabel:'Send',
+  roleplayTitle:'Roleplay', roleplayLede:'Pick a situation. The tutor plays the other role, corrects you and helps with ready-made sentences.',
+  modeLab:'Mode', feedbackBtn:'Feedback', backToPick:'Back to selection',
+  yourAnswer:'Your answer', yourAnswerPh:'Your answer …'
 };
 function applyI18N(){
   const en = S.settings.lang === 'en';
@@ -3682,7 +3738,7 @@ function applyI18N(){
 }
 function setLang(l){
   if (S.settings.lang === l) return;
-  S.settings.lang = l; save(); applySettingsUI(); refreshCurrent();
+  S.settings.lang = l; save(); applySettingsUI(); renderTutorHead(); refreshCurrent();
 }
 
 /* ---------- Einstellungen ---------- */
