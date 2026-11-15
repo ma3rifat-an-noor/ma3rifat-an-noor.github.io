@@ -865,6 +865,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l21', book:3, ar:'بَابُ تَفَاعَلَ', de:'Lektion 21: Verbstamm VI (تَفَاعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm VI (تَفَاعَلَ) - gebildet durch Vorsetzen von تَ vor باب فَاعَلَ (تَ+فَاعَلَ), meist reziprok/gegenseitig (تَعَاوَنَ „einander helfen, kooperieren") oder als vorgetäuschte Handlung (تَعَامَى „sich blind stellen"). Haupttabelle übt المضارع, الأمر und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (تَعَاوَنَ, hamziert تَسَاءَلَ, تَشَاجَرَ) und defekten Wurzeln (ناقص: تَبَاكَى „sich weinend stellen", تَعَامَى) - der Amr wird wie bei Stamm V gebildet (حرف المضارعة + Kasusendung fallen weg, bei defekten Wurzeln zusätzlich das finale ى: تَتَبَاكَى → تَبَاكَى → تَبَاكَ), der Masdar folgt dem Muster تَفَاعُلٌ und wird bei defekten Wurzeln zu einem اسم منقوص (تَبَاكٍ, أصله تَبَاكُيٌ). Dazu eine zweite Tabelle für اسم الفاعل (Muster مُتَفَاعِلٌ), siehe die Übungstabellen im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l22', book:3, ar:'بَابُ انْفَعَلَ', de:'Lektion 22: Verbstamm VII (اِنْفَعَلَ)',
+ gram:'Typ-3-Übung: Ableitungstabelle für den Verbstamm VII (اِنْفَعَلَ) - gebildet durch Vorsetzen von اِنْ vor den bloßen Stamm (اِنْ+فَعَلَ), drückt fast immer مُطَاوَعَة aus: das unwillkürliche Eintreten der Handlung von Stamm I, meist als dessen Intransitiv-Gegenstück (كَسَرَ „etwas zerbrechen" → اِنْكَسَرَ „zerbrechen"). Weil Stamm VII praktisch nie transitiv ist, fehlen anders als bei den meisten anderen Stämmen sowohl اسم المفعول als auch - in dieser Lektion - ein eigener أمر-Drill; die Tabelle übt nur المضارع, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (اِنْفَتَحَ, اِنْقَلَبَ, اِنْقَطَعَ, اِنْصَرَفَ), bei einer مضعّف-Wurzel (اِنْشَقَّ, durch Idgham مُنْشَقٌّ/اِنْشِقَاقٌ - letzteres der Name von Sure 84) und bei einer ناقص-واوي-Wurzel (اِنْجَلَى, المضارع يَنْجَلِي direkt belegt durch das in dieser Lektion zitierte Hadith „حَتَّى يَنْجَلِيَ", المصدر اِنْجِلاَءٌ aus اِنْجِلاَوٌ durch denselben و-nach-Alif-wird-Hamza-Wandel wie bei إِجَابَةٌ/مُفَاعَاةٌ in den Lektionen 17/19), siehe die Übungstabelle im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1500,6 +1503,62 @@ const DERIV_TABLES = {
    {root:'تَفَاعَلَ', values:['تَفَاعَلَ','يَتَفَاعَلُ','مُتَفَاعِلٌ'], given:[true,true,false]},
    {root:'تَشَاءَمَ', values:['تَشَاءَمَ','يَتَشَاءَمُ','مُتَشَائِمٌ'], given:[true,true,false]},
    {root:'تَعَاوَنَ', values:['تَعَاوَنَ','يَتَعَاوَنُ','مُتَعَاوِنٌ'], given:[true,true,false]}
+ ]}
+],
+// Buch 3, Lektion 22: باب انْفَعَلَ (Verbstamm VII). Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf,
+// gedruckte Seiten 188-194 (gedruckte Seite = PDF-0-Index + 2, gegengeprüft gegen die gedruckten Kopfzeilen
+// "الدرس الثاني والعشرون"/"١٨٨" und die nächste Lektionsgrenze "الدرس الثالث والعشرون"/"١٩٥" - beide Seiten
+// per Rendering der realen PDF-Seiten visuell verifiziert, nicht nur aus der Vault-Schätzung übernommen).
+// Dialog S.188-189, danach Übungen 1-15 S.189-194, Seite für Seite vollständig gegengelesen. Anders als bei
+// L16/17/19/21 (wo die rohe Vault-Schätzung eine zusätzliche Tabelle übersehen hatte) bestätigt sich hier
+// die ursprüngliche Schätzung: NUR Übung 3 (S.190) ist eine Ableitungstabelle im Sinne dieser Engine
+// (Zeile=Wurzel, Spalte=Ableitungsform). Die übrigen 14 Übungen dieser Lektion sind bewusst NICHT
+// aufgenommen: Übung 1 (6 Verständnisfragen zum Dialog), Übung 2 (freie Verb-Extraktion aus dem Dialog,
+// "استخرج من الدرس الأفعال... من باب انفعل" - offene Liste, keine Tabelle), Übung 4 (Satztransformation
+// فَعَلَ→اِنْفَعَلَ an 4 vollständigen Sätzen, z. B. كَسَرْتُ الكوبَ.→اِنْكَسَرَ الكوبُ., kein
+// Wurzel-Raster), Übung 5 (Kontrast-Transformation فَعَّلَ→تَفَعَّلَ, nicht einmal Stamm VII), Übung 6
+// (Hamzat-al-istifham-Drill an 4 Sätzen), Übung 7 (sieht mit "تأمل الأمثلة... وعيّن فيها الماضي والمضارع
+// واسم الفاعل والمصدر" zunächst wie ein Raster aus, ist bei genauem Lesen aber eine
+// Identifikations-Übung an 7 vollständigen, bereits flektierten Kontextsätzen ohne jede Lücke - kein
+// Zeile=Wurzel-Format, analog zu den bereits in L16/17/19 ausgeschlossenen Identifikations-Übungen), Übung 8
+// (Grammatiknotiz zur إضافة von يوم), Übung 9 (لولا-Grammatik + Lückensätze), Übung 10 (اسم الإشارة als
+// نعت + Lückensätze), Übung 11 (هاء السكت), Übung 12 (تغليب المذكر bei الشمس والقمر), Übung 13 (حال
+// محذوفة im Mondfinsternis-Hadith), Übung 14 (ضمير مستتر als فاعل von يَنْجَلِي), Übung 15 (freie
+// Satzbildung mit 5 vorgegebenen Wörtern). Übung 3 (S.190): einzige Tabelle, Spalten
+// الماضي/المضارع/اسم الفاعل/المصدر - bewusst OHNE أمر-Spalte und OHNE اسم المفعول (Stamm VII ist praktisch
+// immer intransitiv/مطاوعة; dieses Buch drillt hier weder Amr noch Ism al-Maf'ul) - das bestätigt die
+// Vault-Schätzung, statt sie nur zu übernehmen. Zeile 1 (اِنْكَسَرَ) ist das gedruckte Hauptmodell (alle 4
+// Spalten gegeben, hochauflösend gegen den PDF-Scan geprüft: مُنْكَسِرٌ/اِنْكِسَارٌ MIT Tanwin gedruckt -
+// zusätzlich bestätigt durch "اِنْكَسَرَتْ نَظَّارَتِي" im Dialog derselben Lektion S.188). Zeilen 2-5
+// (اِنْفَتَحَ, اِنْقَلَبَ, اِنْقَطَعَ, اِنْصَرَفَ) sind gesunde Wurzeln, nur die Wurzel gedruckt, alle 3
+// restlichen Spalten Lückenzellen - alle Formen sind reale, geläufige Wörter (اِنْفِتَاحٌ als politischer
+// Fachbegriff "Infitah/Öffnung"; اِنْقِلاَبٌ "Staatsstreich", zusätzlich direkt im Dialog dieser Lektion
+// belegt: "كان الانقلاب عنيفاً" und "أين انقلبت السيارة؟"; اِنْقِطَاعٌ ebenfalls direkt im Dialog belegt:
+// "انقطعت الكهرباء"; اِنْصِرَافٌ geläufig, u. a. "جرس الانصراف", und das zugehörige اسم الفاعل مُنْصَرِفٌ
+// taucht im Dialog dieser Lektion sogar in der grammatischen Umdeutung als Terminus "منصرف" [=
+// triptotisch dekliniert, Gegenteil von غير منصرف] auf derselben Seite wieder auf). Zeile 6 (اِنْشَقَّ,
+// مضعّف-Wurzel ش-ق-ق) hat im Druck NUR die اسم-الفاعل-Zelle vorgegeben (مُنْشَقٌّ, mit Idgham/Shadda,
+// hochauflösend MIT Tanwin bestätigt); المضارع (يَنْشَقُّ, dieselbe Idgham-Regel: unkontrahiert
+// يَنْشَقِقُ → يَنْشَقُّ) und المصدر (اِنْشِقَاقٌ, bezeugt durch den Namen von Sure 84 "الانشقاق") sind
+// Lückenzellen. Zeile 7 (اِنْجَلَى, ناقص-واوي-Wurzel ج-ل-و, nicht zu verwechseln mit der ي-Wurzel in
+// تَجَلَّى) hat im Druck اسم الفاعل (مُنْجَلٍ, اسم منقوص) UND المصدر (اِنْجِلاَءٌ، أصله: اِنْجِلاَوٌ - و
+// nach Alif wird zu Hamza, derselbe Lautwandel wie bei إِجَابَةٌ/مُفَاعَاةٌ in L17/19, hochauflösend MIT
+// Tanwin auf beiden Formen bestätigt) vorgegeben; nur المضارع (يَنْجَلِي, و→ي-Wandel vor Kasra in
+// mazid-Formen wie bei اِدَّعَى/يَدَّعِي) ist Lückenzelle - und direkt wortwörtlich durch das in genau
+// dieser Lektion zitierte Bukhari-Hadith belegt ("فَإِذَا رَأَيْتُمُوهُمَا فَادْعُوا اللَّهَ وَصَلُّوا
+// حَتَّى يَنْجَلِيَ", S.189, منصوب durch حتى, Grundform مرفوع يَنْجَلِي). Alle sieben abgeleiteten
+// (given:false) Formen wurden mechanisch nach den Stamm-VII-Regeln (يَنْفَعِلُ/مُنْفَعِل/اِنْفِعَال)
+// nachgerechnet und wie oben gegen reale, geläufige Wörter bzw. Koran-/Hadith-Belege gegengeprüft - keine
+// erfundenen Formen.
+'b3-l22':[
+ {de:'اِنْفَعَلَ — Hauptmodell', columns:['الماضي','المضارع','اسم الفاعل','المصدر'], rows:[
+   {root:'اِنْكَسَرَ', values:['اِنْكَسَرَ','يَنْكَسِرُ','مُنْكَسِرٌ','اِنْكِسَارٌ'], given:[true,true,true,true]},
+   {root:'اِنْفَتَحَ', values:['اِنْفَتَحَ','يَنْفَتِحُ','مُنْفَتِحٌ','اِنْفِتَاحٌ'], given:[true,false,false,false]},
+   {root:'اِنْقَلَبَ', values:['اِنْقَلَبَ','يَنْقَلِبُ','مُنْقَلِبٌ','اِنْقِلاَبٌ'], given:[true,false,false,false]},
+   {root:'اِنْقَطَعَ', values:['اِنْقَطَعَ','يَنْقَطِعُ','مُنْقَطِعٌ','اِنْقِطَاعٌ'], given:[true,false,false,false]},
+   {root:'اِنْصَرَفَ', values:['اِنْصَرَفَ','يَنْصَرِفُ','مُنْصَرِفٌ','اِنْصِرَافٌ'], given:[true,false,false,false]},
+   {root:'اِنْشَقَّ', values:['اِنْشَقَّ','يَنْشَقُّ','مُنْشَقٌّ','اِنْشِقَاقٌ'], given:[true,false,true,false]},
+   {root:'اِنْجَلَى', values:['اِنْجَلَى','يَنْجَلِي','مُنْجَلٍ','اِنْجِلاَءٌ (أصله: اِنْجِلاَوٌ)'], given:[true,false,true,true]}
  ]}
 ]
 };
