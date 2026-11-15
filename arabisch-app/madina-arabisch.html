@@ -871,6 +871,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l23', book:3, ar:'بَابُ افْتَعَلَ', de:'Lektion 23: Verbstamm VIII (اِفْتَعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabellen für den Verbstamm VIII (اِفْتَعَلَ) - gebildet durch Einschub eines ت nach dem ersten Radikal (R1+ت+عَلَ), meist reflexiv/reziprok oder mit eigener Spezialbedeutung gegenüber Stamm I (جَمَعَ „sammeln" → اِجْتَمَعَ „sich versammeln"). Die Haupttabelle übt المضارع, الأمر, اسم الفاعل und المصدر aus der Wurzel (الماضي) bei gesunden Wurzeln (اِشْتَرَكَ, اِمْتَحَنَ, اِجْتَمَعَ), einer ناقص-ي-Wurzel (اِلْتَقَى, اسم الفاعل durch منقوص-Kürzung مُلْتَقٍ - nicht zu verwechseln mit dem gleich geschriebenen اسم المكان مُلْتَقًى „Treffpunkt") und einer أجوف-Wurzel (اِخْتَارَ, المضارع/الأمر يَخْتَارُ/اِخْتَرْ). Das eingeschobene ت unterliegt festen Assimilationsregeln je nach Erstradikal, geübt in drei eigenen Drilltabellen (bloße Wurzel → اِفْتَعَلَ-Form): bei فاء د/ز/ذ wird ت zu د (اِزْدَحَمَ، اِزْدَانَ، dazu die Sonderfälle اِدَّكَرَ [ذ assimiliert zusätzlich in das د] und اِدَّعَى [zwei gleiche د verschmelzen]); bei فاء ص/ض/ط/ظ wird ت zu ط (اِصْطَبَرَ، اِضْطَرَبَ، اِظْطَلَمَ ohne Verschmelzung, aber اِطَّلَعَ mit Verschmelzung, da hier Erstradikal und verwandeltes ت identisch sind); bei فاء و verschmilzt das و selbst mit dem ت zu تّ (اتَّقَى، اتَّصَلَ، اتَّحَدَ، اتَّفَقَ). Bewusste Verwechslungsfalle (nicht als Tabelle gebaut): ن-anlautende Wurzeln wie اِنْتَظَرَ/اِنْتَقَلَ/اِنْتَصَرَ sehen oberflächlich wie Stamm VII (اِنْفَعَلَ, z. B. اِنْكَسَرَ) aus, sind aber Stamm VIII ohne jede ت-Assimilation (ن löst keine Umwandlung aus). Übrige Grammatikpunkte dieser Lektion (nicht tabellarisch): إذا الفجائية (unerwartetes Ereignis), ظَنَّ mit zwei Akkusativobjekten, siehe die Übungstabellen im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l24', book:3, ar:'بَابَا افْعَلَّ وافْعَالَّ', de:'Lektion 24: Verbstamm IX/IXb (اِفْعَلَّ/اِفْعَالَّ)',
+ gram:'Typ-3-Übung: Ableitungstabellen für die Verbstämme IX (اِفْعَلَّ) und IXb (اِفْعَالَّ, Intensivform mit zusätzlichem Alif) - beide fast ausschließlich für Farben und körperliche/charakterliche Mängel gebraucht (اِحْمَرَّ „rot werden", اِعْوَجَّ „krumm/schief werden") und IMMER intransitiv, deshalb OHNE الأمر- und OHNE اسم المفعول-Spalte. Haupttabelle (باب اِفْعَلَّ) übt المضارع, المصدر und اسم الفاعل aus der Wurzel (الماضي) bei vier Farbwurzeln mit mittlerem Halbvokal (اِصْفَرَّ, اِبْيَضَّ, اِسْوَدَّ, اِخْضَرَّ - ي/و bleiben bei dieser Verdopplungsbildung als Konsonant erhalten, anders als bei hohlen Stamm-I-Verben) und einer Mangel-Wurzel (اِعْوَجَّ, المصدر اِعْوِجَاجٌ direkt im Dialog dieser Lektion belegt). Zweite Tabelle (باب اِفْعَالَّ) übt dieselben Spalten bei اِحْمَارَّ („sehr/tief rot werden", Intensivform zu اِحْمَرَّ) und اِدْهَامَّ („dunkel/schwärzlich-grün werden" - اسم الفاعل مُدْهَامٌّ direkt belegt durch Koran 55:64 „مُدْهَامَّتَانِ" für die beiden stets tiefgrünen Paradiesgärten). Übrige Grammatikpunkte dieser Lektion (nicht tabellarisch): رَأَى القلبية („meinen/glauben", 2 Akkusativobjekte, abgegrenzt von رَأَى البصرية „sehen"), عَسَى (ناقصة wie كان, oder تامة mit مصدر مؤول als فاعل), siehe die Übungstabellen im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1661,6 +1664,77 @@ const DERIV_TABLES = {
    {root:'وَصَلَ', values:['وَصَلَ','اتَّصَلَ'], given:[true,false]},
    {root:'وَحَدَ', values:['وَحَدَ','اتَّحَدَ'], given:[true,false]},
    {root:'وَفَقَ', values:['وَفَقَ','اتَّفَقَ'], given:[true,false]}
+ ]}
+],
+// Buch 3, Lektion 24: بابا افْعَلَّ (Stamm IX) und افْعَالَّ (Stamm IXb, Intensivform) - die
+// Farb-/Mangel-Verben. Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf, gedruckte Seiten 204-210
+// (gedruckte Seite = PDF-0-Index + 2, gegengeprüft gegen die gedruckte Kopfzeile "الدرسُ الرابع
+// والعشرونَ"/"٢٠٤" und die nächste Lektionsgrenze "الدرسُ الخامس والعشرونَ"/"٢١١"). Dialog S.204-205 (zeigt
+// اِعْوَجَّ, اِحْمَرَّ und Koranzitat [آل عمران/106-107] mit اِبْيَضَّتْ/اِسْوَدَّتْ bereits im Fließtext),
+// danach Übungen 1-12 S.205-210, Seite für Seite vollständig gegengelesen. Die Vault-Schätzung ("Zwei
+// Tabellen, je 4 Spalten, OHNE اسم مفعول") wird hiermit VOLL BESTÄTIGT - anders als bei L16/17/19/21/23
+// (dort hatte die erste Schätzung Tabellen übersehen) war die Zählung hier korrekt, genau wie schon bei
+// L20/L22. Kein zusätzliches, übersehenes Raster gefunden.
+// Übung 3 (S.206): Haupttabelle باب اِفْعَلَّ, Spalten الماضي/المضارع/المصدر/اسم الفاعل (KEIN أمر, KEIN
+// اسم مفعول - diese Verben sind intransitiv, Zustandsänderung am Subjekt selbst, kein Objekt möglich).
+// Zeile 1 (اِحْمَرَّ) ist das gedruckte Hauptmodell (alle 4 Spalten gegeben: يَحْمَرُّ/اِحْمِرَارٌ/مُحْمَرٌّ).
+// Zeilen 2-6 sind reine Lückenzeilen (nur الماضي gegeben): اِصْفَرَّ، اِبْيَضَّ، اِسْوَدَّ، اِخْضَرَّ (alle
+// vier Farbwurzeln mit mittlerem Halbvokal ي/و, der bei dieser Verdopplungsbildung - anders als bei hohlen
+// Stamm-I-Verben - unverändert als Konsonant erhalten bleibt, z. B. يَبْيَضُّ nicht *يَبِضُّ) und اِعْوَجَّ
+// (einzige Mangel- statt Farb-Wurzel, "krumm/schief werden", و bleibt ebenso erhalten). Alle hergeleiteten
+// Formen gegen reale Belege gegengeprüft: اِصْفَرَّ/يَصْفَرُّ direkt im Dialog UND in Übung 6 derselben
+// Lektion belegt ("قَدْ اصْفَرَّتْ أَسْنَانُكَ", Hadith-Zitat "حتى تَصْفَرَّ الشمس"), اِبْيَضَّ/اِسْوَدَّ
+// direkt durch das im Dialog S.204 zitierte Koranvers [آل عمران/106-107] belegt ("تَبْيَضُّ وُجُوهٌ
+// وَتَسْوَدُّ وُجُوهٌ" bzw. "اِبْيَضَّتْ وُجُوهُهُمْ"/"اسْوَدَّتْ وُجُوهُهُمْ"), اِخْضَرَّ/يَخْضَرُّ direkt in
+// Übung 6 belegt ("تَخْضَرُّ الأشجارُ في الربيع"), اِعْوَجَّ/اِعْوِجَاجٌ direkt im Dialog S.204-205 UND in
+// Übung 6 belegt ("فَقَدِ اعْوَجَّ مِزْلاَجُها"، "تَقْوِيمُ اعْوِجاجِه"، "اسْتِقامَتُهُ في اعْوِجاجِهِ") -
+// nur die اسم الفاعل-Zellen (مُصْفَرٌّ، مُبْيَضٌّ، مُسْوَدٌّ، مُخْضَرٌّ، مُعْوَجٌّ) sind NICHT wörtlich in
+// dieser Lektion belegt, folgen aber zwingend aus dem im Druck vorgegebenen Muster مُفْعَلٌّ (Zeile
+// اِحْمَرَّ→مُحْمَرٌّ) und sind als reguläre Sarf-Lehrbuchformen gesichert (مُعْوَجٌّ zusätzlich als
+// geläufiges, eigenständiges Adjektiv "krumm/schief" bezeugt, z. B. طريق مُعْوَجٌّ).
+// Übung 4 (S.206): zweite Tabelle باب اِفْعَالَّ (Intensivform, zusätzliches Alif vor dem verdoppelten
+// Letztradikal), dieselben 4 Spalten. Zeile 1 (اِصْفَارَّ) ist das gedruckte Hauptmodell (alle 4 Spalten
+// gegeben: يَصْفَارُّ/اِصْفِيرَارٌ/مُصْفَارٌّ). Zeilen 2-3 sind Lückenzeilen (nur الماضي gegeben):
+// اِحْمَارَّ ("sehr/tief rot werden", Intensivform zu اِحْمَرَّ aus Übung 3 - dieses Paar wird in
+// klassischen Sarf-Werken als Standardbeispiel für اِفْعَلَّ vs. اِفْعَالَّ zitiert) und اِدْهَامَّ
+// ("dunkel/schwärzlich-grün werden", von dichter Vegetation/tiefem Schwarz). اِدْهَامَّ ist besonders
+// stark belegt: die اسم-الفاعل-Form (Dual) مُدْهَامَّتَانِ ist wörtlich Koran [الرحمن/64] ("مُدْهَامَّتَانِ"
+// für die beiden stets tiefgrünen Gärten) - bestätigt direkt die hier hergeleitete Singularform
+// مُدْهَامٌّ. المضارع/المصدر beider Lückenwurzeln (يَحْمَارُّ/اِحْمِيرَارٌ, يَدْهَامُّ/اِدْهِيمَامٌ) folgen
+// zwingend aus dem gedruckten Muster (Zeile اِصْفَارَّ→يَصْفَارُّ/اِصْفِيرَارٌ) und sind die in klassischen
+// Sarf-Lehrwerken (u. a. zur اِفْعَالَّ-Paradigmenreihe اِحْمَارَّ/اِدْهَامَّ neben اِصْفَارَّ) zitierten
+// Standardformen.
+// Übung 5 (S.206) und Übung 6 (S.207) bewusst NICHT als Tabelle gebaut: Übung 5 ("اذكر باب كل فعل مما
+// يأتي") ist eine Identifikations-Übung an 9 bereits fertigen Wörtern (اِسْوَدَّ، اِدْهَامَّ، اِحْمَارَّ،
+// اِشْتَدَّ، اِبْيَضَّ، اِشْتَقَّ، اِنْشَقَّ، اِنْفَضَّ، اِعْوَجَّ - OHNE Lückenzellen), die gezielt die
+// Verwechslungsfalle mit doppelbuchstabigen Stamm-VII/VIII-Verben drillt (اِنْشَقَّ/اِنْفَضَّ = Stamm VII,
+// اِشْتَدَّ/اِشْتَقَّ = Stamm VIII, sehen oberflächlich wie افعلّ-Farbverben aus, sind es aber nicht) - analog
+// zu den bereits in L16/17/19/21/22/23 ausgeschlossenen Identifikations-Übungen. Übung 6 ("تأمل الأمثلة
+// الآتية لباب افعلّ") ist eine Liste von 10 bereits vollständig flektierten Beispielsätzen/Hadithen ohne
+// jede Lücke (dient als Belegquelle für die obigen Herleitungen, ist aber selbst kein Zeile=Wurzel-Raster).
+// Übrige Übungen dieser Lektion (nicht als Tabelle gebaut, da kein Zeile=Wurzel/Spalte=Form-Format): Übung 1
+// (Verständnisfragen zum Dialog). Übung 2 (Grammatiknotiz: افعلّ/افعالّ entstehen durch Hamzat-al-wasl +
+// verdoppeltes Letztradikal bzw. zusätzlich eingeschobenes Alif, beide nur bei الألوان والعيوب gebräuchlich -
+// Fließtext, keine Tabelle). Übung 7 (رَأَى القلبية "meinen/glauben", 2 Akkusativobjekte, abgegrenzt von رَأَى
+// البصرية "sehen" mit nur 1 Objekt - Grammatik + Lückensatz-Drill an 3 Sätzen, kein Wurzelraster). Übung 8-9
+// (عَسَى-Grammatik: ناقصة wie كان vs. تامة mit المصدر المؤول als فاعل, + Umwandlungs-Übungen an mehreren
+// vollständigen Sätzen, kein Wurzelraster). Übung 9/10 auf S.210 (ما المصدرية-Grammatik mit Koranbelegen
+// [ص/26]; جواب أمّا-Grammatik zum getilgten Khabar). Übung 11 (نur zwei isolierte Einzelwörter "هات مضارع:
+// فَقَدَ. اِسْتَاكَ." - kein Raster, nur 2 Einzelabfragen ohne gemeinsame Spaltenstruktur). Übung 12
+// (Vokabelfrage zur Bedeutung/zum Plural von الوَجْنَة, keine Ableitungstabelle).
+'b3-l24':[
+ {de:'اِفْعَلَّ (الألوان والعيوب)', columns:['الماضي','المضارع','المصدر','اسم الفاعل'], rows:[
+   {root:'اِحْمَرَّ', values:['اِحْمَرَّ','يَحْمَرُّ','اِحْمِرَارٌ','مُحْمَرٌّ'], given:[true,true,true,true]},
+   {root:'اِصْفَرَّ', values:['اِصْفَرَّ','يَصْفَرُّ','اِصْفِرَارٌ','مُصْفَرٌّ'], given:[true,false,false,false]},
+   {root:'اِبْيَضَّ', values:['اِبْيَضَّ','يَبْيَضُّ','اِبْيِضَاضٌ','مُبْيَضٌّ'], given:[true,false,false,false]},
+   {root:'اِسْوَدَّ', values:['اِسْوَدَّ','يَسْوَدُّ','اِسْوِدَادٌ','مُسْوَدٌّ'], given:[true,false,false,false]},
+   {root:'اِخْضَرَّ', values:['اِخْضَرَّ','يَخْضَرُّ','اِخْضِرَارٌ','مُخْضَرٌّ'], given:[true,false,false,false]},
+   {root:'اِعْوَجَّ', values:['اِعْوَجَّ','يَعْوَجُّ','اِعْوِجَاجٌ','مُعْوَجٌّ'], given:[true,false,false,false]}
+ ]},
+ {de:'اِفْعَالَّ (صيغة المبالغة)', columns:['الماضي','المضارع','المصدر','اسم الفاعل'], rows:[
+   {root:'اِصْفَارَّ', values:['اِصْفَارَّ','يَصْفَارُّ','اِصْفِيرَارٌ','مُصْفَارٌّ'], given:[true,true,true,true]},
+   {root:'اِحْمَارَّ', values:['اِحْمَارَّ','يَحْمَارُّ','اِحْمِيرَارٌ','مُحْمَارٌّ'], given:[true,false,false,false]},
+   {root:'اِدْهَامَّ', values:['اِدْهَامَّ','يَدْهَامُّ','اِدْهِيمَامٌ','مُدْهَامٌّ'], given:[true,false,false,false]}
  ]}
 ]
 };
