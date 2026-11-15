@@ -877,6 +877,9 @@ const TOPICS = [
  ex:[], words:[]},
 {id:'b3-l25', book:3, ar:'بَابُ اسْتَفْعَلَ', de:'Lektion 25: Verbstamm X (اِسْتَفْعَلَ)',
  gram:'Typ-3-Übung: Ableitungstabelle für den Verbstamm X (اِسْتَفْعَلَ) - gebildet durch das Präfix اِسْتَ vor den bloßen Stamm (اِسْتَ+فْعَلَ), meist im Sinne von „etwas verlangen/erbitten" (اِسْتَغْفَرَ „um Vergebung bitten") oder „etwas als X ansehen/für sich beanspruchen" (اِسْتَقْبَلَ „empfangen", wörtl. „sich zuwenden"). Die Tabelle übt المضارع, الأمر und المصدر aus der Wurzel (الماضي) bei einer gesunden Wurzel (اِسْتَغْفَرَ), einer مضعّف-Wurzel (اِسْتَعَدَّ, Amr mit Fatha اِسْتَعِدَّ statt Sukun, um zwei Sukun auf dem verdoppelten Letztradikal zu vermeiden), einer ناقص-ي-Wurzel (اِسْتَلْقَى, Amr verliert das finale ي: اِسْتَلْقِ) und drei أجوف-Wurzeln (اِسْتَرَاحَ, اِسْتَقَالَ, اِسْتَفَادَ, deren Masdar bei dieser Wurzelklasse auf ة endet: اِسْتِرَاحَةٌ/اِسْتِقَالَةٌ/اِسْتِفَادَةٌ statt des regulären اِسْتِفْعَال-Musters). Übrige Grammatikpunkte dieser Lektion (nicht tabellarisch): كَيْ („damit", لِكَيْلَا bei Verneinung), إذَنْ (3 Bedingungen für نصب des Muḍāriʿ), الأحرف الناصبة للمضارع (أنْ، لَنْ، كَيْ، إذَنْ als Buch-Abschluss-Liste), siehe die Übungstabelle im Tutor.',
+ ex:[], words:[]},
+{id:'b3-l26', book:3, ar:'الفِعْلُ الرُّبَاعِيُّ', de:'Lektion 26: Der vierradikalige Verb (الفعل الرباعي)',
+ gram:'Typ-3-Übung: Ableitungstabelle für den vierradikaligen Verbstamm (الفعل الرباعي) - letzte Lektion dieser Verbform-Serie. Im Unterschied zu den dreiradikaligen Stämmen II-X hat der رباعي keine einzelne „Form", sondern vier eigene أبواب: den bloßen (مجرد) Stamm فَعْلَلَ (تَرْجَمَ „übersetzen") sowie drei erweiterte (مزيد) Stämme - تَفَعْلَلَ (تَ-Präfix, meist مُطَاوَعَة zum مجرد-Stamm, analog zu فَعَّلَ→تَفَعَّلَ: تَرَعْرَعَ „aufwachsen/heranwachsen"), اِفْعَلَلَّ (Verdopplung des 4. Radikals, das رباعي-Gegenstück zu Stamm IX اِفْعَلَّ: اِطْمَأَنَّ „beruhigt/zufrieden sein", المضارع/المصدر يَطْمَئِنُّ/اِطْمِئْنَانٌ direkt im Koranvers [الزمر] dieser Lektion belegt) und اِفْعَنْلَلَ (ن-Einschub zwischen 2. und 3. Radikal: اِحْرَنْجَمَ „sich drängen/zusammenrotten"). Eine einzige durchgehende Tabelle (3 Spalten الماضي|المضارع|المصدر, OHNE اسم الفاعل) übt alle vier أبواب nacheinander: je eine komplett vorgegebene Modellzeile pro Unterkategorie (تَرْجَمَ, تَرَعْرَعَ, اِطْمَأَنَّ, اِحْرَنْجَمَ) und dazu mehrere Blankzeilen (nur الماضي gedruckt) - بَعْثَرَ, هَرْوَلَ, زَلْزَلَ (مجرد), تَمَضْمَضَ (تَفَعْلَلَ, direkt im Hadith Qudsi dieser Lektion belegt), اِشْمَأَزَّ, اِقْشَعَرَّ (اِفْعَلَلَّ, beide direkt im Koranvers dieser Lektion belegt) und اِفْرَنْقَعَ (اِفْعَنْلَلَ, das klassische Lehrbuchpaar zu اِحْرَنْجَمَ: „sie versammelten sich, dann zerstreuten sie sich"). Übrige Grammatikpunkte dieser Lektion (nicht tabellarisch): ضمير الفصل (das Trennpronomen zwischen Khabar und Beiwort, z. B. هذا هو المراقبُ الجديدُ), sowie eine abschließende, um 90° gedruckte Vollseiten-Übersichtstafel aller Verbformen (reine Referenztafel ohne Lücken), siehe die Übungstabelle im Tutor.',
  ex:[], words:[]}
 ];
 
@@ -1804,6 +1807,87 @@ const DERIV_TABLES = {
    {root:'اِسْتَرَاحَ', values:['اِسْتَرَاحَ','يَسْتَرِيحُ','اِسْتَرِحْ','اِسْتِرَاحَةٌ'], given:[true,false,false,true]},
    {root:'اِسْتَقَالَ', values:['اِسْتَقَالَ','يَسْتَقِيلُ','اِسْتَقِلْ','اِسْتِقَالَةٌ'], given:[true,false,false,false]},
    {root:'اِسْتَفَادَ', values:['اِسْتَفَادَ','يَسْتَفِيدُ','اِسْتَفِدْ','اِسْتِفَادَةٌ'], given:[true,false,false,false]}
+ ]}
+],
+// Buch 3, Lektion 26 (LETZTE Lektion dieser Verbform-Serie 16/17/19-26): الفعل الرباعي (der vierradikalige
+// Verbstamm) + ضمير الفصل. Quelle: madina-book-3-arabic-text-dr-v-abdurrahim.pdf, gedruckte Seiten 220-229
+// (gedruckte Seite = PDF-0-Index + 2, gegengeprüft gegen die gedruckte Kopfzeile "الدرسُ السَّادس
+// والعِشرون"/"٢٢٠" und die nächste Lektionsgrenze "الدرسُ السابع والعِشرونَ"/"٢٣٠"). Dialog S.220-221,
+// danach Übungen 1-16 S.222-228, Seite für Seite vollständig gegengelesen, zum Schluss die rotierte
+// Vollseiten-Übersichtstafel S.229.
+// Vault-Schätzung ("Tabelle 3 Spalten ماضي|مضارع|مصدر, 4 Unterkategorien, je eine Wurzel pro Kategorie
+// komplett vorgegeben") wird hiermit BESTÄTIGT, und zwar einschließlich des Punkts, den diese Aufgabe
+// gezielt zu prüfen hatte: anders als bei L19/21/23 (wo die erste Schätzung separate Tabellen übersehen
+// hatte) sind die 4 Unterkategorien hier NICHT verschiedene Übungen mit unterschiedlichen Spalten, sondern
+// eine einzige gedruckte Übung (Übung 3, S.223) mit EINEM Spaltenkopf (الماضي|المضارع|المصدر) für alle 11
+// Zeilen - die 4 Unterkategorien sind im Druck nur durch Leerzeilen voneinander abgesetzt, nicht durch
+// eigene Überschriften oder Spalten. Deshalb hier zurecht EIN DERIV_TABLES-Eintrag, keine 4 getrennten.
+// Übung 3 (S.223), Spalten الماضي/المضارع/المصدر (KEIN اسم الفاعل, obwohl der رباعي dieses regulär bildet):
+// 4 komplett vorgegebene Modellzeilen, je eine pro باب - تَرْجَمَ (مجرد, وزن فَعْلَلَ: يُتَرْجِمُ/تَرْجَمَةٌ),
+// تَرَعْرَعَ (مزيد ١, وزن تَفَعْلَلَ: يَتَرَعْرَعُ/تَرَعْرُعٌ), اِطْمَأَنَّ (مزيد ٢, وزن اِفْعَلَلَّ -
+// Verdopplung des 4. Radikals, das رباعي-Gegenstück zu Stamm IX اِفْعَلَّ: يَطْمَئِنُّ/اِطْمِئْنَانٌ) und
+// اِحْرَنْجَمَ (مزيد ٣, وزن اِفْعَنْلَلَ - ن-Einschub zwischen 2. und 3. Radikal: يَحْرَنْجِمُ/اِحْرِنْجَامٌ).
+// Dazu 7 reine Lückenzeilen (nur الماضي gedruckt, المضارع+المصدر nach dem jeweiligen Modell hergeleitet):
+// بَعْثَرَ، هَرْوَلَ، زَلْزَلَ (مجرد, alle 3 im Dialog/Hadith dieser Lektion direkt belegt - بَعْثَرَ als
+// Passiv بُعْثِرَ in dieser Lektions-Hadith-Liste zitiert, هَرْوَلَ direkt im Hadith Qudsi derselben Seite
+// "وَامْشِ إِلَيَّ أَهْرْوِلْ إِلَيْكَ" [Imperativ أَهْرْوِلْ bestätigt die Wurzel], زَلْزَلَ als geläufiges
+// Alltagswort "erschüttern" - المصدر hier als reguläres زَلْزَلَةٌ nach dem Modellmuster فَعْلَلَةٌ
+// hergeleitet, NICHT als das klassische Alternativ-مصدر زِلْزَالٌ auf وزن فِعْلَال [Sure 99 أيضاً so benannt] -
+// dieses zweite Muster gilt zusätzlich für رباعي-Wurzeln mit wiederholtem Doppelbuchstabenpaar, wird hier
+// aber bewusst NICHT verwendet, weil die Übung erkennbar das reguläre فَعْلَلَةٌ-Muster der Modellzeile
+// تَرْجَمَةٌ drillt), تَمَضْمَضَ (تَفَعْلَلَ, "sich den Mund ausspülen" - direkt im selben Hadith dieser
+// Lektion belegt: "مَنْ تَمَضْمَضَ واسْتَنْثَرَ خرجت خطاياه..." [رواه الإمام أحمد], المصدر تَمَضْمُضٌ nach
+// dem Modellmuster تَفَعْلُلٌ - klassische Wörterbücher wie لسان العرب führen diese Form eigens auf, auch
+// wenn im Fiqh meist der مصدر ميمي المضمضة gebraucht wird, der in dieser Lektion selbst als Gegenbeispiel
+// auftaucht [Übung 9: "لا بأس بالمضمضة والتبرد للصائم"] - genau DESHALB ist hier bewusst das reguläre
+// تَفَعْلُلٌ gewählt, weil die Übung die Musterbildung abfragt, nicht den geläufigeren Alltagsbegriff),
+// اِشْمَأَزَّ und اِقْشَعَرَّ (اِفْعَلَلَّ - beide Wurzeln UND ihre المضارع-Form direkt durch das im Dialog
+// dieser Lektion zitierte Koranvers [الزمر/45 bzw. 23] belegt: "اشْمَأَزَّتْ قُلُوبُ الَّذِينَ لَا
+// يُؤْمِنُونَ" bzw. "تَقْشَعِرُّ مِنْهُ جُلُودُ الَّذِينَ يَخْشَوْنَ رَبَّهُمْ" - das bestätigt sowohl die
+// hergeleiteten المضارع-Formen يَشْمَئِزُّ/يَقْشَعِرُّ als auch die hergeleiteten المصدر-Formen
+// اِشْمِئْزَازٌ/اِقْشِعْرَارٌ, beides geläufige klassische Standardwörter für "Abscheu/Widerwille" bzw.
+// "Schaudern/Gänsehaut") und اِفْرَنْقَعَ (اِفْعَنْلَلَ - das in Sarf-Lehrwerken klassische Paarbeispiel zu
+// اِحْرَنْجَمَ: "اِحْرَنْجَمَ القومُ ثم اِفْرَنْقَعُوا" = "die Leute drängten sich zusammen, dann
+// zerstreuten sie sich", المضارع يَفْرَنْقِعُ und المصدر اِفْرِنْقَاعٌ nach demselben Muster wie
+// يَحْرَنْجِمُ/اِحْرِنْجَامٌ hergeleitet). Alle 7 abgeleiteten Zeilen sind reale, in Wörterbüchern
+// gesicherte Standardformen, keine erfundenen Formen - keine Unsicherheit, die eine Rückfrage nötig gemacht
+// hätte (einzige offene Modellierungsfrage war زَلْزَلَ/زَلْزَلَةٌ vs. زِلْزَالٌ, s. o., als bewusste
+// Entscheidung für das Modellmuster gelöst).
+// Bewusst NICHT als Tabelle gebaut (jede Übung dieser Lektion einzeln gegengelesen): Übung 1
+// (3 Verständnisfragen zum Dialog). Übung 2 (S.222, Grammatiknotiz: رباعي = مجرد [1 باب, وزن فَعْلَلَ] oder
+// مزيد [3 أبواب] + Vokabelliste von je 2-3 Beispielen pro باب, reine Wortliste ohne Lücken, + "استخرج من
+// الدرس الأفعال الرباعية، ومشتقاتها، واذكر باب كل واحد منها" - offene Extraktionsliste, keine Tabelle).
+// Übung 4 (S.223, "عيّن الأفعال الرباعية فيما يأتي، واذكر باب كل واحد منها" - Identifikations-Übung an 10
+// bereits vollständigen Sätzen/Hadithen/Koranzitaten ohne jede Lücke, analog zu den bereits in
+// L16/17/19/21/22/23/24/25 ausgeschlossenen Identifikations-Übungen). Übung 5 (S.224, Grammatiknotiz zu
+// ضمير الفصل [Trennpronomen zwischen Khabar und Beiwort, هذا هو المراقبُ الجديدُ] + offene
+// Extraktions-/Einsetzübungen an Beispielsätzen, kein Wurzelraster). Übung 6 (S.225, مِنْ التبعيضية-Grammatik
+// + 5 Beispielsätze/Koranzitate, Fließtext). Übung 7 (S.226, همزة الاستفهام vor حروف العطف-Grammatik + 2
+// Lückensätze auf Satzebene). Übung 8 (S.226, إذ als مفعول به لفعل محذوف-Grammatiknotiz an einem
+// Koranbeispiel). Übung 9 (S.226, مَوْتَى-Pluralmuster فَعْلَى + freie Pluralbildungsliste
+// مَريض/جَريح/أَسِير/قَتِيل/صَرِيع/أَحْمَق - andere Wortart, kein رباعي-Verbraster). Übung 10 (S.226f, ياء
+// المتكلم bei رَبِّ-Vokativ, 5 Lautvarianten als Fließtext-Aufzählung, keine Tabelle). Übung 11 (S.227, إذا
+// الفجائية-Grammatik + Beispiel). Übung 12 (S.227, مضعّف-Jazm-Varianten لَمْ يَشُدَّ/لَمْ يَشْدُدْ als
+// Fließtext-Beispiel samt Koranbeleg [طه/27], kein Wurzelraster). Übung 13 (ما-Typ-Identifikation an einem
+// Satz). Übung 14 (ما مفرد الجُلُود؟ - Einzelwort-Abfrage). Übung 15 (S.227, "اذكر باب كل فعل مما يأتي:
+// اسْتَنْثَرَ، تَقَعَّرَ، اسْتَبْشَرَ، لأَنَّ" - Identifikations-Übung an 4 bereits fertigen Wörtern, analog zu
+// den bereits ausgeschlossenen Identifikations-Übungen). Übung 16 (S.228, ما المصدرية الظرفية-Grammatik +
+// 3 Beispielsätze). Abschließende, unnummerierte, um 90° gedruckte Vollseiten-Übersichtstafel S.229 (Baum
+// aller Verbformen, ثلاثي+رباعي zusammen) - eine reine Referenz-/Anhangstafel ohne jede Lücke für den
+// Studenten, bewusst NICHT eingebaut (wie die bereits in L16 ausgeschlossene vollständige Referenztabelle).
+'b3-l26':[
+ {de:'الفعل الرباعي — فَعْلَلَ / تَفَعْلَلَ / اِفْعَلَلَّ / اِفْعَنْلَلَ', columns:['الماضي','المضارع','المصدر'], rows:[
+   {root:'تَرْجَمَ', values:['تَرْجَمَ','يُتَرْجِمُ','تَرْجَمَةٌ'], given:[true,true,true]},
+   {root:'بَعْثَرَ', values:['بَعْثَرَ','يُبَعْثِرُ','بَعْثَرَةٌ'], given:[true,false,false]},
+   {root:'هَرْوَلَ', values:['هَرْوَلَ','يُهَرْوِلُ','هَرْوَلَةٌ'], given:[true,false,false]},
+   {root:'زَلْزَلَ', values:['زَلْزَلَ','يُزَلْزِلُ','زَلْزَلَةٌ'], given:[true,false,false]},
+   {root:'تَرَعْرَعَ', values:['تَرَعْرَعَ','يَتَرَعْرَعُ','تَرَعْرُعٌ'], given:[true,true,true]},
+   {root:'تَمَضْمَضَ', values:['تَمَضْمَضَ','يَتَمَضْمَضُ','تَمَضْمُضٌ'], given:[true,false,false]},
+   {root:'اِطْمَأَنَّ', values:['اِطْمَأَنَّ','يَطْمَئِنُّ','اِطْمِئْنَانٌ'], given:[true,true,true]},
+   {root:'اِشْمَأَزَّ', values:['اِشْمَأَزَّ','يَشْمَئِزُّ','اِشْمِئْزَازٌ'], given:[true,false,false]},
+   {root:'اِقْشَعَرَّ', values:['اِقْشَعَرَّ','يَقْشَعِرُّ','اِقْشِعْرَارٌ'], given:[true,false,false]},
+   {root:'اِحْرَنْجَمَ', values:['اِحْرَنْجَمَ','يَحْرَنْجِمُ','اِحْرِنْجَامٌ'], given:[true,true,true]},
+   {root:'اِفْرَنْقَعَ', values:['اِفْرَنْقَعَ','يَفْرَنْقِعُ','اِفْرِنْقَاعٌ'], given:[true,false,false]}
  ]}
 ]
 };
