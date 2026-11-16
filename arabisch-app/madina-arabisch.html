@@ -2527,6 +2527,47 @@ for (const t of TOPICS){
 const BASE_TOTAL = Object.keys(CARDS).length;
 const SCENE = Object.fromEntries(SCENES.map(s => [s.id, s]));
 
+/* ---------- Mehrsprachigkeit (Lektionsinhalt) ----------
+   Phase 2 der Mehrsprachigkeits-Planung, rein additiv: jede Lektion/Quizfrage behält ihre deutschen Felder
+   unverändert in einer _deSaved-Kopie; optionale *_en-Felder (de_en/gram_en/ex_en/words_en bei TOPICS,
+   qde_en/ok_en/bad_en bei EX-Fragen) liefern die englische Fassung, sobald eine Lektion übersetzt ist.
+   applyContentLang() schreibt je nach aktueller Sprache die sichtbaren Felder in dieselben Objektreferenzen
+   zurück (t.de/t.gram/t.ex/t.words, CARDS[id].de/ex/exde, ex.qde/ex.ok/ex.bad) - bestehender Lesecode an
+   jeder anderen Stelle im Programm greift weiterhin auf dieselben Felder zu und muss nicht geändert werden.
+   Fehlt eine _en-Fassung (noch nicht übersetzte Lektion/Frage), bleibt der deutsche Text stehen, nie leer
+   oder kaputt. Arabischer Text (ar/q/qF/ok[0]/bad[i][0]) ändert sich nie, nur die deutsche/englische Prosa.
+   Aufgerufen einmal beim Laden (Default Deutsch) und bei jedem setLang(). */
+function applyContentLang(){
+  const en = S.settings.lang === 'en';
+  for (const t of TOPICS){
+    if (!t._deSaved) t._deSaved = {de:t.de, gram:t.gram, ex:t.ex, words:t.words};
+    const d = t._deSaved;
+    t.de = en && t.de_en ? t.de_en : d.de;
+    t.gram = en && t.gram_en ? t.gram_en : d.gram;
+    t.ex = en && t.ex_en ? d.ex.map((pair, i) => { const o = pair.slice(); if (t.ex_en[i] !== undefined) o[1] = t.ex_en[i]; return o; }) : d.ex;
+    t.words = en && t.words_en ? d.words.map((w, i) => {
+      const ov = t.words_en[i]; if (!ov) return w;
+      const w2 = w.slice();
+      if (ov.de !== undefined) w2[2] = ov.de;
+      if (ov.exde !== undefined) w2[4] = ov.exde;
+      return w2;
+    }) : d.words;
+    TOPIC_CARDS[t.id].forEach((id, i) => {
+      const w = t.words[i], c = CARDS[id];
+      if (c){ c.de = w[2]; c.ex = w[3] || ''; c.exde = w[4] || ''; }
+    });
+  }
+  for (const id of Object.keys(EX)){
+    for (const ex of EX[id]){
+      if (!ex._deSaved) ex._deSaved = {qde:ex.qde, ok:ex.ok, bad:ex.bad};
+      const d = ex._deSaved;
+      ex.qde = en && ex.qde_en ? ex.qde_en : d.qde;
+      ex.ok = en && ex.ok_en !== undefined ? (() => { const o = d.ok.slice(); o[1] = ex.ok_en; return o; })() : d.ok;
+      ex.bad = en && ex.bad_en ? d.bad.map((pair, i) => { const o = pair.slice(); if (ex.bad_en[i] !== undefined) o[1] = ex.bad_en[i]; return o; }) : d.bad;
+    }
+  }
+}
+
 /* ---------- Speicher: Gerät + Claude-Konto ---------- */
 const LS = 'madina-arabisch-v1';
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -2538,6 +2579,7 @@ function mergeState(x){
     mistakes:Array.isArray(x.mistakes) ? x.mistakes : [], custom:Array.isArray(x.custom) ? x.custom : []};
 }
 let S = (() => { try { const r = lsGet(LS); if (r) return mergeState(JSON.parse(r)); } catch (e) {} return DEFAULTS(); })();
+applyContentLang();
 for (const c of S.custom) registerCustom(c);
 
 function registerCustom(c){ CARDS[c.id] = {id:c.id, topic:'custom', ar:c.ar, tl:c.tl || '', de:c.de || '', ex:'', exde:'', src:c.src}; }
@@ -3757,7 +3799,7 @@ function applyI18N(){
 }
 function setLang(l){
   if (S.settings.lang === l) return;
-  S.settings.lang = l; save(); applySettingsUI(); renderTutorHead(); refreshCurrent();
+  S.settings.lang = l; save(); applyContentLang(); applySettingsUI(); renderTutorHead(); refreshCurrent();
 }
 
 /* ---------- Einstellungen ---------- */
