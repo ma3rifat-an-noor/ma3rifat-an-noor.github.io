@@ -557,23 +557,23 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
     </section>
 
     <!-- KARTEIKARTEN -->
-    <section class="view" id="v-karten" aria-label="Karteikarten" hidden>
+    <section class="view" id="v-karten" aria-label="Karteikarten" hidden data-i18n-aria="tabKarten">
       <div class="wrap" id="cards-root"></div>
     </section>
 
     <!-- ÜBERSETZER -->
-    <section class="view" id="v-uebersetzer" aria-label="Übersetzer" hidden>
+    <section class="view" id="v-uebersetzer" aria-label="Übersetzer" hidden data-i18n-aria="tabUebersetzer">
       <div class="wrap">
-        <h2 class="h">Übersetzer</h2>
-        <p class="lede">Schreib einen Satz auf Arabisch oder Deutsch. Jeder Satz wird übersetzt und Wort für Wort erklärt.</p>
+        <h2 class="h" data-i18n="tabUebersetzer">Übersetzer</h2>
+        <p class="lede" data-i18n="trLede">Schreib einen Satz auf Arabisch oder Deutsch. Jeder Satz wird übersetzt und Wort für Wort erklärt.</p>
         <form class="tr-form" id="tr-form" autocomplete="off">
-          <label class="sr" for="tr-input">Text zum Übersetzen</label>
-          <textarea id="tr-input" rows="3" dir="auto" placeholder="z. B. أَيْنَ الْمَسْجِدُ؟ oder: Ich trinke Tee mit Milch."></textarea>
+          <label class="sr" for="tr-input" data-i18n="trInputLabel">Text zum Übersetzen</label>
+          <textarea id="tr-input" rows="3" dir="auto" placeholder="z. B. أَيْنَ الْمَسْجِدُ؟ oder: Ich trinke Tee mit Milch." data-i18n-ph="trInputPh"></textarea>
           <div class="tr-actions">
-            <button class="mic" type="button" data-mic="tr" aria-label="Sprechen" aria-pressed="false"><svg class="ico"><use href="#i-mic"/></svg></button>
-            <div class="seg" id="tr-lang" role="group" aria-label="Sprache fürs Mikrofon"><button type="button" data-lang="ar-SA" aria-pressed="true">Arabisch</button><button type="button" data-lang="de-DE" aria-pressed="false">Deutsch</button></div>
+            <button class="mic" type="button" data-mic="tr" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <div class="seg" id="tr-lang" role="group" aria-label="Sprache fürs Mikrofon" data-i18n-aria="micLangGroup"><button type="button" data-lang="ar-SA" aria-pressed="true">Arabisch</button><button type="button" data-lang="de-DE" aria-pressed="false">Deutsch</button></div>
             <span class="grow"></span>
-            <button class="btn primary" type="submit" id="tr-go">Erklären</button>
+            <button class="btn primary" type="submit" id="tr-go" data-i18n="trGoBtn">Erklären</button>
           </div>
           <div class="mode-bar" id="tr-mode"></div>
           <div class="mic-help" data-mic-help hidden></div>
@@ -2618,7 +2618,7 @@ function addCustom(card, intoMistakes){
 }
 function updateDuePill(){
   const n = new Set([...dueIds(), ...mistakeIds()]).size;
-  const p = $('#due-pill'); p.hidden = n === 0; p.textContent = n + ' fällig';
+  const p = $('#due-pill'); p.hidden = n === 0; p.textContent = n + (S.settings.lang === 'en' ? ' due' : ' fällig');
 }
 
 /* ---------- Vorlesen ---------- */
@@ -3398,22 +3398,23 @@ function lookupDe(tok){
   return null;
 }
 function offlineTranslate(text){
-  const ar = isArabic(text);
+  const ar = isArabic(text), en = S.settings.lang === 'en';
   const whole = ar ? SENTS.get(norm(text)) : [...SENTS.values()].find(s => norm(s.de) === norm(text));
   const toks = text.split(/[\s،,.!?؟:;"“”«»()]+/).filter(Boolean);
+  const claudeBtn = en ? '“Explain precisely with Claude”' : '„Mit Claude genau erklären"';
   let words, sent;
   if (ar){
     let found = 0;
     words = toks.map(tok => {
       const r = lookupAr(tok);
-      if (!r){ return {ar:tok, de:'?', tl:'', type:'', root:'', note:'Nicht im Wörterbuch der App. Für dieses Wort tippe auf „Mit Claude genau erklären".'}; }
+      if (!r){ return {ar:tok, de:'?', tl:'', type:'', root:'', note:(en ? 'Not in the app’s dictionary. For this word, tap ' + claudeBtn + '.' : 'Nicht im Wörterbuch der App. Für dieses Wort tippe auf ' + claudeBtn + '.')}; }
       found++; const c = r.card;
-      return {ar:tok, de:c.de, tl:c.tl, type:TOPIC[c.topic] ? 'Thema: ' + TOPIC[c.topic].de : '', root:'', note:(r.parts.length ? r.parts.join(' + ') + ' + ' + c.ar : '') + (c.ex ? (r.parts.length ? ' · ' : '') + 'Beispiel: ' + c.ex + ' – ' + c.exde : '')};
+      return {ar:tok, de:c.de, tl:c.tl, type:TOPIC[c.topic] ? (en ? 'Topic: ' : 'Thema: ') + TOPIC[c.topic].de : '', root:'', note:(r.parts.length ? r.parts.join(' + ') + ' + ' + c.ar : '') + (c.ex ? (r.parts.length ? ' · ' : '') + (en ? 'Example: ' : 'Beispiel: ') + c.ex + ' – ' + c.exde : '')};
     });
-    sent = {ar:text, de:whole ? whole.de : (found ? 'Satz nicht als Ganzes bekannt. Die Bedeutung der einzelnen Wörter steht unten.' : 'Kein Wort erkannt.'), tl:whole ? whole.tl : '', structure:whole ? '' : 'Das Wörterbuch kennt die Wörter aus den Lektionen der App. Für Grammatik und Satzbau nutze „Mit Claude genau erklären".', words};
+    sent = {ar:text, de:whole ? whole.de : (found ? (en ? 'The whole sentence isn’t recognized. The meaning of the individual words is below.' : 'Satz nicht als Ganzes bekannt. Die Bedeutung der einzelnen Wörter steht unten.') : (en ? 'No word recognized.' : 'Kein Wort erkannt.')), tl:whole ? whole.tl : '', structure:whole ? '' : (en ? 'The dictionary knows the words from the app’s lessons. For grammar and sentence structure, use ' + claudeBtn + '.' : 'Das Wörterbuch kennt die Wörter aus den Lektionen der App. Für Grammatik und Satzbau nutze ' + claudeBtn + '.'), words};
   } else {
-    words = toks.map(tok => { const c = lookupDe(tok); return c ? {ar:c.ar, de:tok + ' = ' + c.de, tl:c.tl, type:TOPIC[c.topic] ? 'Thema: ' + TOPIC[c.topic].de : '', root:'', note:c.ex ? 'Beispiel: ' + c.ex + ' – ' + c.exde : ''} : null; }).filter(Boolean);
-    sent = {ar:whole ? whole.ar : (words.length ? words.map(w => w.ar).join(' ') : '…'), de:text, tl:whole ? whole.tl : '', structure:whole ? '' : (words.length ? 'Das sind nur die einzelnen Wörter aus dem Wörterbuch, kein fertiger Satz. Einen richtigen Satz baut dir „Mit Claude genau erklären".' : 'Keines dieser Wörter ist im Wörterbuch der App.'), words};
+    words = toks.map(tok => { const c = lookupDe(tok); return c ? {ar:c.ar, de:tok + ' = ' + c.de, tl:c.tl, type:TOPIC[c.topic] ? (en ? 'Topic: ' : 'Thema: ') + TOPIC[c.topic].de : '', root:'', note:c.ex ? (en ? 'Example: ' : 'Beispiel: ') + c.ex + ' – ' + c.exde : ''} : null; }).filter(Boolean);
+    sent = {ar:whole ? whole.ar : (words.length ? words.map(w => w.ar).join(' ') : '…'), de:text, tl:whole ? whole.tl : '', structure:whole ? '' : (words.length ? (en ? 'These are just the individual words from the dictionary, not a complete sentence. ' + claudeBtn + ' builds you a proper sentence.' : 'Das sind nur die einzelnen Wörter aus dem Wörterbuch, kein fertiger Satz. Einen richtigen Satz baut dir ' + claudeBtn + '.') : (en ? 'None of these words are in the app’s dictionary.' : 'Keines dieser Wörter ist im Wörterbuch der App.')), words};
   }
   renderTranslation({offline:true, sentences:[sent]}, false);
 }
@@ -3520,25 +3521,26 @@ async function roleFeedback(){
 /* ---------- Karteikarten ---------- */
 let session = null;
 function deckRow(id, ar, de, ids){
-  const now = Date.now();
+  const now = Date.now(), en = S.settings.lang === 'en';
   const due = ids.filter(x => S.srs[x] && S.srs[x].d <= now).length;
   const wr = ids.filter(x => S.mistakes.includes(x)).length;
   const fresh = ids.filter(x => !S.srs[x]).length;
-  const badge = wr ? '<span class="badge wr">' + wr + ' falsch</span>' : due ? '<span class="badge due">' + due + ' fällig</span>' : fresh ? '<span class="badge">' + fresh + ' neu</span>' : '<span class="badge">fertig</span>';
+  const badge = wr ? '<span class="badge wr">' + wr + (en ? ' wrong' : ' falsch') + '</span>' : due ? '<span class="badge due">' + due + (en ? ' due' : ' fällig') + '</span>' : fresh ? '<span class="badge">' + fresh + (en ? ' new' : ' neu') + '</span>' : '<span class="badge">' + (en ? 'done' : 'fertig') + '</span>';
   return '<button class="deck" type="button" data-study="' + id + '"><span class="d-ar" lang="ar">' + esc(ar) + '</span><span class="d-main"><span class="d-de">' + esc(de) + '</span>'
-    + '<span class="d-meta">' + ids.length + ' Karten · ' + knownCount(ids) + ' gelernt</span><span class="t-bar"><i style="width:' + Math.round(100 * knownCount(ids) / Math.max(1, ids.length)) + '%"></i></span></span>' + badge + '</button>';
+    + '<span class="d-meta">' + ids.length + (en ? ' cards · ' : ' Karten · ') + knownCount(ids) + (en ? ' learned' : ' gelernt') + '</span><span class="t-bar"><i style="width:' + Math.round(100 * knownCount(ids) / Math.max(1, ids.length)) + '%"></i></span></span>' + badge + '</button>';
 }
 function renderDecks(){
   session = null;
+  const en = S.settings.lang === 'en';
   const mist = mistakeIds().length, due = dueIds().length;
   const custom = S.custom.map(c => c.id).filter(id => CARDS[id]);
-  let h = '<h2 class="h">Karteikarten</h2><p class="lede">Zu jedem Thema. Was du falsch hattest, kommt in den Fehler-Stapel und wird so lange wiederholt, bis du es zweimal hintereinander weißt.</p>'
+  let h = '<h2 class="h">' + (en ? 'Flashcards' : 'Karteikarten') + '</h2><p class="lede">' + (en ? 'For every topic. What you got wrong goes into the mistake pile and repeats until you know it twice in a row.' : 'Zu jedem Thema. Was du falsch hattest, kommt in den Fehler-Stapel und wird so lange wiederholt, bis du es zweimal hintereinander weißt.') + '</p>'
     + '<div class="sum-tiles">'
-    + '<div class="sum red"><span class="big">' + mist + '</span><span class="lab">im Fehler-Stapel</span><button class="btn small bad" type="button" data-session="mistakes"' + (mist ? '' : ' disabled') + '>Wiederholen</button></div>'
-    + '<div class="sum"><span class="big">' + due + '</span><span class="lab">heute zur Wiederholung fällig</span><button class="btn small" type="button" data-session="due"' + (due ? '' : ' disabled') + '>Wiederholen</button></div>'
+    + '<div class="sum red"><span class="big">' + mist + '</span><span class="lab">' + (en ? 'in the mistake pile' : 'im Fehler-Stapel') + '</span><button class="btn small bad" type="button" data-session="mistakes"' + (mist ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
+    + '<div class="sum"><span class="big">' + due + '</span><span class="lab">' + (en ? 'due for review today' : 'heute zur Wiederholung fällig') + '</span><button class="btn small" type="button" data-session="due"' + (due ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
     + '</div>'
-    + '<div class="dir-row"><span class="lab">Vorderseite</span><div class="seg" id="dir-seg" role="group" aria-label="Richtung"><button type="button" data-dir="ar" aria-pressed="' + (S.settings.dir === 'ar') + '">Arabisch → Deutsch</button><button type="button" data-dir="de" aria-pressed="' + (S.settings.dir === 'de') + '">Deutsch → Arabisch</button></div></div>';
-  if (custom.length) h += '<div class="deck-group"><div class="book-head"><h2>Meine Wörter</h2><span class="b-ar" lang="ar">كَلِمَاتِي</span></div><div class="decks">' + deckRow('custom', 'كَلِمَاتِي', 'Aus Tutor, Übersetzer und Rollenspiel', custom) + '</div></div>';
+    + '<div class="dir-row"><span class="lab">' + (en ? 'Front side' : 'Vorderseite') + '</span><div class="seg" id="dir-seg" role="group" aria-label="' + (en ? 'Direction' : 'Richtung') + '"><button type="button" data-dir="ar" aria-pressed="' + (S.settings.dir === 'ar') + '">' + (en ? 'Arabic → German' : 'Arabisch → Deutsch') + '</button><button type="button" data-dir="de" aria-pressed="' + (S.settings.dir === 'de') + '">' + (en ? 'German → Arabic' : 'Deutsch → Arabisch') + '</button></div></div>';
+  if (custom.length) h += '<div class="deck-group"><div class="book-head"><h2>' + (en ? 'My words' : 'Meine Wörter') + '</h2><span class="b-ar" lang="ar">كَلِمَاتِي</span></div><div class="decks">' + deckRow('custom', 'كَلِمَاتِي', en ? 'From tutor, translator and roleplay' : 'Aus Tutor, Übersetzer und Rollenspiel', custom) + '</div></div>';
   for (const b of BOOKS){
     h += '<div class="deck-group"><div class="book-head"><h2>' + esc(b.de) + '</h2><span class="b-ar" lang="ar">' + esc(b.ar) + '</span></div><div class="decks">'
       + TOPICS.filter(t => t.book === b.n).map(t => deckRow(t.id, t.ar, t.de, TOPIC_CARDS[t.id])).join('') + '</div></div>';
@@ -3546,20 +3548,20 @@ function renderDecks(){
   $('#cards-root').innerHTML = h;
 }
 function startSession(kind, topicId){
-  const now = Date.now(); let ids = [], title = '';
-  if (kind === 'mistakes'){ ids = shuffle(mistakeIds()); title = 'Fehler-Stapel'; }
-  else if (kind === 'due'){ ids = shuffle(dueIds(now)); title = 'Heute fällig'; }
+  const now = Date.now(), en = S.settings.lang === 'en'; let ids = [], title = '';
+  if (kind === 'mistakes'){ ids = shuffle(mistakeIds()); title = en ? 'Mistake pile' : 'Fehler-Stapel'; }
+  else if (kind === 'due'){ ids = shuffle(dueIds(now)); title = en ? 'Due today' : 'Heute fällig'; }
   else {
     const all = topicId === 'custom' ? S.custom.map(c => c.id).filter(id => CARDS[id]) : (TOPIC_CARDS[topicId] || []);
-    title = topicId === 'custom' ? 'Meine Wörter' : TOPIC[topicId].de;
+    title = topicId === 'custom' ? (en ? 'My words' : 'Meine Wörter') : TOPIC[topicId].de;
     const wr = all.filter(id => S.mistakes.includes(id));
     const due = all.filter(id => !wr.includes(id) && S.srs[id] && S.srs[id].d <= now);
     const fresh = all.filter(id => !S.srs[id]);
     ids = [...shuffle(wr), ...shuffle(due), ...fresh.slice(0, 8)];
-    if (!ids.length){ ids = shuffle(all).slice(0, 12); title += ' · freies Üben'; }
+    if (!ids.length){ ids = shuffle(all).slice(0, 12); title += en ? ' · free practice' : ' · freies Üben'; }
   }
   ids = ids.slice(0, 20);
-  if (!ids.length){ toast('Hier gibt es gerade nichts zu wiederholen.'); return; }
+  if (!ids.length){ toast(en ? 'There’s nothing to review right now.' : 'Hier gibt es gerade nichts zu wiederholen.'); return; }
   session = {title, queue:ids, total:ids.length, done:0, firstOk:0, wrong:new Set(), flipped:false};
   if (currentView !== 'karten') go('karten');
   renderSession();
@@ -3572,35 +3574,36 @@ function cardFace(c, side){
     + (c.ex ? '<div class="fc-ex"><p class="ar" lang="ar">' + esc(c.ex) + '</p><p class="de">' + esc(c.exde) + '</p></div>' : '');
 }
 function renderSession(){
-  const s = session, root = $('#cards-root');
+  const s = session, root = $('#cards-root'), en = S.settings.lang === 'en';
   if (!s.queue.length){
     const wr = s.wrong.size;
-    root.innerHTML = '<div class="done-box"><p class="ar" lang="ar">أَحْسَنْتَ</p><h2 class="h">Geschafft!</h2>'
-      + '<p class="lede">' + s.firstOk + ' von ' + s.total + ' auf Anhieb gewusst.' + (wr ? ' ' + wr + (wr === 1 ? ' Wort liegt' : ' Wörter liegen') + ' jetzt im Fehler-Stapel.' : '') + '</p>'
-      + '<div class="row">' + (mistakeIds().length ? '<button class="btn bad" type="button" data-session="mistakes">Fehler wiederholen</button>' : '') + '<button class="btn primary" type="button" data-decks>Zu den Stapeln</button></div></div>';
+    root.innerHTML = '<div class="done-box"><p class="ar" lang="ar">أَحْسَنْتَ</p><h2 class="h">' + (en ? 'Done!' : 'Geschafft!') + '</h2>'
+      + '<p class="lede">' + (en ? s.firstOk + ' of ' + s.total + ' known on the first try.' : s.firstOk + ' von ' + s.total + ' auf Anhieb gewusst.') + (wr ? (en ? ' ' + wr + (wr === 1 ? ' word is' : ' words are') + ' now in the mistake pile.' : ' ' + wr + (wr === 1 ? ' Wort liegt' : ' Wörter liegen') + ' jetzt im Fehler-Stapel.') : '') + '</p>'
+      + '<div class="row">' + (mistakeIds().length ? '<button class="btn bad" type="button" data-session="mistakes">' + (en ? 'Review mistakes' : 'Fehler wiederholen') + '</button>' : '') + '<button class="btn primary" type="button" data-decks>' + (en ? 'Back to decks' : 'Zu den Stapeln') + '</button></div></div>';
     if (S.settings.gender === 'f') root.querySelector('.done-box .ar').textContent = 'أَحْسَنْتِ';
     return;
   }
   const c = CARDS[s.queue[0]];
   const isWr = S.mistakes.includes(c.id);
-  root.innerHTML = '<div class="sess-top"><button class="btn small" type="button" data-decks>' + icon('i-back', 'ico sm') + 'Stapel</button><span class="t">' + esc(s.title) + '</span><span class="c">noch ' + s.queue.length + '</span></div>'
+  root.innerHTML = '<div class="sess-top"><button class="btn small" type="button" data-decks>' + icon('i-back', 'ico sm') + (en ? 'Decks' : 'Stapel') + '</button><span class="t">' + esc(s.title) + '</span><span class="c">' + (en ? s.queue.length + ' left' : 'noch ' + s.queue.length) + '</span></div>'
     + '<div class="sess-bar"><i style="width:' + Math.round(100 * s.done / s.total) + '%"></i></div>'
-    + '<div class="fc' + (s.flipped ? ' flipped' : '') + '" id="fc" tabindex="0" role="button" aria-label="Karte umdrehen"><div class="fc-inner">'
-    + '<div class="fc-face fc-front"><span class="fc-tag' + (isWr ? ' wr' : '') + '">' + (isWr ? 'Fehler-Stapel' : (CARDS[c.id].topic === 'custom' ? 'Meine Wörter' : (TOPIC[c.topic] ? TOPIC[c.topic].de : ''))) + '</span>' + cardFace(c, 'front') + '</div>'
+    + '<div class="fc' + (s.flipped ? ' flipped' : '') + '" id="fc" tabindex="0" role="button" aria-label="' + (en ? 'Flip card' : 'Karte umdrehen') + '"><div class="fc-inner">'
+    + '<div class="fc-face fc-front"><span class="fc-tag' + (isWr ? ' wr' : '') + '">' + (isWr ? (en ? 'Mistake pile' : 'Fehler-Stapel') : (CARDS[c.id].topic === 'custom' ? (en ? 'My words' : 'Meine Wörter') : (TOPIC[c.topic] ? TOPIC[c.topic].de : ''))) + '</span>' + cardFace(c, 'front') + '</div>'
     + '<div class="fc-face fc-back">' + cardFace(c, 'back') + '</div></div></div>'
     + '<div class="fc-actions">' + (s.flipped
-        ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + 'Nicht gewusst</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + 'Gewusst</button>'
-        : '<button class="btn primary wide" type="button" data-flip>Aufdecken</button>') + '</div>'
-    + '<p class="fc-hint">Tippe auf die Karte zum Umdrehen. Falsche Karten kommen gleich noch einmal.</p>';
+        ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + (en ? 'Knew it' : 'Gewusst') + '</button>'
+        : '<button class="btn primary wide" type="button" data-flip>' + (en ? 'Reveal' : 'Aufdecken') + '</button>') + '</div>'
+    + '<p class="fc-hint">' + (en ? 'Tap the card to flip it. Wrong cards come back again soon.' : 'Tippe auf die Karte zum Umdrehen. Falsche Karten kommen gleich noch einmal.') + '</p>';
 }
 function flipCard(){
   if (!session || !session.queue.length) return;
+  const en = S.settings.lang === 'en';
   session.flipped = !session.flipped;
   const fc = $('#fc'); if (fc) fc.classList.toggle('flipped', session.flipped);
   const acts = $('.fc-actions');
   if (acts) acts.innerHTML = session.flipped
-    ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + 'Nicht gewusst</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + 'Gewusst</button>'
-    : '<button class="btn primary wide" type="button" data-flip>Aufdecken</button>';
+    ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + (en ? 'Knew it' : 'Gewusst') + '</button>'
+    : '<button class="btn primary wide" type="button" data-flip>' + (en ? 'Reveal' : 'Aufdecken') + '</button>';
   if (session.flipped && S.settings.dir === 'de') speak(CARDS[session.queue[0]].ar);
 }
 function answerCard(ok){
@@ -3616,24 +3619,24 @@ function answerCard(ok){
 /* ---------- Übersetzer ---------- */
 let trCtl = null;
 function renderTranslation(data, isExample){
-  const sents = (data.sentences || []).filter(x => x && x.ar);
-  let h = isExample ? '<p class="ex-mark">Beispiel</p>' : (data.offline ? '<p class="ex-mark">Wörterbuch · ohne Claude</p>' : '');
+  const sents = (data.sentences || []).filter(x => x && x.ar), en = S.settings.lang === 'en';
+  let h = isExample ? '<p class="ex-mark">' + (en ? 'Example' : 'Beispiel') + '</p>' : (data.offline ? '<p class="ex-mark">' + (en ? 'Dictionary · without Claude' : 'Wörterbuch · ohne Claude') + '</p>' : '');
   sents.forEach((s, si) => {
     const words = (Array.isArray(s.words) ? s.words : []).filter(w => w && w.ar);
-    h += '<article class="sent"><div class="sent-top"><p class="sent-ar" lang="ar" dir="rtl">' + esc(s.ar) + '</p>' + speakBtn(s.ar, 'Satz vorlesen')
-      + '<button class="add" type="button" aria-label="Satz zu Karteikarten" data-add="' + esc(JSON.stringify({ar:s.ar, de:s.de || '', tl:s.tl || '', src:'uebersetzer'})) + '">' + icon('i-plus', 'ico sm') + '</button></div>'
+    h += '<article class="sent"><div class="sent-top"><p class="sent-ar" lang="ar" dir="rtl">' + esc(s.ar) + '</p>' + speakBtn(s.ar, en ? 'Listen to sentence' : 'Satz vorlesen')
+      + '<button class="add" type="button" aria-label="' + (en ? 'Add sentence to flashcards' : 'Satz zu Karteikarten') + '" data-add="' + esc(JSON.stringify({ar:s.ar, de:s.de || '', tl:s.tl || '', src:'uebersetzer'})) + '">' + icon('i-plus', 'ico sm') + '</button></div>'
       + '<p class="sent-de">' + rich(s.de || '') + '</p>' + (s.tl ? '<p class="sent-tl">' + esc(s.tl) + '</p>' : '')
       + (s.structure ? '<p class="sent-st">' + rich(s.structure) + '</p>' : '')
-      + '<div class="gloss" aria-label="Wort für Wort">' + words.map((w, wi) => '<button class="tok" type="button" data-tok="' + si + '-' + wi + '"><span class="ta" lang="ar">' + esc(w.ar) + '</span><span class="td">' + esc(w.de || '') + '</span></button>').join('') + '</div>'
+      + '<div class="gloss" aria-label="' + (en ? 'Word for word' : 'Wort für Wort') + '">' + words.map((w, wi) => '<button class="tok" type="button" data-tok="' + si + '-' + wi + '"><span class="ta" lang="ar">' + esc(w.ar) + '</span><span class="td">' + esc(w.de || '') + '</span></button>').join('') + '</div>'
       + '<div class="words">' + words.map((w, wi) => '<div class="wd" id="wd-' + si + '-' + wi + '"><div class="wd-head"><span class="wd-ar" lang="ar">' + esc(w.ar) + '</span><span class="wd-de">' + rich(w.de || '') + '</span>' + (w.tl ? '<span class="wd-tl">' + esc(w.tl) + '</span>' : '') + '</div>'
-          + '<div class="wd-meta">' + (w.type ? '<span>' + esc(w.type) + '</span>' : '') + (w.root ? '<span class="root" lang="ar" title="Wurzel">' + esc(w.root) + '</span>' : '') + '</div>'
+          + '<div class="wd-meta">' + (w.type ? '<span>' + esc(w.type) + '</span>' : '') + (w.root ? '<span class="root" lang="ar" title="' + (en ? 'Root' : 'Wurzel') + '">' + esc(w.root) + '</span>' : '') + '</div>'
           + (w.note ? '<p class="wd-note">' + rich(w.note) + '</p>' : '')
-          + '<div class="wd-btns">' + speakBtn(w.ar) + '<button class="add" type="button" aria-label="Wort zu Karteikarten" data-add="' + esc(JSON.stringify({ar:w.ar, de:w.de || '', tl:w.tl || '', src:'uebersetzer'})) + '">' + icon('i-plus', 'ico sm') + '</button></div></div>').join('') + '</div>'
+          + '<div class="wd-btns">' + speakBtn(w.ar) + '<button class="add" type="button" aria-label="' + (en ? 'Add word to flashcards' : 'Wort zu Karteikarten') + '" data-add="' + esc(JSON.stringify({ar:w.ar, de:w.de || '', tl:w.tl || '', src:'uebersetzer'})) + '">' + icon('i-plus', 'ico sm') + '</button></div></div>').join('') + '</div>'
       + '</article>';
   });
   if (data.note) h += '<p class="notice">' + rich(data.note) + '</p>';
-  if (data.offline) h += '<div class="tr-actions"><button class="btn primary" type="button" data-tr-claude>Mit Claude genau erklären</button><span class="source">Übersetzt den ganzen Satz und erklärt Grammatik und Wurzeln. Verbraucht Kontingent.</span></div>';
-  if (!sents.length) h = '<p class="notice">Keine Sätze erkannt. Versuch es mit einem kürzeren Text.</p>';
+  if (data.offline) h += '<div class="tr-actions"><button class="btn primary" type="button" data-tr-claude>' + (en ? 'Explain precisely with Claude' : 'Mit Claude genau erklären') + '</button><span class="source">' + (en ? 'Translates the whole sentence and explains grammar and roots. Uses up quota.' : 'Übersetzt den ganzen Satz und erklärt Grammatik und Wurzeln. Verbraucht Kontingent.') + '</span></div>';
+  if (!sents.length) h = '<p class="notice">' + (en ? 'No sentences recognized. Try a shorter text.' : 'Keine Sätze erkannt. Versuch es mit einem kürzeren Text.') + '</p>';
   $('#tr-out').innerHTML = h;
   markAdded($('#tr-out'));
 }
@@ -3641,25 +3644,34 @@ async function translate(text, force){
   text = String(text || '').trim(); if (!text) { $('#tr-input').focus(); return; }
   if (trCtl){ trCtl.abort(); return; }
   if (offline() && !force){ offlineTranslate(text); return; }
+  const en = S.settings.lang === 'en';
   const sample = await getSample();
-  if (!sample || aiOff){ $('#tr-out').innerHTML = '<p class="notice">Der Übersetzer braucht Claude. Öffne diese App in Claude (im Browser oder in der Claude-App).</p>'; return; }
-  trCtl = new AbortController(); const go_ = $('#tr-go'); go_.textContent = 'Stopp';
-  $('#tr-out').innerHTML = '<div class="notice"><span class="typing" style="padding:0 6px 0 0"><i></i><i></i><i></i></span> Claude zerlegt deinen Text Wort für Wort. Das dauert einen Moment …</div>';
+  if (!sample || aiOff){ $('#tr-out').innerHTML = '<p class="notice">' + (en ? 'The translator needs Claude. Open this app in Claude (in the browser or the Claude app).' : 'Der Übersetzer braucht Claude. Öffne diese App in Claude (im Browser oder in der Claude-App).') + '</p>'; return; }
+  trCtl = new AbortController(); const go_ = $('#tr-go'); go_.textContent = en ? 'Stop' : 'Stopp';
+  $('#tr-out').innerHTML = '<div class="notice"><span class="typing" style="padding:0 6px 0 0"><i></i><i></i><i></i></span> ' + (en ? 'Claude is breaking down your text word by word. This takes a moment …' : 'Claude zerlegt deinen Text Wort für Wort. Das dauert einen Moment …') + '</div>';
   try {
-    const prompt = 'Du bist Arabischlehrer für deutschsprachige Anfänger (Madina-Bücher der Islamischen Universität Medina). Analysiere den Text unten.\n'
-      + '- Ist er Deutsch: übersetze ihn in einfaches Hocharabisch und analysiere die arabische Übersetzung.\n'
-      + '- Ist er Arabisch: analysiere ihn und übersetze ihn ins Deutsche. Enthält er einen Fehler, nenne ihn kurz in "note" mit der richtigen Form.\n'
-      + 'Teile den Text in Sätze (höchstens 6). Für jeden Satz: Arabisch mit vollständigen Vokalzeichen (Taschkīl), deutsche Übersetzung, Umschrift, eine kurze Strukturerklärung auf Deutsch (Nominal- oder Verbalsatz, Satzteile) und JEDES Wort einzeln in Lesereihenfolge. Wörter mit angehängten Teilen (وَ، بِ، لِ، الـ، Endungen wie ـِي oder ـكَ) bleiben ein Wort; erkläre die Teile in "note".\n'
-      + 'Antworte nur mit JSON in dieser Form:\n'
-      + '{"sentences":[{"ar":"…","de":"…","tl":"…","structure":"…","words":[{"ar":"…","tl":"…","de":"kurze Bedeutung","type":"Wortart und Form, kurz, auf Deutsch","root":"Wurzel mit Leerzeichen wie ك ت ب, oder leer","note":"kurzer Hinweis oder leer"}]}],"note":""}\n\n'
-      + 'Text:\n"""' + text.slice(0, 1500) + '"""';
+    const prompt = en
+      ? 'You are an Arabic teacher for English-speaking beginners (Madina books, Islamic University of Madinah). Analyze the text below.\n'
+        + '- If it is English: translate it into simple Modern Standard Arabic and analyze the Arabic translation.\n'
+        + '- If it is Arabic: analyze it and translate it into English. If it contains a mistake, mention it briefly in "note" with the correct form.\n'
+        + 'Split the text into sentences (at most 6). For each sentence: Arabic with full diacritics (Tashkīl), English translation, transliteration, a short structure explanation in English (nominal or verbal sentence, sentence parts) and EVERY word individually in reading order. Words with attached parts (وَ، بِ، لِ، الـ، endings like ـِي or ـكَ) stay one word; explain the parts in "note".\n'
+        + 'Reply only with JSON in this form:\n'
+        + '{"sentences":[{"ar":"…","de":"…","tl":"…","structure":"…","words":[{"ar":"…","tl":"…","de":"short meaning","type":"word type and form, brief, in English","root":"root with spaces like ك ت ب, or empty","note":"short note or empty"}]}],"note":""}\n\n'
+        + 'Text:\n"""' + text.slice(0, 1500) + '"""'
+      : 'Du bist Arabischlehrer für deutschsprachige Anfänger (Madina-Bücher der Islamischen Universität Medina). Analysiere den Text unten.\n'
+        + '- Ist er Deutsch: übersetze ihn in einfaches Hocharabisch und analysiere die arabische Übersetzung.\n'
+        + '- Ist er Arabisch: analysiere ihn und übersetze ihn ins Deutsche. Enthält er einen Fehler, nenne ihn kurz in "note" mit der richtigen Form.\n'
+        + 'Teile den Text in Sätze (höchstens 6). Für jeden Satz: Arabisch mit vollständigen Vokalzeichen (Taschkīl), deutsche Übersetzung, Umschrift, eine kurze Strukturerklärung auf Deutsch (Nominal- oder Verbalsatz, Satzteile) und JEDES Wort einzeln in Lesereihenfolge. Wörter mit angehängten Teilen (وَ، بِ، لِ، الـ، Endungen wie ـِي oder ـكَ) bleiben ein Wort; erkläre die Teile in "note".\n'
+        + 'Antworte nur mit JSON in dieser Form:\n'
+        + '{"sentences":[{"ar":"…","de":"…","tl":"…","structure":"…","words":[{"ar":"…","tl":"…","de":"kurze Bedeutung","type":"Wortart und Form, kurz, auf Deutsch","root":"Wurzel mit Leerzeichen wie ك ت ب, oder leer","note":"kurzer Hinweis oder leer"}]}],"note":""}\n\n'
+        + 'Text:\n"""' + text.slice(0, 1500) + '"""';
     const d = await sample.json(prompt, {modelTier:'default', signal:trCtl.signal});
     if (!d || !Array.isArray(d.sentences)) throw {code:'invalid_json'};
     renderTranslation(d, false);
   } catch (e) {
-    if (e && e.code === 'cancelled') $('#tr-out').innerHTML = '<p class="notice">Abgebrochen.</p>';
-    else { if (PERMANENT.has(e && e.code)) aiOff = true; $('#tr-out').innerHTML = '<p class="notice">' + esc(errText(e).replace('„Nochmal"', '„Erklären"')) + '</p>'; }
-  } finally { trCtl = null; go_.textContent = 'Erklären'; }
+    if (e && e.code === 'cancelled') $('#tr-out').innerHTML = '<p class="notice">' + (en ? 'Cancelled.' : 'Abgebrochen.') + '</p>';
+    else { if (PERMANENT.has(e && e.code)) aiOff = true; $('#tr-out').innerHTML = '<p class="notice">' + esc(en ? errText(e).replace('„Retry“', '„Explain“') : errText(e).replace('„Nochmal"', '„Erklären"')) + '</p>'; }
+  } finally { trCtl = null; go_.textContent = en ? 'Explain' : 'Erklären'; }
 }
 function markAdded(root){
   $$('[data-add]', root).forEach(b => {
@@ -3694,12 +3706,15 @@ function renderStart(){
 }
 
 /* ---------- Mehrsprachigkeit (App-Hülle) ----------
-   Phase 1 von 2 der Mehrsprachigkeits-Planung (siehe Vault, Madina Arabisch App.md): nur die App-Hülle
-   (Kopfzeile, Startseite, Navigation, Einstellungen) ist hier zweisprachig. Die eigentlichen Lektionsinhalte
-   (TOPICS/EX/DERIV_TABLES, Tutor-Chat, Karteikarten, Rollenspiel, Übersetzer) bleiben bewusst auf Deutsch,
-   das ist ein eigener, separater Schritt. data-i18n(-aria/-html) markiert Elemente, deren deutscher
-   Originaltext beim ersten Durchlauf aus dem DOM gesichert wird (dataset.deTxt/deAria/deHtml) - so muss das
-   Deutsche hier im Wörterbuch nicht doppelt gepflegt werden, nur die englische Gegenübersetzung. */
+   Phase 1 von 2 der Mehrsprachigkeits-Planung (siehe Vault, Madina Arabisch App.md): die ganze App-Hülle
+   (Kopfzeile, Startseite, Navigation, Einstellungen, Tutor-Chat, Rollenspiel, Karteikarten, Übersetzer) ist
+   zweisprachig. Die eigentlichen Lektionsinhalte (TOPICS/EX/DERIV_TABLES: Grammatik-Erklärungen, Beispielsätze,
+   Wortlisten, Quizfragen) bleiben bewusst auf Deutsch, das ist Phase 2, ein eigener, separater Schritt.
+   data-i18n(-aria/-html/-ph) markiert statische Elemente, deren deutscher Originaltext beim ersten Durchlauf
+   aus dem DOM gesichert wird (dataset.deTxt/deAria/deHtml/dePh) - so muss das Deutsche hier im Wörterbuch nicht
+   doppelt gepflegt werden, nur die englische Gegenübersetzung. Dynamisch gerenderte Bereiche (Tutor-Chat,
+   Rollenspiel, Karteikarten, Übersetzer) verwenden stattdessen direkte en-Verzweigungen in ihren eigenen
+   Render-Funktionen, da ihr HTML bei jedem Aufruf neu gebaut wird. */
 const I18N_EN = {
   brandHome:'Madina Arabic, Home', chooseBook:'Choose book', settingsLabel:'Settings',
   heroTitle:'Arabic with the Madina Books',
@@ -3726,7 +3741,10 @@ const I18N_EN = {
   speakLabel:'Speak', yourMessage:'Your message', speakOrWrite:'Speak or write …', sendLabel:'Send',
   roleplayTitle:'Roleplay', roleplayLede:'Pick a situation. The tutor plays the other role, corrects you and helps with ready-made sentences.',
   modeLab:'Mode', feedbackBtn:'Feedback', backToPick:'Back to selection',
-  yourAnswer:'Your answer', yourAnswerPh:'Your answer …'
+  yourAnswer:'Your answer', yourAnswerPh:'Your answer …',
+  trLede:'Write a sentence in Arabic or English. Each sentence gets translated and explained word by word.',
+  trInputLabel:'Text to translate', trInputPh:'e.g. أَيْنَ الْمَسْجِدُ؟ or: I drink tea with milk.',
+  micLangGroup:'Microphone language', trGoBtn:'Explain'
 };
 function applyI18N(){
   const en = S.settings.lang === 'en';
@@ -3734,6 +3752,7 @@ function applyI18N(){
   $$('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (el.dataset.deTxt === undefined) el.dataset.deTxt = el.textContent; el.textContent = en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deTxt; });
   $$('[data-i18n-html]').forEach(el => { const k = el.dataset.i18nHtml; if (el.dataset.deHtml === undefined) el.dataset.deHtml = el.innerHTML; el.innerHTML = en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deHtml; });
   $$('[data-i18n-aria]').forEach(el => { const k = el.dataset.i18nAria; if (el.dataset.deAria === undefined) el.dataset.deAria = el.getAttribute('aria-label') || ''; el.setAttribute('aria-label', en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.deAria); });
+  $$('[data-i18n-ph]').forEach(el => { const k = el.dataset.i18nPh; if (el.dataset.dePh === undefined) el.dataset.dePh = el.getAttribute('placeholder') || ''; el.setAttribute('placeholder', en && I18N_EN[k] !== undefined ? I18N_EN[k] : el.dataset.dePh); });
   $$('[data-book]').forEach(b => { if (b.closest('#book-seg, #set-book')) b.textContent = (en ? 'Book ' : 'Buch ') + b.dataset.book; });
 }
 function setLang(l){
