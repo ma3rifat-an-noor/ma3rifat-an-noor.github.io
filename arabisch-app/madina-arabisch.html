@@ -571,7 +571,7 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
           <textarea id="tr-input" rows="3" dir="auto" placeholder="z. B. أَيْنَ الْمَسْجِدُ؟ oder: Ich trinke Tee mit Milch." data-i18n-ph="trInputPh"></textarea>
           <div class="tr-actions">
             <button class="mic" type="button" data-mic="tr" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
-            <div class="seg" id="tr-lang" role="group" aria-label="Sprache fürs Mikrofon" data-i18n-aria="micLangGroup"><button type="button" data-lang="ar-SA" aria-pressed="true">Arabisch</button><button type="button" data-lang="de-DE" aria-pressed="false">Deutsch</button></div>
+            <div class="seg" id="tr-lang" role="group" aria-label="Sprache fürs Mikrofon" data-i18n-aria="micLangGroup"><button type="button" data-lang="ar-SA" aria-pressed="true" data-i18n="micLangAr">Arabisch</button><button type="button" id="tr-lang-other" data-lang="de-DE" aria-pressed="false" data-i18n="micLangDe">Deutsch</button></div>
             <span class="grow"></span>
             <button class="btn primary" type="submit" id="tr-go" data-i18n="trGoBtn">Erklären</button>
           </div>
@@ -624,9 +624,9 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
 
 /* ---------- Inhalte nach den Madina-Büchern ---------- */
 const BOOKS = [
-  {n:1, ar:'الْكِتَابُ الْأَوَّلُ', de:'Buch 1 · Grundlagen'},
-  {n:2, ar:'الْكِتَابُ الثَّانِي', de:'Buch 2 · Aufbau'},
-  {n:3, ar:'الْكِتَابُ الثَّالِثُ', de:'Buch 3 · Vertiefung'}
+  {n:1, ar:'الْكِتَابُ الْأَوَّلُ', de:'Buch 1 · Grundlagen', de_en:'Book 1 · Basics'},
+  {n:2, ar:'الْكِتَابُ الثَّانِي', de:'Buch 2 · Aufbau', de_en:'Book 2 · Building Up'},
+  {n:3, ar:'الْكِتَابُ الثَّالِثُ', de:'Buch 3 · Vertiefung', de_en:'Book 3 · Advanced'}
 ];
 
 // words: [arabisch, umschrift, deutsch, beispiel?, beispiel deutsch?]
@@ -1207,35 +1207,65 @@ const TOPICS = [
 // Rollenspiele. phrases: [ar, de, umschrift, arF?, deF?, umschriftF?]
 const SCENES = [
 {id:'cafe', icon:'i-cup', ar:'فِي الْمَقْهَى', de:'Im Café', tutor:'Kellner im Café', you:'Gast', youF:'Gast',
+ de_en:'At the Café', tutor_en:'Waiter at the café', you_en:'Guest', youF_en:'Guest',
  goal:'Bestelle ein Getränk, frag nach dem Preis und verlange die Rechnung.',
+ goal_en:'Order a drink, ask the price, and ask for the bill.',
  open:['أَهْلًا وَسَهْلًا! مَاذَا تَشْرَبُ؟','Herzlich willkommen! Was trinkst du?','ahlan wa-sahlan! mādhā tashrabu?'],
+ open_en:'Welcome! What are you drinking?',
  openF:['أَهْلًا وَسَهْلًا! مَاذَا تَشْرَبِينَ؟','Herzlich willkommen! Was trinkst du?','ahlan wa-sahlan! mādhā tashrabīna?'],
- phrases:[['أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ.','Ich möchte einen Kaffee, bitte.','urīdu qahwatan, min faḍlika'],['شَايٌ بِالنَّعْنَاعِ','Tee mit Minze','shāyun bi-n-naʿnāʿ'],['بِدُونِ سُكَّرٍ','ohne Zucker','bi-dūni sukkarin'],['مَعَ حَلِيبٍ','mit Milch','maʿa ḥalībin'],['بِكَمْ هٰذَا؟','Wie viel kostet das?','bi-kam hādhā?'],['الْحِسَابُ، مِنْ فَضْلِكَ.','Die Rechnung, bitte.','al-ḥisābu, min faḍlika'],['شُكْرًا جَزِيلًا','Vielen Dank','shukran jazīlan']]},
+ openF_en:'Welcome! What are you drinking?',
+ phrases:[['أُرِيدُ قَهْوَةً، مِنْ فَضْلِكَ.','Ich möchte einen Kaffee, bitte.','urīdu qahwatan, min faḍlika'],['شَايٌ بِالنَّعْنَاعِ','Tee mit Minze','shāyun bi-n-naʿnāʿ'],['بِدُونِ سُكَّرٍ','ohne Zucker','bi-dūni sukkarin'],['مَعَ حَلِيبٍ','mit Milch','maʿa ḥalībin'],['بِكَمْ هٰذَا؟','Wie viel kostet das?','bi-kam hādhā?'],['الْحِسَابُ، مِنْ فَضْلِكَ.','Die Rechnung, bitte.','al-ḥisābu, min faḍlika'],['شُكْرًا جَزِيلًا','Vielen Dank','shukran jazīlan']],
+ phrases_en:['I would like a coffee, please.','Mint tea','Without sugar','With milk','How much is this?','The bill, please.','Thank you very much']},
 {id:'restaurant', icon:'i-fork', ar:'فِي الْمَطْعَمِ', de:'Im Restaurant', tutor:'Kellner im Restaurant', you:'Gast', youF:'Gast',
+ de_en:'At the Restaurant', tutor_en:'Waiter at the restaurant', you_en:'Guest', youF_en:'Guest',
  goal:'Bestelle ein Essen und ein Getränk und frag, was der Kellner empfiehlt.',
+ goal_en:'Order a meal and a drink, and ask what the waiter recommends.',
  open:['مَسَاءَ الْخَيْرِ! تَفَضَّلْ، هٰذِهِ قَائِمَةُ الطَّعَامِ.','Guten Abend! Bitte sehr, hier ist die Speisekarte.','masāʾa l-khayr! tafaḍḍal, hādhihi qāʾimatu ṭ-ṭaʿām.'],
+ open_en:'Good evening! Here you go, this is the menu.',
  openF:['مَسَاءَ الْخَيْرِ! تَفَضَّلِي، هٰذِهِ قَائِمَةُ الطَّعَامِ.','Guten Abend! Bitte sehr, hier ist die Speisekarte.','masāʾa l-khayr! tafaḍḍalī, hādhihi qāʾimatu ṭ-ṭaʿām.'],
- phrases:[['مَسَاءَ النُّورِ','Guten Abend (Antwort)','masāʾa n-nūr'],['مَاذَا تَقْتَرِحُ؟','Was empfiehlst du?','mādhā taqtariḥu?'],['أُرِيدُ دَجَاجًا وَأَرُزًّا.','Ich möchte Hähnchen und Reis.','urīdu dajājan wa-aruzzan'],['هَلْ عِنْدَكُمْ سَمَكٌ؟','Habt ihr Fisch?','hal ʿindakum samakun?'],['وَمَاءً، مِنْ فَضْلِكَ.','Und Wasser, bitte.','wa-māʾan, min faḍlika'],['الطَّعَامُ لَذِيذٌ!','Das Essen ist lecker!','aṭ-ṭaʿāmu ladhīdhun!'],['الْحِسَابُ، مِنْ فَضْلِكَ.','Die Rechnung, bitte.','al-ḥisābu, min faḍlika']]},
+ openF_en:'Good evening! Here you go, this is the menu.',
+ phrases:[['مَسَاءَ النُّورِ','Guten Abend (Antwort)','masāʾa n-nūr'],['مَاذَا تَقْتَرِحُ؟','Was empfiehlst du?','mādhā taqtariḥu?'],['أُرِيدُ دَجَاجًا وَأَرُزًّا.','Ich möchte Hähnchen und Reis.','urīdu dajājan wa-aruzzan'],['هَلْ عِنْدَكُمْ سَمَكٌ؟','Habt ihr Fisch?','hal ʿindakum samakun?'],['وَمَاءً، مِنْ فَضْلِكَ.','Und Wasser, bitte.','wa-māʾan, min faḍlika'],['الطَّعَامُ لَذِيذٌ!','Das Essen ist lecker!','aṭ-ṭaʿāmu ladhīdhun!'],['الْحِسَابُ، مِنْ فَضْلِكَ.','Die Rechnung, bitte.','al-ḥisābu, min faḍlika']],
+ phrases_en:['Good evening (reply)','What do you recommend?','I would like chicken and rice.','Do you have fish?','And water, please.','The food is delicious!','The bill, please.']},
 {id:'hotel', icon:'i-bed', ar:'فِي الْفُنْدُقِ', de:'Im Hotel', tutor:'Mitarbeiter an der Hotel-Rezeption', you:'Gast', youF:'Gast',
+ de_en:'At the Hotel', tutor_en:'Hotel receptionist', you_en:'Guest', youF_en:'Guest',
  goal:'Frag nach einem Zimmer für zwei Nächte, nach dem Preis und nach dem Frühstück.',
+ goal_en:'Ask for a room for two nights, the price, and about breakfast.',
  open:['أَهْلًا بِكَ فِي الْفُنْدُقِ! كَيْفَ أُسَاعِدُكَ؟','Willkommen im Hotel! Wie kann ich dir helfen?','ahlan bika fi l-funduq! kayfa usāʿiduka?'],
+ open_en:'Welcome to the hotel! How can I help you?',
  openF:['أَهْلًا بِكِ فِي الْفُنْدُقِ! كَيْفَ أُسَاعِدُكِ؟','Willkommen im Hotel! Wie kann ich dir helfen?','ahlan biki fi l-funduq! kayfa usāʿiduki?'],
- phrases:[['عِنْدِي حَجْزٌ.','Ich habe eine Reservierung.','ʿindī ḥajzun'],['أُرِيدُ غُرْفَةً لِشَخْصٍ وَاحِدٍ.','Ich möchte ein Einzelzimmer.','urīdu ghurfatan li-shakhṣin wāḥidin'],['لِلَيْلَتَيْنِ','für zwei Nächte','li-laylatayn'],['كَمِ السِّعْرُ لِلَّيْلَةِ؟','Was kostet eine Nacht?','kami s-siʿru li-l-laylah?'],['هَلِ الْفُطُورُ مَوْجُودٌ؟','Gibt es Frühstück?','hali l-fuṭūru mawjūdun?'],['أَيْنَ الْمِصْعَدُ؟','Wo ist der Aufzug?','ayna l-miṣʿadu?'],['الْمِفْتَاحُ، مِنْ فَضْلِكَ.','Den Schlüssel, bitte.','al-miftāḥu, min faḍlika']]},
+ openF_en:'Welcome to the hotel! How can I help you?',
+ phrases:[['عِنْدِي حَجْزٌ.','Ich habe eine Reservierung.','ʿindī ḥajzun'],['أُرِيدُ غُرْفَةً لِشَخْصٍ وَاحِدٍ.','Ich möchte ein Einzelzimmer.','urīdu ghurfatan li-shakhṣin wāḥidin'],['لِلَيْلَتَيْنِ','für zwei Nächte','li-laylatayn'],['كَمِ السِّعْرُ لِلَّيْلَةِ؟','Was kostet eine Nacht?','kami s-siʿru li-l-laylah?'],['هَلِ الْفُطُورُ مَوْجُودٌ؟','Gibt es Frühstück?','hali l-fuṭūru mawjūdun?'],['أَيْنَ الْمِصْعَدُ؟','Wo ist der Aufzug?','ayna l-miṣʿadu?'],['الْمِفْتَاحُ، مِنْ فَضْلِكَ.','Den Schlüssel, bitte.','al-miftāḥu, min faḍlika']],
+ phrases_en:['I have a reservation.','I would like a single room.','for two nights','What does one night cost?','Is breakfast included?','Where is the elevator?','The key, please.']},
 {id:'laden', icon:'i-basket', ar:'فِي الْبَقَّالَةِ', de:'Im Supermarkt', tutor:'Verkäufer im Lebensmittelladen', you:'Kunde', youF:'Kundin',
+ de_en:'At the Supermarket', tutor_en:'Shop assistant at the grocery store', you_en:'Customer', youF_en:'Customer',
  goal:'Kauf Brot, Milch und Äpfel, frag nach dem Preis und bezahle.',
+ goal_en:'Buy bread, milk, and apples, ask the price, and pay.',
  open:['السَّلَامُ عَلَيْكُمْ! مَاذَا تُرِيدُ؟','Friede sei mit dir! Was möchtest du?','as-salāmu ʿalaykum! mādhā turīdu?'],
+ open_en:'Peace be upon you! What would you like?',
  openF:['السَّلَامُ عَلَيْكُمْ! مَاذَا تُرِيدِينَ؟','Friede sei mit dir! Was möchtest du?','as-salāmu ʿalaykum! mādhā turīdīna?'],
- phrases:[['وَعَلَيْكُمُ السَّلَامُ','Und Friede sei mit euch','wa-ʿalaykumu s-salām'],['أُرِيدُ خُبْزًا.','Ich möchte Brot.','urīdu khubzan'],['أَيْنَ الْحَلِيبُ؟','Wo ist die Milch?','ayna l-ḥalību?'],['كِيلُو تُفَّاحٍ، مِنْ فَضْلِكَ.','Ein Kilo Äpfel, bitte.','kīlū tuffāḥin, min faḍlika'],['بِكَمْ هٰذَا؟','Wie viel kostet das?','bi-kam hādhā?'],['هٰذَا غَالٍ!','Das ist teuer!','hādhā ghālin!'],['تَفَضَّلْ، هٰذِهِ عِشْرُونَ رِيَالًا.','Bitte, hier sind zwanzig Riyal.','tafaḍḍal, hādhihi ʿishrūna riyālan']]},
+ openF_en:'Peace be upon you! What would you like?',
+ phrases:[['وَعَلَيْكُمُ السَّلَامُ','Und Friede sei mit euch','wa-ʿalaykumu s-salām'],['أُرِيدُ خُبْزًا.','Ich möchte Brot.','urīdu khubzan'],['أَيْنَ الْحَلِيبُ؟','Wo ist die Milch?','ayna l-ḥalību?'],['كِيلُو تُفَّاحٍ، مِنْ فَضْلِكَ.','Ein Kilo Äpfel, bitte.','kīlū tuffāḥin, min faḍlika'],['بِكَمْ هٰذَا؟','Wie viel kostet das?','bi-kam hādhā?'],['هٰذَا غَالٍ!','Das ist teuer!','hādhā ghālin!'],['تَفَضَّلْ، هٰذِهِ عِشْرُونَ رِيَالًا.','Bitte, hier sind zwanzig Riyal.','tafaḍḍal, hādhihi ʿishrūna riyālan']],
+ phrases_en:['And peace be upon you','I would like bread.','Where is the milk?','A kilo of apples, please.','How much is this?','That is expensive!','Here you go, here are twenty riyals.']},
 {id:'arzt', icon:'i-steth', ar:'عِنْدَ الطَّبِيبِ', de:'Beim Arzt', tutor:'Arzt in der Praxis', you:'Patient', youF:'Patientin',
+ de_en:'At the Doctor', tutor_en:'Doctor at the practice', you_en:'Patient', youF_en:'Patient',
  goal:'Sag dem Arzt, was dir wehtut und seit wann, und frag nach einem Medikament.',
+ goal_en:'Tell the doctor what hurts and since when, and ask about medicine.',
  open:['السَّلَامُ عَلَيْكُمْ، اِجْلِسْ مِنْ فَضْلِكَ. مَاذَا بِكَ؟','Friede sei mit dir, setz dich bitte. Was fehlt dir?','as-salāmu ʿalaykum, ijlis min faḍlika. mādhā bika?'],
+ open_en:'Peace be upon you, please sit down. What’s wrong?',
  openF:['السَّلَامُ عَلَيْكُمْ، اِجْلِسِي مِنْ فَضْلِكِ. مَاذَا بِكِ؟','Friede sei mit dir, setz dich bitte. Was fehlt dir?','as-salāmu ʿalaykum, ijlisī min faḍliki. mādhā biki?'],
- phrases:[['أَنَا مَرِيضٌ.','Ich bin krank.','anā marīḍun','أَنَا مَرِيضَةٌ.','Ich bin krank.','anā marīḍatun'],['عِنْدِي صُدَاعٌ.','Ich habe Kopfschmerzen.','ʿindī ṣudāʿun'],['عِنْدِي حُمَّى.','Ich habe Fieber.','ʿindī ḥummā'],['بَطْنِي يُؤْلِمُنِي.','Mein Bauch tut weh.','baṭnī yuʾlimunī'],['مُنْذُ يَوْمَيْنِ','seit zwei Tagen','mundhu yawmayn'],['هَلْ عِنْدَكَ دَوَاءٌ؟','Hast du ein Medikament?','hal ʿindaka dawāʾun?'],['جَزَاكَ اللّٰهُ خَيْرًا','Allah belohne dich (Danke)','jazāka llāhu khayran']]},
+ openF_en:'Peace be upon you, please sit down. What’s wrong?',
+ phrases:[['أَنَا مَرِيضٌ.','Ich bin krank.','anā marīḍun','أَنَا مَرِيضَةٌ.','Ich bin krank.','anā marīḍatun'],['عِنْدِي صُدَاعٌ.','Ich habe Kopfschmerzen.','ʿindī ṣudāʿun'],['عِنْدِي حُمَّى.','Ich habe Fieber.','ʿindī ḥummā'],['بَطْنِي يُؤْلِمُنِي.','Mein Bauch tut weh.','baṭnī yuʾlimunī'],['مُنْذُ يَوْمَيْنِ','seit zwei Tagen','mundhu yawmayn'],['هَلْ عِنْدَكَ دَوَاءٌ؟','Hast du ein Medikament?','hal ʿindaka dawāʾun?'],['جَزَاكَ اللّٰهُ خَيْرًا','Allah belohne dich (Danke)','jazāka llāhu khayran']],
+ phrases_en:['I am sick.','I have a headache.','I have a fever.','My stomach hurts.','for two days','Do you have medicine?','May Allah reward you (thank you)']},
 {id:'uni', icon:'i-cap', ar:'فِي الْجَامِعَةِ', de:'An der Universität', tutor:'Student an der Islamischen Universität Medina', tutorF:'Studentin an der Islamischen Universität Medina', you:'neuer Student', youF:'neue Studentin',
+ de_en:'At the University', tutor_en:'Student at the Islamic University of Madinah', tutorF_en:'Student at the Islamic University of Madinah', you_en:'new student', youF_en:'new student',
  goal:'Stell dich vor: Name, Herkunft, was du lernst. Frag dann nach der Bibliothek.',
+ goal_en:'Introduce yourself: name, where you’re from, what you’re studying. Then ask about the library.',
  open:['السَّلَامُ عَلَيْكُمْ! هَلْ أَنْتَ طَالِبٌ جَدِيدٌ؟ مَا اسْمُكَ؟','Friede sei mit dir! Bist du ein neuer Student? Wie heißt du?','as-salāmu ʿalaykum! hal anta ṭālibun jadīdun? ma smuka?'],
+ open_en:'Peace be upon you! Are you a new student? What’s your name?',
  openF:['السَّلَامُ عَلَيْكُمْ! هَلْ أَنْتِ طَالِبَةٌ جَدِيدَةٌ؟ مَا اسْمُكِ؟','Friede sei mit dir! Bist du eine neue Studentin? Wie heißt du?','as-salāmu ʿalaykum! hal anti ṭālibatun jadīdatun? ma smuki?'],
- phrases:[['وَعَلَيْكُمُ السَّلَامُ','Und Friede sei mit euch','wa-ʿalaykumu s-salām'],['نَعَمْ، أَنَا طَالِبٌ جَدِيدٌ.','Ja, ich bin ein neuer Student.','naʿam, anā ṭālibun jadīdun','نَعَمْ، أَنَا طَالِبَةٌ جَدِيدَةٌ.','Ja, ich bin eine neue Studentin.','naʿam, anā ṭālibatun jadīdatun'],['اِسْمِي …','Ich heiße …','ismī …'],['أَنَا مِنْ أَلْمَانِيَا.','Ich komme aus Deutschland.','anā min almāniyā'],['أَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','Ich lerne Arabisch.','adrusu l-lughata l-ʿarabiyyata'],['أَيْنَ الْمَكْتَبَةُ؟','Wo ist die Bibliothek?','ayna l-maktabatu?'],['مَنْ مُدَرِّسُكَ؟','Wer ist dein Lehrer?','man mudarrisuka?']]}
+ openF_en:'Peace be upon you! Are you a new student? What’s your name?',
+ phrases:[['وَعَلَيْكُمُ السَّلَامُ','Und Friede sei mit euch','wa-ʿalaykumu s-salām'],['نَعَمْ، أَنَا طَالِبٌ جَدِيدٌ.','Ja, ich bin ein neuer Student.','naʿam, anā ṭālibun jadīdun','نَعَمْ، أَنَا طَالِبَةٌ جَدِيدَةٌ.','Ja, ich bin eine neue Studentin.','naʿam, anā ṭālibatun jadīdatun'],['اِسْمِي …','Ich heiße …','ismī …'],['أَنَا مِنْ أَلْمَانِيَا.','Ich komme aus Deutschland.','anā min almāniyā'],['أَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','Ich lerne Arabisch.','adrusu l-lughata l-ʿarabiyyata'],['أَيْنَ الْمَكْتَبَةُ؟','Wo ist die Bibliothek?','ayna l-maktabatu?'],['مَنْ مُدَرِّسُكَ؟','Wer ist dein Lehrer?','man mudarrisuka?']],
+ phrases_en:['And peace be upon you','Yes, I am a new student.','My name is …','I am from Germany.','I am studying Arabic.','Where is the library?','Who is your teacher?']}
 ];
 
 const TUTOR_CHIPS = [
@@ -1244,14 +1274,17 @@ const TUTOR_CHIPS = [
 ];
 
 const TR_SAMPLES = ['أَيْنَ الْمَسْجِدُ؟','Ich trinke Tee mit Milch.','هٰذِهِ سَيَّارَةُ الْمُدَرِّسِ.','Wo wohnst du?','ذَهَبْتُ إِلَى السُّوقِ أَمْسِ.'];
+const TR_SAMPLES_EN = {'Ich trinke Tee mit Milch.':'I drink tea with milk.', 'Wo wohnst du?':'Where do you live?'};
 
 const TR_EXAMPLE = {sentences:[{ar:'ذَهَبَ الطَّالِبُ إِلَى الْمَسْجِدِ.', de:'Der Student ging zur Moschee.', tl:'dhahaba ṭ-ṭālibu ila l-masjidi.',
+  de_en:'The student went to the mosque.',
   structure:'Verbalsatz: Verb – Subjekt – Präposition mit Ziel. Im Arabischen steht das Verb meist am Anfang.',
+  structure_en:'Verbal sentence: verb – subject – preposition with destination. In Arabic, the verb usually comes first.',
   words:[
-    {ar:'ذَهَبَ', tl:'dhahaba', de:'ging', type:'Verb, Vergangenheit, 3. Person mask. Einzahl', root:'ذ ه ب', note:'Grundform „er ging".'},
-    {ar:'الطَّالِبُ', tl:'aṭ-ṭālibu', de:'der Student', type:'Nomen, mask., bestimmt, Nominativ (Subjekt)', root:'ط ل ب', note:'ط ist ein Sonnenbuchstabe: das ل von الـ wird nicht gesprochen.'},
-    {ar:'إِلَى', tl:'ilā', de:'zu, nach', type:'Präposition', root:'', note:'Danach steht das Nomen im Genitiv.'},
-    {ar:'الْمَسْجِدِ', tl:'al-masjidi', de:'der Moschee', type:'Nomen, mask., bestimmt, Genitiv', root:'س ج د', note:'مَسْجِد ist der „Ort der Niederwerfung" (سُجُود).'}
+    {ar:'ذَهَبَ', tl:'dhahaba', de:'ging', de_en:'went', type:'Verb, Vergangenheit, 3. Person mask. Einzahl', type_en:'Verb, past tense, 3rd person masc. singular', root:'ذ ه ب', note:'Grundform „er ging".', note_en:'Basic form "he went".'},
+    {ar:'الطَّالِبُ', tl:'aṭ-ṭālibu', de:'der Student', de_en:'the student', type:'Nomen, mask., bestimmt, Nominativ (Subjekt)', type_en:'Noun, masc., definite, nominative (subject)', root:'ط ل ب', note:'ط ist ein Sonnenbuchstabe: das ل von الـ wird nicht gesprochen.', note_en:'ط is a sun letter: the ل of الـ is not pronounced.'},
+    {ar:'إِلَى', tl:'ilā', de:'zu, nach', de_en:'to, towards', type:'Präposition', type_en:'Preposition', root:'', note:'Danach steht das Nomen im Genitiv.', note_en:'The following noun is in the genitive.'},
+    {ar:'الْمَسْجِدِ', tl:'al-masjidi', de:'der Moschee', de_en:'the mosque', type:'Nomen, mask., bestimmt, Genitiv', type_en:'Noun, masc., definite, genitive', root:'س ج د', note:'مَسْجِد ist der „Ort der Niederwerfung" (سُجُود).', note_en:'مَسْجِد is "the place of prostration" (سُجُود).'}
   ]}]};
 
 // Feste Reihenfolge der Personen/Zahlen-Buckets für Typ-2-Konjugationstabellen (volle Tabelle statt Einzelsatz):
@@ -2795,6 +2828,27 @@ function applyContentLang(){
       dt.de = en && dt.de_en ? dt.de_en : dt._deSaved.de;
     }
   }
+  for (const bk of BOOKS){
+    if (!bk._deSaved) bk._deSaved = bk.de;
+    bk.de = en && bk.de_en ? bk.de_en : bk._deSaved;
+  }
+  for (const s of SCENES){
+    if (!s._deSaved) s._deSaved = {de:s.de, tutor:s.tutor, tutorF:s.tutorF, you:s.you, youF:s.youF, goal:s.goal, open:s.open.slice(), openF:s.openF ? s.openF.slice() : undefined, phrases:s.phrases.map(p => p.slice())};
+    const d = s._deSaved;
+    s.de = en && s.de_en ? s.de_en : d.de;
+    s.tutor = en && s.tutor_en ? s.tutor_en : d.tutor;
+    if (d.tutorF !== undefined) s.tutorF = en && s.tutorF_en ? s.tutorF_en : d.tutorF;
+    s.you = en && s.you_en ? s.you_en : d.you;
+    s.youF = en && s.youF_en ? s.youF_en : d.youF;
+    s.goal = en && s.goal_en ? s.goal_en : d.goal;
+    s.open = en && s.open_en ? (() => { const o = d.open.slice(); o[1] = s.open_en; return o; })() : d.open;
+    if (d.openF) s.openF = en && s.openF_en ? (() => { const o = d.openF.slice(); o[1] = s.openF_en; return o; })() : d.openF;
+    s.phrases = en && s.phrases_en ? d.phrases.map((p, i) => {
+      const o = p.slice();
+      if (s.phrases_en[i] !== undefined){ o[1] = s.phrases_en[i]; if (o.length > 4) o[4] = s.phrases_en[i]; }
+      return o;
+    }) : d.phrases;
+  }
 }
 
 /* ---------- Speicher: Gerät + Claude-Konto ---------- */
@@ -3621,14 +3675,14 @@ function setMode(m){
   renderChat('tutor'); if (CHAT.role.scene) renderChat('role'); saveChats();
 }
 function applyModeUI(){
-  const off = offline();
+  const off = offline(), en = S.settings.lang === 'en';
   $$('[data-mode]').forEach(b => { if (b.closest('.seg')) b.setAttribute('aria-pressed', String(b.dataset.mode === (off ? 'offline' : 'claude'))); });
   $$('[data-offline-ui]').forEach(x => { x.hidden = !off; });
   $$('[data-claude-ui]').forEach(x => { x.hidden = off; });
   $('#set-spar').checked = off;
   $('#tr-mode').innerHTML = off
-    ? '<span class="mode-tag">Wörterbuch · kostenlos</span><span>Wörter aus der App werden erkannt.</span><button class="link" type="button" data-mode="claude">Frei mit Claude</button>'
-    : '<span class="mode-tag ai">Claude</span><span>Jede Erklärung verbraucht Kontingent.</span><button class="link" type="button" data-mode="offline">Sparmodus</button>';
+    ? '<span class="mode-tag">' + (en ? 'Dictionary · free' : 'Wörterbuch · kostenlos') + '</span><span>' + (en ? 'Words from the app are recognized.' : 'Wörter aus der App werden erkannt.') + '</span><button class="link" type="button" data-mode="claude">' + (en ? 'Free with Claude' : 'Frei mit Claude') + '</button>'
+    : '<span class="mode-tag ai">Claude</span><span>' + (en ? 'Every explanation uses up your quota.' : 'Jede Erklärung verbraucht Kontingent.') + '</span><button class="link" type="button" data-mode="offline">' + (en ? 'Saver mode' : 'Sparmodus') + '</button>';
 }
 
 /* ---------- Wörterbuch (Übersetzer ohne Claude) ---------- */
@@ -3638,10 +3692,14 @@ const deStem = w => w.length > 4 ? w.replace(/(en|es|er|em|st|e|s|n|t)$/, '') : 
 function addDe(de, card){
   for (let w of norm(de).split(' ')){ if (!w || DE_STOP.has(w) || w.length < 3) continue; for (const k of [w, deStem(w)]) if (!DEDICT.has(k)) DEDICT.set(k, card); }
 }
-for (const id of Object.keys(CARDS)){ const c = CARDS[id]; if (c.topic === 'custom') continue; const k = norm(c.ar); if (k && !DICT.has(k)) DICT.set(k, c); addDe(c.de.split(/[;(]/)[0], c); }
 function addSent(ar, de, tl){ const k = norm(ar); if (k && !SENTS.has(k)) SENTS.set(k, {ar, de, tl:tl || ''}); }
-for (const t of TOPICS){ for (const e of t.ex) addSent(e[0], e[1]); for (const w of t.words) if (w[3]) addSent(w[3], w[4]); }
-for (const s of SCENES){ addSent(s.open[0], s.open[1], s.open[2]); if (s.openF) addSent(s.openF[0], s.openF[1], s.openF[2]); for (const p of s.phrases){ addSent(p[0], p[1], p[2]); if (p[3]) addSent(p[3], p[4], p[5]); } }
+function buildDict(){
+  DICT.clear(); DEDICT.clear(); SENTS.clear();
+  for (const id of Object.keys(CARDS)){ const c = CARDS[id]; if (c.topic === 'custom') continue; const k = norm(c.ar); if (k && !DICT.has(k)) DICT.set(k, c); addDe(c.de.split(/[;(]/)[0], c); }
+  for (const t of TOPICS){ for (const e of t.ex) addSent(e[0], e[1]); for (const w of t.words) if (w[3]) addSent(w[3], w[4]); }
+  for (const s of SCENES){ addSent(s.open[0], s.open[1], s.open[2]); if (s.openF) addSent(s.openF[0], s.openF[1], s.openF[2]); for (const p of s.phrases){ addSent(p[0], p[1], p[2]); if (p[3]) addSent(p[3], p[4], p[5]); } }
+}
+buildDict();
 for (const id of Object.keys(EX)) for (const ex of EX[id]){ addSent(ex.ok[0], ex.ok[1]); if (ex.ok[2]) addSent(ex.ok[2], ex.ok[1]); addSent(ex.q, ex.qde.replace(/\s*\(.*\)\s*$/, '')); }
 for (const id of Object.keys(STEPS)) for (const st of STEPS[id]){ addSent(st.ok[0], st.ok[1]); if (st.t) addSent(st.t[0], st.t[1], st.t[2]); }
 for (const c of TUTOR_CHIPS) addSent(c[0], c[1]);
@@ -3810,7 +3868,7 @@ function renderDecks(){
     + '<div class="sum red"><span class="big">' + mist + '</span><span class="lab">' + (en ? 'in the mistake pile' : 'im Fehler-Stapel') + '</span><button class="btn small bad" type="button" data-session="mistakes"' + (mist ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
     + '<div class="sum"><span class="big">' + due + '</span><span class="lab">' + (en ? 'due for review today' : 'heute zur Wiederholung fällig') + '</span><button class="btn small" type="button" data-session="due"' + (due ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
     + '</div>'
-    + '<div class="dir-row"><span class="lab">' + (en ? 'Front side' : 'Vorderseite') + '</span><div class="seg" id="dir-seg" role="group" aria-label="' + (en ? 'Direction' : 'Richtung') + '"><button type="button" data-dir="ar" aria-pressed="' + (S.settings.dir === 'ar') + '">' + (en ? 'Arabic → German' : 'Arabisch → Deutsch') + '</button><button type="button" data-dir="de" aria-pressed="' + (S.settings.dir === 'de') + '">' + (en ? 'German → Arabic' : 'Deutsch → Arabisch') + '</button></div></div>';
+    + '<div class="dir-row"><span class="lab">' + (en ? 'Front side' : 'Vorderseite') + '</span><div class="seg" id="dir-seg" role="group" aria-label="' + (en ? 'Direction' : 'Richtung') + '"><button type="button" data-dir="ar" aria-pressed="' + (S.settings.dir === 'ar') + '">' + (en ? 'Arabic → English' : 'Arabisch → Deutsch') + '</button><button type="button" data-dir="de" aria-pressed="' + (S.settings.dir === 'de') + '">' + (en ? 'English → Arabic' : 'Deutsch → Arabisch') + '</button></div></div>';
   if (custom.length) h += '<div class="deck-group"><div class="book-head"><h2>' + (en ? 'My words' : 'Meine Wörter') + '</h2><span class="b-ar" lang="ar">كَلِمَاتِي</span></div><div class="decks">' + deckRow('custom', 'كَلِمَاتِي', en ? 'From tutor, translator and roleplay' : 'Aus Tutor, Übersetzer und Rollenspiel', custom) + '</div></div>';
   for (const b of BOOKS){
     h += '<div class="deck-group"><div class="book-head"><h2>' + esc(b.de) + '</h2><span class="b-ar" lang="ar">' + esc(b.ar) + '</span></div><div class="decks">'
@@ -3889,7 +3947,18 @@ function answerCard(ok){
 
 /* ---------- Übersetzer ---------- */
 let trCtl = null;
+let trIsExample = true;
+function trExampleLocalized(){
+  const en = S.settings.lang === 'en', ex = TR_EXAMPLE.sentences[0], pick = (de, de2) => en && de2 ? de2 : de;
+  return {sentences:[{ar:ex.ar, tl:ex.tl, de:pick(ex.de, ex.de_en), structure:pick(ex.structure, ex.structure_en),
+    words:ex.words.map(w => ({ar:w.ar, tl:w.tl, root:w.root, de:pick(w.de, w.de_en), type:pick(w.type, w.type_en), note:pick(w.note, w.note_en)}))}]};
+}
+function renderTrSamples(){
+  const en = S.settings.lang === 'en';
+  $('#tr-examples').innerHTML = TR_SAMPLES.map(s => { const t = en && TR_SAMPLES_EN[s] ? TR_SAMPLES_EN[s] : s; return '<button class="chip" type="button" data-tr-sample="' + esc(t) + '">' + (isArabic(t) ? '<span class="ar-s" lang="ar">' + esc(t) + '</span>' : esc(t)) + '</button>'; }).join('');
+}
 function renderTranslation(data, isExample){
+  trIsExample = !!isExample;
   const sents = (data.sentences || []).filter(x => x && x.ar), en = S.settings.lang === 'en';
   let h = isExample ? '<p class="ex-mark">' + (en ? 'Example' : 'Beispiel') + '</p>' : (data.offline ? '<p class="ex-mark">' + (en ? 'Dictionary · without Claude' : 'Wörterbuch · ohne Claude') + '</p>' : '');
   sents.forEach((s, si) => {
@@ -4016,7 +4085,7 @@ const I18N_EN = {
   yourAnswer:'Your answer', yourAnswerPh:'Your answer …',
   trLede:'Write a sentence in Arabic or English. Each sentence gets translated and explained word by word.',
   trInputLabel:'Text to translate', trInputPh:'e.g. أَيْنَ الْمَسْجِدُ؟ or: I drink tea with milk.',
-  micLangGroup:'Microphone language', trGoBtn:'Explain'
+  micLangGroup:'Microphone language', micLangAr:'Arabic', micLangDe:'English', trGoBtn:'Explain'
 };
 function applyI18N(){
   const en = S.settings.lang === 'en';
@@ -4029,13 +4098,14 @@ function applyI18N(){
 }
 function setLang(l){
   if (S.settings.lang === l) return;
-  S.settings.lang = l; save(); applyContentLang(); applySettingsUI(); renderTutorHead(); refreshCurrent();
+  S.settings.lang = l; save(); applyContentLang(); buildDict(); applySettingsUI(); renderTutorHead(); refreshCurrent();
 }
 
 /* ---------- Einstellungen ---------- */
 function applySettingsUI(){
   const st = S.settings, en = st.lang === 'en';
   applyI18N();
+  $('#tr-lang-other').dataset.lang = en ? 'en-US' : 'de-DE';
   $('#book-pill').textContent = (en ? 'Book ' : 'Buch ') + st.book;
   $$('#set-applang button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.applang === st.lang)));
   $$('#set-book button').forEach(x => x.setAttribute('aria-pressed', String(Number(x.dataset.book) === Number(st.book))));
@@ -4086,6 +4156,7 @@ function show(v){
   if (v === 'start') renderStart();
   if (v === 'karten'){ if (session) renderSession(); else renderDecks(); }
   if (v === 'tutor'){ if (offline()) ensureTutorQuiz(); renderChat('tutor'); }
+  if (v === 'uebersetzer'){ renderTrSamples(); if (trIsExample) renderTranslation(trExampleLocalized(), true); }
 }
 // Für Playwright-Tests (tests/test_table_entry_and_resume.py) global erreichbar machen: siehe Kommentar bei
 // window.makeTable oben. Ändert das Laufzeitverhalten der App nicht.
@@ -4200,13 +4271,13 @@ for (const k of ['showDe', 'showTl', 'autoSpeak', 'autoSend', 'precise']){
 $('#set-spar').addEventListener('change', e => setMode(e.target.checked ? 'offline' : 'claude'));
 $('#set-rate').addEventListener('input', e => { S.settings.rate = Number(e.target.value); applySettingsUI(); });
 $('#set-rate').addEventListener('change', () => { save(); speak('مَرْحَبًا، كَيْفَ حَالُكَ؟'); });
-$('#tr-examples').innerHTML = TR_SAMPLES.map(s => '<button class="chip" type="button" data-tr-sample="' + esc(s) + '">' + (isArabic(s) ? '<span class="ar-s" lang="ar">' + esc(s) + '</span>' : esc(s)) + '</button>').join('');
+renderTrSamples();
 
 /* ---------- Start ---------- */
 renderTutorHead();
 renderChat('tutor');
 if (CHAT.role.scene) renderChat('role');
-renderTranslation(TR_EXAMPLE, true);
+renderTranslation(trExampleLocalized(), true);
 applySettingsUI();
 renderScenes();
 route();
