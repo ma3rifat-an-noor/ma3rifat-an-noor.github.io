@@ -456,6 +456,12 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
   <symbol id="i-basket" viewBox="0 0 24 24"><path d="M4 10h16l-1.6 9H5.6z"/><path d="M8 10l3-6M16 10l-3-6M9.5 13.5v3M14.5 13.5v3"/></symbol>
   <symbol id="i-steth" viewBox="0 0 24 24"><path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v2a5 5 0 0 0 10 0v-1"/><circle cx="20" cy="12" r="2"/></symbol>
   <symbol id="i-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M12 3v9M4 14l8-2 8 2M12 12v8M9 21l3-1.5 3 1.5"/></symbol>
+  <symbol id="i-train" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="13" rx="3"/><path d="M5 10h14M8 4v6M16 4v6M7 17l-2 3M17 17l2 3"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9.5a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1V10"/></symbol>
+  <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 9l9-5 9 5"/><path d="M4 9h16M5 9v9M9 9v9M15 9v9M19 9v9M3 19.5h18"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="7.5" r="4"/><path d="M10.5 10.5L20 20M15.5 15.5l2.5 2.5M18.5 12.5l2.5 2.5"/></symbol>
+  <symbol id="i-case" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13.5h18"/></symbol>
 </svg>
 
 <div class="app" id="app">
@@ -1265,7 +1271,67 @@ const SCENES = [
  openF:['السَّلَامُ عَلَيْكُمْ! هَلْ أَنْتِ طَالِبَةٌ جَدِيدَةٌ؟ مَا اسْمُكِ؟','Friede sei mit dir! Bist du eine neue Studentin? Wie heißt du?','as-salāmu ʿalaykum! hal anti ṭālibatun jadīdatun? ma smuki?'],
  openF_en:'Peace be upon you! Are you a new student? What’s your name?',
  phrases:[['وَعَلَيْكُمُ السَّلَامُ','Und Friede sei mit euch','wa-ʿalaykumu s-salām'],['نَعَمْ، أَنَا طَالِبٌ جَدِيدٌ.','Ja, ich bin ein neuer Student.','naʿam, anā ṭālibun jadīdun','نَعَمْ، أَنَا طَالِبَةٌ جَدِيدَةٌ.','Ja, ich bin eine neue Studentin.','naʿam, anā ṭālibatun jadīdatun'],['اِسْمِي …','Ich heiße …','ismī …'],['أَنَا مِنْ أَلْمَانِيَا.','Ich komme aus Deutschland.','anā min almāniyā'],['أَدْرُسُ اللُّغَةَ الْعَرَبِيَّةَ.','Ich lerne Arabisch.','adrusu l-lughata l-ʿarabiyyata'],['أَيْنَ الْمَكْتَبَةُ؟','Wo ist die Bibliothek?','ayna l-maktabatu?'],['مَنْ مُدَرِّسُكَ؟','Wer ist dein Lehrer?','man mudarrisuka?']],
- phrases_en:['And peace be upon you','Yes, I am a new student.','My name is …','I am from Germany.','I am studying Arabic.','Where is the library?','Who is your teacher?']}
+ phrases_en:['And peace be upon you','Yes, I am a new student.','My name is …','I am from Germany.','I am studying Arabic.','Where is the library?','Who is your teacher?']},
+{id:'flughafen', icon:'i-plane', ar:'فِي الْمَطَارِ', de:'Am Flughafen', tutor:'Mitarbeiter am Check-in-Schalter', tutorF:'Mitarbeiterin am Check-in-Schalter', you:'Fluggast', youF:'Fluggast',
+ de_en:'At the Airport', tutor_en:'Check-in desk employee', tutorF_en:'Check-in desk employee', you_en:'Passenger', youF_en:'Passenger',
+ goal:'Checke für deinen Flug ein und frag nach dem Gate und dem Abflug.',
+ goal_en:'Check in for your flight, and ask about the gate and departure time.',
+ open:['أَهْلًا بِكَ! هَلْ مَعَكَ جَوَازُ السَّفَرِ وَالتَّذْكِرَةُ؟','Willkommen! Hast du Reisepass und Ticket dabei?','ahlan bika! hal maʿaka jawāzu s-safari wa-t-tadhkirah?'],
+ open_en:'Welcome! Do you have your passport and ticket with you?',
+ openF:['أَهْلًا بِكِ! هَلْ مَعَكِ جَوَازُ السَّفَرِ وَالتَّذْكِرَةُ؟','Willkommen! Hast du Reisepass und Ticket dabei?','ahlan biki! hal maʿaki jawāzu s-safari wa-t-tadhkirah?'],
+ openF_en:'Welcome! Do you have your passport and ticket with you?',
+ phrases:[['هٰذَا جَوَازُ سَفَرِي.','Das ist mein Reisepass.','hādhā jawāzu safarī.'],['عِنْدِي حَقِيبَتَانِ.','Ich habe zwei Koffer.','ʿindī ḥaqībatān.'],['أُرِيدُ مَقْعَدًا بِجَانِبِ النَّافِذَةِ.','Ich möchte einen Fensterplatz.','urīdu maqʿadan bi-jānibi n-nāfidhah.'],['أَيْنَ بَوَّابَةُ الطَّائِرَةِ؟','Wo ist das Gate?','ayna bawwābatu ṭ-ṭāʾirah?'],['مَتَى مَوْعِدُ الْإِقْلَاعِ؟','Wann ist der Abflug?','matā mawʿidu l-iqlāʿ?'],['هَلِ الرِّحْلَةُ فِي مَوْعِدِهَا؟','Ist der Flug pünktlich?','hali r-riḥlatu fī mawʿidihā?'],['مَعَ السَّلَامَةِ','Auf Wiedersehen','maʿa s-salāmah']],
+ phrases_en:['Here you go, this is my passport.','I have two bags.','I would like a window seat.','Where is the gate?','When is departure?','Is the flight on time?','Goodbye']},
+{id:'bahnhof', icon:'i-train', ar:'فِي مَحَطَّةِ الْقِطَارِ', de:'Am Bahnhof', tutor:'Mitarbeiter am Fahrkartenschalter', tutorF:'Mitarbeiterin am Fahrkartenschalter', you:'Reisender', youF:'Reisende',
+ de_en:'At the Train Station', tutor_en:'Ticket counter clerk', tutorF_en:'Ticket counter clerk', you_en:'Traveler', youF_en:'Traveler',
+ goal:'Kauf eine Fahrkarte, frag nach dem Gleis und wann der Zug ankommt.',
+ goal_en:'Buy a ticket, ask which platform, and ask when the train arrives.',
+ open:['أَهْلًا! إِلَى أَيْنَ تُسَافِرُ؟','Willkommen! Wohin reist du?','ahlan! ilā ayna tusāfiru?'],
+ open_en:'Welcome! Where are you traveling to?',
+ openF:['أَهْلًا! إِلَى أَيْنَ تُسَافِرِينَ؟','Willkommen! Wohin reist du?','ahlan! ilā ayna tusāfirīna?'],
+ openF_en:'Welcome! Where are you traveling to?',
+ phrases:[['أُرِيدُ تَذْكِرَةً إِلَى الرِّيَاضِ.','Ich möchte ein Ticket nach Riad.','urīdu tadhkiratan ilā r-riyāḍ.'],['تَذْكِرَةُ ذَهَابٍ وَإِيَابٍ، مِنْ فَضْلِكَ.','Eine Hin- und Rückfahrkarte, bitte.','tadhkiratu dhahābin wa-iyābin, min faḍlika.'],['فِي أَيِّ رَصِيفٍ الْقِطَارُ؟','Auf welchem Gleis ist der Zug?','fī ayyi raṣīfin al-qiṭāru?'],['مَتَى يُغَادِرُ الْقِطَارُ؟','Wann fährt der Zug ab?','matā yughādiru l-qiṭāru?'],['كَمْ سِعْرُ التَّذْكِرَةِ؟','Wie viel kostet die Fahrkarte?','kam siʿru t-tadhkirah?'],['فِي أَيِّ سَاعَةٍ يَصِلُ الْقِطَارُ؟','Um wie viel Uhr kommt der Zug an?','fī ayyi sāʿatin yaṣilu l-qiṭāru?'],['شُكْرًا جَزِيلًا','Vielen Dank','shukran jazīlan']],
+ phrases_en:['I would like a ticket to Riyadh.','A round-trip ticket, please.','Which platform is the train on?','When does the train leave?','How much does the ticket cost?','What time does the train arrive?','Thank you very much']},
+{id:'nachbarn', icon:'i-home', ar:'مَعَ الْجِيرَانِ', de:'Bei den Nachbarn', tutor:'Neuer Nachbar', tutorF:'Neue Nachbarin', you:'neuer Nachbar', youF:'neue Nachbarin',
+ de_en:'With the Neighbors', tutor_en:'New neighbor', tutorF_en:'New neighbor', you_en:'new neighbor', youF_en:'new neighbor',
+ goal:'Stell dich als neuer Nachbar vor und frag nach der Umgebung, zum Beispiel wo die nächste Moschee ist.',
+ goal_en:'Introduce yourself as the new neighbor and ask about the area, for example where the nearest mosque is.',
+ open:['أَهْلًا وَسَهْلًا! أَنْتَ الْجَارُ الْجَدِيدُ، أَلَيْسَ كَذٰلِكَ؟','Herzlich willkommen! Du bist der neue Nachbar, nicht wahr?','ahlan wa-sahlan! anta l-jāru l-jadīdu, alaysa kadhālika?'],
+ open_en:'Welcome! You’re the new neighbor, aren’t you?',
+ openF:['أَهْلًا وَسَهْلًا! أَنْتِ الْجَارَةُ الْجَدِيدَةُ، أَلَيْسَ كَذٰلِكَ؟','Herzlich willkommen! Du bist die neue Nachbarin, nicht wahr?','ahlan wa-sahlan! anti l-jāratu l-jadīdatu, alaysa kadhālika?'],
+ openF_en:'Welcome! You’re the new neighbor, aren’t you?',
+ phrases:[['نَعَمْ، اِنْتَقَلْتُ إِلَى هُنَا أَمْسِ.','Ja, ich bin gestern hierher gezogen.','naʿam, intaqaltu ilā hunā amsi.'],['اِسْمِي … وَأَنَا مِنْ أَلْمَانِيَا.','Ich heiße … und ich komme aus Deutschland.','ismī … wa-anā min almāniyā.'],['أَيْنَ أَقْرَبُ مَسْجِدٍ؟','Wo ist die nächste Moschee?','ayna aqrabu masjidin?'],['هَلْ يُوجَدُ سُوقٌ قَرِيبٌ مِنْ هُنَا؟','Gibt es einen Markt in der Nähe?','hal yūjadu sūqun qarībun min hunā?'],['هٰذِهِ هَدِيَّةٌ صَغِيرَةٌ مِنِّي.','Das ist ein kleines Geschenk von mir.','hādhihi hadiyyatun ṣaghīratun minnī.'],['هَلِ الْمَسْجِدُ بَعِيدٌ مِنْ هُنَا؟','Ist die Moschee weit von hier?','hali l-masjidu baʿīdun min hunā?'],['فُرْصَةٌ سَعِيدَةٌ.','Freut mich, dich kennenzulernen.','furṣatun saʿīdah.']],
+ phrases_en:['Yes, I moved here yesterday.','My name is … and I am from Germany.','Where is the nearest mosque?','Is there a market nearby?','This is a small gift from me.','Is the mosque far from here?','Nice to meet you.']},
+{id:'bank', icon:'i-bank', ar:'فِي الْبَنْكِ', de:'Bei der Bank', tutor:'Bankangestellter', tutorF:'Bankangestellte', you:'Kunde', youF:'Kundin',
+ de_en:'At the Bank', tutor_en:'Bank clerk', tutorF_en:'Bank clerk', you_en:'Customer', youF_en:'Customer',
+ goal:'Eröffne ein Konto oder wechsle Geld, und frag nach dem Wechselkurs.',
+ goal_en:'Open an account or exchange money, and ask about the exchange rate.',
+ open:['أَهْلًا بِكَ فِي الْبَنْكِ! كَيْفَ أُسَاعِدُكَ؟','Willkommen bei der Bank! Wie kann ich dir helfen?','ahlan bika fi l-bank! kayfa usāʿiduka?'],
+ open_en:'Welcome to the bank! How can I help you?',
+ openF:['أَهْلًا بِكِ فِي الْبَنْكِ! كَيْفَ أُسَاعِدُكِ؟','Willkommen bei der Bank! Wie kann ich dir helfen?','ahlan biki fi l-bank! kayfa usāʿiduki?'],
+ openF_en:'Welcome to the bank! How can I help you?',
+ phrases:[['أُرِيدُ فَتْحَ حِسَابٍ جَدِيدٍ.','Ich möchte ein neues Konto eröffnen.','urīdu fatḥa ḥisābin jadīdin.'],['أُرِيدُ تَحْوِيلَ هٰذَا الْمَبْلَغِ إِلَى رِيَالٍ.','Ich möchte diesen Betrag in Riyal wechseln.','urīdu taḥwīla hādhā l-mablaghi ilā riyāl.'],['كَمْ سِعْرُ الصَّرْفِ الْيَوْمَ؟','Wie hoch ist der Wechselkurs heute?','kam siʿru ṣ-ṣarfi l-yawma?'],['أَيْنَ أَقْرَبُ صَرَّافٍ آلِيٍّ؟','Wo ist der nächste Geldautomat?','ayna aqrabu ṣarrāfin ālīyin?'],['هَلْ جَوَازُ السَّفَرِ مَطْلُوبٌ؟','Wird ein Reisepass benötigt?','hal jawāzu s-safari maṭlūbun?'],['أُرِيدُ دَفْتَرَ شِيكَاتٍ.','Ich möchte ein Scheckheft.','urīdu daftara shīkātin.'],['شُكْرًا جَزِيلًا','Vielen Dank','shukran jazīlan']],
+ phrases_en:['I would like to open a new account.','I would like to exchange this amount for riyals.','What’s the exchange rate today?','Where is the nearest ATM?','Is a passport required?','I would like a checkbook.','Thank you very much']},
+{id:'wohnung', icon:'i-key', ar:'فِي شَقَّةٍ لِلْإِيجَارِ', de:'Wohnungsbesichtigung', tutor:'Vermieter', tutorF:'Vermieterin', you:'Mieter', youF:'Mieterin',
+ de_en:'Apartment Viewing', tutor_en:'Landlord', tutorF_en:'Landlady', you_en:'Tenant', youF_en:'Tenant',
+ goal:'Frag nach der Miete, den Zimmern und wann du einziehen könntest.',
+ goal_en:'Ask about the rent, the rooms, and when you could move in.',
+ open:['أَهْلًا! تَفَضَّلْ، هٰذِهِ الشَّقَّةُ.','Willkommen! Bitte, das ist die Wohnung.','ahlan! tafaḍḍal, hādhihi sh-shaqqah.'],
+ open_en:'Welcome! Here you go, this is the apartment.',
+ openF:['أَهْلًا! تَفَضَّلِي، هٰذِهِ الشَّقَّةُ.','Willkommen! Bitte, das ist die Wohnung.','ahlan! tafaḍḍalī, hādhihi sh-shaqqah.'],
+ openF_en:'Welcome! Here you go, this is the apartment.',
+ phrases:[['كَمِ الْإِيجَارُ فِي الشَّهْرِ؟','Wie hoch ist die Miete im Monat?','kami l-ījāru fī sh-shahr?'],['كَمْ غُرْفَةً فِي الشَّقَّةِ؟','Wie viele Zimmer hat die Wohnung?','kam ghurfatan fī sh-shaqqah?'],['هَلِ الْمَطْبَخُ مَفْرُوشٌ؟','Ist die Küche möbliert?','hali l-maṭbakhu mafrūshun?'],['مَتَى يُمْكِنُ أَنْ أَنْتَقِلَ؟','Wann kann ich einziehen?','matā yumkinu an antaqila?'],['هَلْ يُوجَدُ مَصْعَدٌ فِي الْبِنَايَةِ؟','Gibt es einen Aufzug im Gebäude?','hal yūjadu maṣʿadun fī l-bināyah?'],['أَيْنَ أَقْرَبُ مَسْجِدٍ مِنَ الشَّقَّةِ؟','Wo ist die nächste Moschee von der Wohnung?','ayna aqrabu masjidin mina sh-shaqqah?'],['سَأُفَكِّرُ فِي الْأَمْرِ.','Ich werde darüber nachdenken.','sa-ufakkiru fī l-amr.']],
+ phrases_en:['How much is the rent per month?','How many rooms does the apartment have?','Is the kitchen furnished?','When can I move in?','Is there an elevator in the building?','Where is the nearest mosque from the apartment?','I will think about it.']},
+{id:'vorstellung', icon:'i-case', ar:'فِي مُقَابَلَةِ عَمَلٍ', de:'Im Vorstellungsgespräch', tutor:'Arbeitgeber', tutorF:'Arbeitgeberin', you:'Bewerber', youF:'Bewerberin',
+ de_en:'At the Job Interview', tutor_en:'Employer', tutorF_en:'Employer', you_en:'Applicant', youF_en:'Applicant',
+ goal:'Stell dich vor, sag warum du die Stelle willst, und frag nach Gehalt und Starttermin.',
+ goal_en:'Introduce yourself, say why you want the job, and ask about salary and start date.',
+ open:['أَهْلًا بِكَ! حَدِّثْنِي عَنْ نَفْسِكَ.','Willkommen! Erzähl mir von dir.','ahlan bika! ḥaddithnī ʿan nafsika.'],
+ open_en:'Welcome! Tell me about yourself.',
+ openF:['أَهْلًا بِكِ! حَدِّثِينِي عَنْ نَفْسِكِ.','Willkommen! Erzähl mir von dir.','ahlan biki! ḥaddithīnī ʿan nafsiki.'],
+ openF_en:'Welcome! Tell me about yourself.',
+ phrases:[['اِسْمِي … وَعُمْرِي ثَلَاثُونَ سَنَةً.','Ich heiße … und ich bin dreißig Jahre alt.','ismī … wa-ʿumrī thalāthūna sanah.'],['أَنَا مُهَنْدِسٌ وَلَدَيَّ خَمْسُ سَنَوَاتٍ مِنَ الْخِبْرَةِ.','Ich bin Ingenieur und habe fünf Jahre Erfahrung.','anā muhandisun wa-ladayya khamsu sanawātin mina l-khibrah.'],['أَنَا مُجْتَهِدٌ وَأُحِبُّ الْعَمَلَ الْجَمَاعِيَّ.','Ich bin fleißig und mag Teamarbeit.','anā mujtahidun wa-uḥibbu l-ʿamala l-jamāʿīya.'],['مَا هُوَ الرَّاتِبُ لِهٰذِهِ الْوَظِيفَةِ؟','Wie hoch ist das Gehalt für diese Stelle?','mā huwa r-rātibu li-hādhihi l-waẓīfah?'],['مَتَى يُمْكِنُ أَنْ أَبْدَأَ الْعَمَلَ؟','Wann kann ich mit der Arbeit beginnen?','matā yumkinu an abdaʾa l-ʿamal?'],['أُرِيدُ هٰذِهِ الْوَظِيفَةَ لِأَنَّهَا تُنَاسِبُ خِبْرَتِي.','Ich möchte diese Stelle, weil sie zu meiner Erfahrung passt.','urīdu hādhihi l-waẓīfata li-annahā tunāsibu khibratī.'],['شُكْرًا عَلَى هٰذِهِ الْفُرْصَةِ.','Vielen Dank für diese Gelegenheit.','shukran ʿalā hādhihi l-furṣah.']],
+ phrases_en:['My name is … and I am thirty years old.','I am an engineer and have five years of experience.','I am hardworking and I like teamwork.','What is the salary for this position?','When can I start working?','I want this job because it suits my experience.','Thank you for this opportunity.']}
 ];
 
 const TUTOR_CHIPS = [
