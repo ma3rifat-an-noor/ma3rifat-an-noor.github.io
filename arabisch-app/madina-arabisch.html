@@ -3962,7 +3962,7 @@ function deckRow(id, ar, de, ids){
   const due = ids.filter(x => S.srs[x] && S.srs[x].d <= now).length;
   const wr = ids.filter(x => S.mistakes.includes(x)).length;
   const fresh = ids.filter(x => !S.srs[x]).length;
-  const badge = wr ? '<span class="badge wr">' + wr + (en ? ' wrong' : ' falsch') + '</span>' : due ? '<span class="badge due">' + due + (en ? ' due' : ' fällig') + '</span>' : fresh ? '<span class="badge">' + fresh + (en ? ' new' : ' neu') + '</span>' : '<span class="badge">' + (en ? 'done' : 'fertig') + '</span>';
+  const badge = ids.length === 0 ? '<span class="badge">' + (en ? 'no cards' : 'keine Karten') + '</span>' : wr ? '<span class="badge wr">' + wr + (en ? ' wrong' : ' falsch') + '</span>' : due ? '<span class="badge due">' + due + (en ? ' due' : ' fällig') + '</span>' : fresh ? '<span class="badge">' + fresh + (en ? ' new' : ' neu') + '</span>' : '<span class="badge">' + (en ? 'done' : 'fertig') + '</span>';
   return '<button class="deck" type="button" data-study="' + id + '"><span class="d-ar" lang="ar">' + esc(ar) + '</span><span class="d-main"><span class="d-de">' + esc(de) + '</span>'
     + '<span class="d-meta">' + ids.length + (en ? ' cards · ' : ' Karten · ') + knownCount(ids) + (en ? ' learned' : ' gelernt') + '</span><span class="t-bar"><i style="width:' + Math.round(100 * knownCount(ids) / Math.max(1, ids.length)) + '%"></i></span></span>' + badge + '</button>';
 }
