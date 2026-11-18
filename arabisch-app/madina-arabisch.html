@@ -3927,16 +3927,20 @@ function deckRow(id, ar, de, ids){
 function renderDecks(){
   session = null;
   const en = S.settings.lang === 'en';
+  const selBook = Number(S.settings.book) || 1;
   const mist = mistakeIds().length, due = dueIds().length;
   const custom = S.custom.map(c => c.id).filter(id => CARDS[id]);
   let h = '<h2 class="h">' + (en ? 'Flashcards' : 'Karteikarten') + '</h2><p class="lede">' + (en ? 'For every topic. What you got wrong goes into the mistake pile and repeats until you know it twice in a row.' : 'Zu jedem Thema. Was du falsch hattest, kommt in den Fehler-Stapel und wird so lange wiederholt, bis du es zweimal hintereinander weißt.') + '</p>'
+    + '<div class="dir-row"><span class="lab">' + (en ? 'Book' : 'Buch') + '</span><div class="seg" id="cards-book-seg" role="group" aria-label="' + (en ? 'Book' : 'Buch') + '">'
+      + [1, 2, 3].map(n => '<button type="button" data-book="' + n + '" aria-pressed="' + (n === selBook) + '">' + (en ? 'Book ' : 'Buch ') + n + '</button>').join('')
+      + '</div></div>'
     + '<div class="sum-tiles">'
     + '<div class="sum red"><span class="big">' + mist + '</span><span class="lab">' + (en ? 'in the mistake pile' : 'im Fehler-Stapel') + '</span><button class="btn small bad" type="button" data-session="mistakes"' + (mist ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
     + '<div class="sum"><span class="big">' + due + '</span><span class="lab">' + (en ? 'due for review today' : 'heute zur Wiederholung fällig') + '</span><button class="btn small" type="button" data-session="due"' + (due ? '' : ' disabled') + '>' + (en ? 'Review' : 'Wiederholen') + '</button></div>'
     + '</div>'
     + '<div class="dir-row"><span class="lab">' + (en ? 'Front side' : 'Vorderseite') + '</span><div class="seg" id="dir-seg" role="group" aria-label="' + (en ? 'Direction' : 'Richtung') + '"><button type="button" data-dir="ar" aria-pressed="' + (S.settings.dir === 'ar') + '">' + (en ? 'Arabic → English' : 'Arabisch → Deutsch') + '</button><button type="button" data-dir="de" aria-pressed="' + (S.settings.dir === 'de') + '">' + (en ? 'English → Arabic' : 'Deutsch → Arabisch') + '</button></div></div>';
   if (custom.length) h += '<div class="deck-group"><div class="book-head"><h2>' + (en ? 'My words' : 'Meine Wörter') + '</h2><span class="b-ar" lang="ar">كَلِمَاتِي</span></div><div class="decks">' + deckRow('custom', 'كَلِمَاتِي', en ? 'From tutor, translator and roleplay' : 'Aus Tutor, Übersetzer und Rollenspiel', custom) + '</div></div>';
-  for (const b of BOOKS){
+  for (const b of BOOKS.filter(bk => bk.n === selBook)){
     h += '<div class="deck-group"><div class="book-head"><h2>' + esc(b.de) + '</h2><span class="b-ar" lang="ar">' + esc(b.ar) + '</span></div><div class="decks">'
       + TOPICS.filter(t => t.book === b.n).map(t => deckRow(t.id, t.ar, t.de, TOPIC_CARDS[t.id])).join('') + '</div></div>';
   }
@@ -4183,7 +4187,7 @@ function applySettingsUI(){
   setSync(syncCloud);
   updateDuePill();
 }
-function setBook(n){ S.settings.book = n; save(); applySettingsUI(); if (currentView === 'start') renderStart(); }
+function setBook(n){ S.settings.book = n; save(); applySettingsUI(); if (currentView === 'start') renderStart(); else if (currentView === 'karten' && !session) renderDecks(); }
 function setGender(g){
   if (S.settings.gender === g) return;
   S.settings.gender = g; save(); applySettingsUI();
@@ -4263,7 +4267,7 @@ document.addEventListener('click', e => {
   if (d.resume !== undefined){ rolePlaying = true; showRole(true); return; }
   if (d.closeHelp !== undefined){ t.closest('[data-mic-help]').hidden = true; return; }
   if (d.applang){ setLang(d.applang); return; }
-  if (d.book && t.closest('#book-seg, #set-book')){ setBook(Number(d.book)); return; }
+  if (d.book && t.closest('#book-seg, #set-book, #cards-book-seg')){ setBook(Number(d.book)); return; }
   if (d.gender){ setGender(d.gender); return; }
   if (d.lang){ $$('#tr-lang button').forEach(x => x.setAttribute('aria-pressed', String(x === t))); return; }
   if (d.mic){
