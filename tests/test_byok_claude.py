@@ -98,3 +98,42 @@ def test_changing_the_key_makes_the_next_request_use_the_new_key(page, served_ap
 def test_getSample_returns_null_when_no_key_and_no_sandbox(page, served_app):
     page.goto(served_app)
     assert page.evaluate("async () => await getSample()") is None
+
+def test_byok_wrapper_merges_consecutive_same_role_turns(page, served_app):
+    """Reproduces the review finding: a failed/cancelled exchange leaves two
+    consecutive 'me' (user) messages in a tutor conversation's history, which
+    buildTurns() passes straight through. Anthropic's API requires strict
+    role alternation, so byokSample must sanitize the history itself."""
+    page.goto(served_app)
+    captured = []
+    def handler(route):
+        captured.append(json.loads(route.request.post_data)["messages"])
+        _mock_text_reply(route, '{"reply":"x"}')
+    page.route(ANTHROPIC_URL, handler)
+    _set_byok_key(page, "sk-ant-test")
+    page.evaluate("""async () => {
+        const s = await getSample();
+        await s.json([
+            {role:'user', content:'rules'},
+            {role:'assistant', content:'opening'},
+            {role:'user', content:'first try'},
+            {role:'user', content:'second try'}
+        ], {modelTier:'quick'});
+    }""")
+    sent = captured[0]
+    assert [m["role"] for m in sent] == ["user", "assistant", "user"]
+    assert "first try" in sent[2]["content"] and "second try" in sent[2]["content"]
+
+def test_byok_wrapper_requests_enough_tokens_for_long_translations(page, served_app):
+    """The translator asks for up to 6 sentences with a full per-word
+    breakdown each — 1024 max_tokens (the plan's original value) truncates
+    realistic replies mid-JSON."""
+    page.goto(served_app)
+    captured = []
+    def handler(route):
+        captured.append(json.loads(route.request.post_data)["max_tokens"])
+        _mock_text_reply(route, '{"reply":"x"}')
+    page.route(ANTHROPIC_URL, handler)
+    _set_byok_key(page, "sk-ant-test")
+    page.evaluate("async () => { const s = await getSample(); await s.json('hi', {modelTier:'default'}); }")
+    assert captured[0] >= 4096

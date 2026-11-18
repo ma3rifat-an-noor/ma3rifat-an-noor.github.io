@@ -64,3 +64,18 @@ def test_tutor_chat_without_byok_key_still_shows_no_claude_message(page, served_
     page.click("#tutor-send")
     page.wait_for_selector(".err")
     assert "Claude" in page.inner_text(".err")
+
+def test_claude_mode_banner_clears_once_a_byok_key_is_saved(page, served_app):
+    """Reproduces the review finding: noClaude latches true at boot (no key
+    yet) and was never reset when a key is saved afterwards, leaving a stale
+    'needs Claude' banner above an actually-working chat."""
+    page.goto(served_app)
+    page.click("#open-settings")
+    page.uncheck("#set-spar")  # claude mode, still no key -> banner expected
+    page.click("#close-settings")
+    assert "brauchen Claude" in page.inner_text("#tutor-msgs")
+    page.click("#open-settings")
+    page.fill("#set-byok", "sk-ant-test")
+    page.dispatch_event("#set-byok", "change")
+    page.click("#close-settings")
+    assert "brauchen Claude" not in page.inner_text("#tutor-msgs")

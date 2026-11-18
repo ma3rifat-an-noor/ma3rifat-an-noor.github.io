@@ -3128,14 +3128,20 @@ function toggleMic(btn, input, lang, onDone){
 let samplePromise = null, aiOff = false, noClaude = false;
 function byokSample(key){
   return { json: async (input, opts) => {
-    const messages = typeof input === 'string' ? [{role:'user', content:input}] : input;
+    const raw = typeof input === 'string' ? [{role:'user', content:input}] : input;
+    const messages = [];
+    for (const t of raw){
+      const last = messages[messages.length - 1];
+      if (last && last.role === t.role) last.content += '\n' + t.content;
+      else messages.push({role:t.role, content:t.content});
+    }
     const model = (opts && opts.modelTier === 'default') ? 'claude-sonnet-5' : 'claude-haiku-4-5-20251001';
     let res;
     try {
       res = await fetch('https://api.anthropic.com/v1/messages', {
         method:'POST',
         headers:{'x-api-key':key, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true', 'content-type':'application/json'},
-        body:JSON.stringify({model, max_tokens:1024, messages}),
+        body:JSON.stringify({model, max_tokens:4096, messages}),
         signal: opts && opts.signal
       });
     } catch (e) {
@@ -4411,7 +4417,7 @@ for (const k of ['showDe', 'showTl', 'autoSpeak', 'autoSend', 'precise']){
   $('#set-' + k).addEventListener('change', e => { S.settings[k] = e.target.checked; save(); if (k === 'showDe' || k === 'showTl'){ renderChat('tutor'); renderChat('role'); } });
 }
 $('#set-spar').addEventListener('change', e => setMode(e.target.checked ? 'offline' : 'claude'));
-$('#set-byok').addEventListener('change', e => { S.settings.byokKey = e.target.value.trim(); save(); samplePromise = null; aiOff = false; });
+$('#set-byok').addEventListener('change', e => { S.settings.byokKey = e.target.value.trim(); save(); samplePromise = null; aiOff = false; noClaude = false; renderChat('tutor'); if (CHAT.role.scene) renderChat('role'); });
 $('#set-rate').addEventListener('input', e => { S.settings.rate = Number(e.target.value); applySettingsUI(); });
 $('#set-rate').addEventListener('change', () => { save(); speak('مَرْحَبًا، كَيْفَ حَالُكَ؟'); });
 renderTrSamples();
