@@ -61,16 +61,11 @@ def test_byok_key_field_persists_across_reload(page, served_app):
 
 def test_empty_byok_key_is_default(page, served_app):
     page.goto(served_app)
-    assert page.evaluate("() => S.settings.byokKey") == ""
-
-def test_changing_byok_key_resets_the_cached_sample_source(page, served_app):
-    page.goto(served_app)
-    page.evaluate("() => { samplePromise = Promise.resolve('stale'); }")
     page.click("#open-settings")
-    page.fill("#set-byok", "sk-ant-new")
-    page.dispatch_event("#set-byok", "change")
-    assert page.evaluate("() => samplePromise") is None
+    assert page.input_value("#set-byok") == ""
 ```
+
+**Ruling (recorded during execution, see ledger):** the whole script is wrapped in a top-level IIFE, so no `let`/`const`/`function` inside it is visible to `page.evaluate` as a bare identifier (or via `window.x`) unless explicitly exposed with a `window.x = x;` line — an established pattern already used 10x in this file for exactly this reason (`window.CHAT`, `window.TABLES`, etc.). A third test asserting on `S.settings.byokKey` / `samplePromise` directly was dropped from this task for that reason; the cache-invalidation behavior it was meant to prove is instead tested in Task 2 as an observable effect (a second request after changing the key via the real Settings UI actually uses the new key), where `getSample` gets its own exposure line anyway.
 
 - [ ] **Step 2: Run the test to verify it fails**
 
@@ -113,7 +108,7 @@ Expected: PASS, all 3 tests.
 
 - [ ] **Step 5: Syntax-check the whole file**
 
-Run: `sed -n '628,4402p' arabisch-app/madina-arabisch.html > /tmp/madina-script-check.js && node --check /tmp/madina-script-check.js`
+Run: find the current `<script>`/`</script>` line numbers (`grep -n '<script>\|^</script>' arabisch-app/madina-arabisch.html`), then `sed -n '<open+1>,<close-1>p' arabisch-app/madina-arabisch.html > /tmp/madina-script-check.js && node --check /tmp/madina-script-check.js` (confirmed as lines 630,4407 as of this task).
 Expected: no output (clean).
 
 - [ ] **Step 6: Commit**
@@ -153,11 +148,19 @@ def _mock_text_reply(route, text, status=200):
     route.fulfill(status=status, content_type="application/json",
                   body=json.dumps({"content": [{"type": "text", "text": text}]}))
 
+def _set_byok_key(page, key):
+    """Sets the key through the real Settings UI, not internal state — `S` and
+    `samplePromise` are not visible to page.evaluate (see Task 1's ruling)."""
+    page.click("#open-settings")
+    page.fill("#set-byok", key)
+    page.dispatch_event("#set-byok", "change")
+    page.click("#close-settings")
+
 def test_byok_wrapper_returns_parsed_json_on_success(page, served_app):
     page.goto(served_app)
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(
         route, json.dumps({"reply": "سَلَامٌ", "translation": "Peace", "translit": "salam", "tip": "", "correction": None})))
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; }")
+    _set_byok_key(page, "sk-ant-test")
     result = page.evaluate("""async () => {
         const sample = await getSample();
         return await sample.json([{role:'user', content:'hi'}], {modelTier:'quick'});
@@ -167,7 +170,7 @@ def test_byok_wrapper_returns_parsed_json_on_success(page, served_app):
 def test_byok_wrapper_accepts_a_plain_string_input(page, served_app):
     page.goto(served_app)
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(route, '{"summary":"ok"}'))
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; }")
+    _set_byok_key(page, "sk-ant-test")
     result = page.evaluate("""async () => {
         const sample = await getSample();
         return await sample.json('a single prompt', {modelTier:'default'});
@@ -181,7 +184,7 @@ def test_byok_wrapper_sends_haiku_for_quick_and_sonnet_for_default(page, served_
         seen.append(json.loads(route.request.post_data)["model"])
         _mock_text_reply(route, '{"reply":"x"}')
     page.route(ANTHROPIC_URL, handler)
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; }")
+    _set_byok_key(page, "sk-ant-test")
     page.evaluate("async () => { const s = await getSample(); await s.json('hi', {modelTier:'quick'}); }")
     page.evaluate("async () => { const s = await getSample(); await s.json('hi', {modelTier:'default'}); }")
     assert seen == ["claude-haiku-4-5-20251001", "claude-sonnet-5"]
@@ -189,7 +192,7 @@ def test_byok_wrapper_sends_haiku_for_quick_and_sonnet_for_default(page, served_
 def test_byok_wrapper_rejects_401_as_invalid_key(page, served_app):
     page.goto(served_app)
     page.route(ANTHROPIC_URL, lambda route: route.fulfill(status=401, content_type="application/json", body='{"error":{"message":"bad"}}'))
-    page.evaluate("() => { S.settings.byokKey = 'bad-key'; }")
+    _set_byok_key(page, "bad-key")
     code = page.evaluate("""async () => {
         const sample = await getSample();
         try { await sample.json('hi', {modelTier:'quick'}); return null; }
@@ -200,7 +203,7 @@ def test_byok_wrapper_rejects_401_as_invalid_key(page, served_app):
 def test_byok_wrapper_rejects_non_json_reply_text(page, served_app):
     page.goto(served_app)
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(route, "not json at all"))
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; }")
+    _set_byok_key(page, "sk-ant-test")
     code = page.evaluate("""async () => {
         const sample = await getSample();
         try { await sample.json('hi', {modelTier:'quick'}); return null; }
@@ -211,7 +214,7 @@ def test_byok_wrapper_rejects_non_json_reply_text(page, served_app):
 def test_byok_wrapper_rejects_already_aborted_signal_as_cancelled(page, served_app):
     page.goto(served_app)
     page.route(ANTHROPIC_URL, lambda route: None)  # must never be reached
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; }")
+    _set_byok_key(page, "sk-ant-test")
     code = page.evaluate("""async () => {
         const sample = await getSample();
         const ctl = new AbortController(); ctl.abort();
@@ -220,10 +223,25 @@ def test_byok_wrapper_rejects_already_aborted_signal_as_cancelled(page, served_a
     }""")
     assert code == "cancelled"
 
+def test_changing_the_key_makes_the_next_request_use_the_new_key(page, served_app):
+    page.goto(served_app)
+    seen_keys = []
+    def handler(route):
+        seen_keys.append(route.request.headers.get("x-api-key"))
+        _mock_text_reply(route, '{"reply":"x"}')
+    page.route(ANTHROPIC_URL, handler)
+    _set_byok_key(page, "key-a")
+    page.evaluate("async () => { const s = await getSample(); await s.json('hi', {modelTier:'quick'}); }")
+    _set_byok_key(page, "key-b")
+    page.evaluate("async () => { const s = await getSample(); await s.json('hi', {modelTier:'quick'}); }")
+    assert seen_keys == ["key-a", "key-b"]
+
 def test_getSample_returns_null_when_no_key_and_no_sandbox(page, served_app):
     page.goto(served_app)
     assert page.evaluate("async () => await getSample()") is None
 ```
+
+**Exposure needed:** add `window.getSample = getSample;` immediately after `getSample`'s definition, matching the file's own established convention (`window.CHAT = CHAT;`, `window.TABLES = TABLES;`, etc.) — `getSample`, like everything else in this file, is declared inside the top-level IIFE and invisible to `page.evaluate` otherwise.
 
 - [ ] **Step 2: Run the tests to verify they fail**
 
@@ -232,7 +250,7 @@ Expected: FAIL — `byokSample` doesn't exist, `getSample()` still returns `null
 
 - [ ] **Step 3: Implement**
 
-Replace `getSample()`'s body (`:3127-3131`) so that when `window.claude.use` is unavailable, it checks `S.settings.byokKey.trim()`: if non-empty, resolve to `byokSample(S.settings.byokKey.trim())`; otherwise resolve to `null` as today.
+Replace `getSample()`'s body (`:3127-3131`) so that when `window.claude.use` is unavailable, it checks `S.settings.byokKey.trim()`: if non-empty, resolve to `byokSample(S.settings.byokKey.trim())`; otherwise resolve to `null` as today. Immediately after `function getSample(){...}`, add `window.getSample = getSample;` (same convention as `window.CHAT = CHAT;` elsewhere in this file).
 
 Add `byokSample(key)` near `getSample()`:
 ```js
@@ -272,11 +290,11 @@ case 'byok_invalid_key': return en ? 'Your own Claude key was rejected. Check it
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run --with pytest --with pytest-playwright --with playwright python3 -m pytest tests/test_byok_claude.py -v`
-Expected: PASS, all 7 tests.
+Expected: PASS, all 8 tests.
 
 - [ ] **Step 5: Syntax-check the whole file**
 
-Run: `sed -n '628,4402p' arabisch-app/madina-arabisch.html > /tmp/madina-script-check.js && node --check /tmp/madina-script-check.js`
+Run: `sed -n '630,4407p' arabisch-app/madina-arabisch.html > /tmp/madina-script-check.js && node --check /tmp/madina-script-check.js` (line numbers shift as tasks are added — re-check with `grep -n '<script>\|^</script>'` if unsure)
 Expected: no output (clean).
 
 - [ ] **Step 6: Commit**
@@ -308,11 +326,21 @@ def _mock_text_reply(route, obj):
     route.fulfill(status=200, content_type="application/json",
                   body=json.dumps({"content": [{"type": "text", "text": json.dumps(obj)}]}))
 
+def _enable_claude_mode(page, key=None):
+    """Drives the real Settings UI — S/samplePromise aren't visible to page.evaluate
+    (Task 1's ruling), and this also exercises the actual user-facing path."""
+    page.click("#open-settings")
+    if key is not None:
+        page.fill("#set-byok", key)
+        page.dispatch_event("#set-byok", "change")
+    page.uncheck("#set-spar")  # unchecked Sparmodus == claude mode (setMode wiring)
+    page.click("#close-settings")
+
 def test_tutor_chat_gets_a_reply_through_byok(page, served_app):
     page.goto(served_app)
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; S.settings.mode = 'claude'; }")
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(route, {
         "reply": "كَيْفَ حَالُكَ؟", "translation": "How are you?", "translit": "kayfa haluka?", "tip": "", "correction": None}))
+    _enable_claude_mode(page, key="sk-ant-test")
     page.evaluate("() => { location.hash = 'tutor'; }")
     page.fill("#tutor-input", "اسمي أحمد")
     page.click("#tutor-send")
@@ -321,24 +349,26 @@ def test_tutor_chat_gets_a_reply_through_byok(page, served_app):
 
 def test_roleplay_feedback_renders_through_byok(page, served_app):
     page.goto(served_app)
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; S.settings.mode = 'claude'; }")
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(route, {
         "summary": "Gut gemacht.", "good": ["Klare Aussprache"], "improve": [], "words": []}))
+    _enable_claude_mode(page, key="sk-ant-test")
+    page.evaluate("() => { location.hash = 'rollen'; }")
+    page.locator(".scene").first.click()  # real click, same as startScene() via the delegated handler
     page.evaluate("""() => {
-        startScene(Object.keys(SCENE)[0]);
         CHAT.role.msgs.push({role:'me', text:'اَلسَّلَامُ عَلَيْكُمْ', hidden:false});
         CHAT.role.msgs.push({role:'tutor', ar:'وَعَلَيْكُمُ السَّلَامُ'});
         CHAT.role.msgs.push({role:'me', text:'كَيْفَ حَالُكَ', hidden:false});
+        renderChat('role');
     }""")
-    page.evaluate("() => roleFeedback()")
+    page.click("#role-feedback")
     page.wait_for_function("() => CHAT.role.msgs.some(m => m.role === 'fb')")
     assert page.evaluate("() => CHAT.role.msgs.find(m => m.role === 'fb').data.summary") == "Gut gemacht."
 
 def test_translator_renders_through_byok(page, served_app):
     page.goto(served_app)
-    page.evaluate("() => { S.settings.byokKey = 'sk-ant-test'; S.settings.mode = 'claude'; }")
     page.route(ANTHROPIC_URL, lambda route: _mock_text_reply(route, {
         "sentences": [{"ar": "مَرْحَبًا", "de": "Hallo", "tl": "marhaban", "structure": "", "words": []}], "note": ""}))
+    _enable_claude_mode(page, key="sk-ant-test")
     page.evaluate("() => { location.hash = 'uebersetzer'; }")
     page.fill("#tr-input", "Hallo")
     page.click("#tr-go")
@@ -347,13 +377,15 @@ def test_translator_renders_through_byok(page, served_app):
 
 def test_tutor_chat_without_byok_key_still_shows_no_claude_message(page, served_app):
     page.goto(served_app)
-    page.evaluate("() => { S.settings.mode = 'claude'; }")  # byokKey left empty
+    _enable_claude_mode(page)  # no key — byokKey stays empty
     page.evaluate("() => { location.hash = 'tutor'; }")
     page.fill("#tutor-input", "اسمي أحمد")
     page.click("#tutor-send")
     page.wait_for_selector(".err")
     assert "Claude" in page.inner_text(".err")
 ```
+
+(`CHAT` and `renderChat` are already exposed via existing `window.CHAT = CHAT;` / `window.renderChat = renderChat;` lines in this file — only `getSample`, added in Task 2, was new.)
 
 - [ ] **Step 2: Run the tests**
 
