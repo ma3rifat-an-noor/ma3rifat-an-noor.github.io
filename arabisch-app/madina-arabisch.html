@@ -3126,13 +3126,38 @@ function toggleMic(btn, input, lang, onDone){
 
 /* ---------- Claude ---------- */
 let samplePromise = null, aiOff = false, noClaude = false;
+function byokSample(key){
+  return { json: async (input, opts) => {
+    const messages = typeof input === 'string' ? [{role:'user', content:input}] : input;
+    const model = (opts && opts.modelTier === 'default') ? 'claude-sonnet-5' : 'claude-haiku-4-5-20251001';
+    let res;
+    try {
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{'x-api-key':key, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true', 'content-type':'application/json'},
+        body:JSON.stringify({model, max_tokens:1024, messages}),
+        signal: opts && opts.signal
+      });
+    } catch (e) {
+      if (e && e.name === 'AbortError') throw {code:'cancelled'};
+      throw {code:undefined};
+    }
+    if (res.status === 401 || res.status === 403) throw {code:'byok_invalid_key'};
+    if (!res.ok) throw {code:undefined};
+    const data = await res.json();
+    try { return JSON.parse(data.content[0].text); }
+    catch (e) { throw {code:'invalid_json'}; }
+  }};
+}
 function getSample(){
   if (!samplePromise){
-    samplePromise = (window.claude && typeof window.claude.use === 'function' ? window.claude.use('sample') : Promise.resolve(null)).catch(() => null);
+    if (window.claude && typeof window.claude.use === 'function') samplePromise = window.claude.use('sample').catch(() => null);
+    else { const key = (S.settings.byokKey || '').trim(); samplePromise = Promise.resolve(key ? byokSample(key) : null); }
   }
   return samplePromise;
 }
-const PERMANENT = new Set(['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed']);
+window.getSample = getSample;
+const PERMANENT = new Set(['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed', 'byok_invalid_key']);
 function errText(e){
   const en = S.settings.lang === 'en';
   switch (e && e.code){
@@ -3143,6 +3168,7 @@ function errText(e){
     case 'invalid_json': case 'empty_completion': return en ? 'The answer arrived incomplete. Tap „Retry“.' : 'Die Antwort kam unvollständig an. Tippe auf „Nochmal".';
     case 'refused': return en ? 'The tutor can’t answer that. Please phrase it differently.' : 'Darauf kann der Tutor nicht antworten. Formuliere es bitte anders.';
     case 'prompt_too_large': return en ? 'The conversation got too long. Start a new one with „New“.' : 'Das Gespräch ist zu lang geworden. Starte mit „Neu" ein neues Gespräch.';
+    case 'byok_invalid_key': return en ? 'Your own Claude key was rejected. Check it in Settings.' : 'Dein eigener Claude-Schlüssel wurde abgelehnt. Prüfe ihn in den Einstellungen.';
     default: return en ? 'The connection was interrupted. Tap „Retry“.' : 'Die Verbindung wurde unterbrochen. Tippe auf „Nochmal".';
   }
 }
