@@ -244,6 +244,8 @@ p{margin:0}
 .t-key{font-family:var(--f-ar);font-size:1rem;line-height:1;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 9px;color:var(--ink)}
 .t-key:hover{border-color:var(--gold);background:var(--gold-soft)}
 .t-key-back{font-family:inherit;color:var(--muted)}
+.t-key-shift{font-family:inherit;color:var(--muted)}
+.t-key-shift[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
 .t-row.done .t-form{font-family:var(--f-ar);font-size:1.2rem;direction:rtl;color:var(--muted)}
 .t-row.done.ok .t-form{color:var(--green)}
 .t-row.done.bad .t-form{color:var(--red)}
@@ -3297,15 +3299,28 @@ function diffMark(wrong, right){
 //   (ئ ء ؤ لاـ ى ة), die nicht im bisherigen Alphabet-Satz enthalten sind und hier bewusst
 //   nicht ergänzt wurden (dieselben 28 Buchstaben wie vorher, nur umsortiert):
 //   untere Reihe (V,./):     ر و ز ظ
-const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د', 'ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط', 'ر', 'و', 'ز', 'ظ'];
+// Ridouane (2026-11-19): ة (Ta Marbuta) fehlte komplett, obwohl sie beim Schreiben ständig gebraucht wird
+// (z. B. jedes feminine Nomen) - bewusste Ausnahme von der 28er-Regel oben, ans Ende angehängt statt die
+// physische Tastaturreihenfolge umzubauen.
+const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د', 'ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط', 'ر', 'و', 'ز', 'ظ', 'ة'];
+// Tashkil (Vokalzeichen über/unter dem Buchstaben) - über die Umschalt-Taste in arabicKeysHTML() erreichbar,
+// ersetzt dort die Buchstabentasten statt sie zu ergänzen. norm() ignoriert sie weiterhin beim Werten
+// (siehe TASHKEEL dort), sie sind rein fürs correkte Mitschreiben der Vokalisierung.
+const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ'];
 // Rendert die Eingabehilfe (Tastenreihe) für das aktive Tabellenzelle-Eingabefeld targetInputId:
-// eine Taste je Buchstabe plus eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyBack unten,
-// die auf data-key-insert/data-key-target bzw. data-key-back reagieren.
-function arabicKeysHTML(targetInputId){
+// eine Taste je Buchstabe/Tashkil-Zeichen (je nach tashkil-Flag), eine Umschalt-Taste zwischen beiden
+// Sätzen und eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyShift/d.keyBack unten, die auf
+// data-key-insert/data-key-target bzw. data-key-shift/data-key-back reagieren. data-tashkil am Wurzel-Div
+// hält den aktuellen Zustand, damit der Umschalt-Click ihn lesen und umkehren kann, ohne renderChat()
+// aufzurufen (das würde über das volle innerHTML-Replace in renderChat() eine bereits angefangene Eingabe
+// im Nachbar-<input> löschen, siehe tests/test_table_input_helper.py::test_shift_toggle_preserves...).
+function arabicKeysHTML(targetInputId, tashkil){
   const en = S.settings.lang === 'en';
-  const letterKeys = ARABIC_LETTERS.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
+  const set = tashkil ? TASHKIL : ARABIC_LETTERS;
+  const letterKeys = set.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
+  const shiftKey = '<button class="t-key t-key-shift" type="button" data-key-shift="' + targetInputId + '" aria-pressed="' + (tashkil ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle diacritics' : 'Vokalzeichen umschalten') + '">' + (tashkil ? 'ابت' : 'ـَـِـُ') + '</button>';
   const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
-  return '<div class="t-keys" role="group" aria-label="' + (en ? 'Arabic keyboard' : 'Arabische Tastatur') + '">' + letterKeys + backKey + '</div>';
+  return '<div class="t-keys" role="group" data-tashkil="' + (tashkil ? '1' : '0') + '" aria-label="' + (en ? 'Arabic keyboard' : 'Arabische Tastatur') + '">' + letterKeys + shiftKey + backKey + '</div>';
 }
 function msgHTML(m, i, kind){
   const st = S.settings, en = st.lang === 'en';
@@ -3366,11 +3381,11 @@ function msgHTML(m, i, kind){
         cell = '<input type="text" dir="rtl" lang="ar" inputmode="none" id="' + inputId + '">'
           + '<button class="btn small" type="button" data-table-submit data-qi="' + i + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
           + (m.attempt === 1 ? '<span class="t-hint">' + (en ? 'Not quite — try again.' : 'Nicht ganz — versuch\'s noch mal.') + '</span>' : '')
-          + arabicKeysHTML(inputId);
+          + arabicKeysHTML(inputId, false);
       } else {
         cell = '<span class="t-form empty"></span>';
       }
-      const label = (idx === activeIdx && m.phase === 2) ? '<p class="t-phase2-label">' + (en ? 'Review, random order' : 'Wiederholung, zufällige Reihenfolge') + '</p>' : '';
+      const label = (idx === activeIdx && m.phase === 2) ? '<p class="t-phase2-label">' + (en ? 'Review, same order' : 'Wiederholung, gleiche Reihenfolge') + '</p>' : '';
       return label + '<div class="t-row' + cls + '"><span class="t-pro" lang="ar" dir="rtl">' + esc(step.pronoun) + '</span><span class="t-cell">' + cell + '</span></div>';
     }).join('');
     const doneTag = m.done ? '<p class="t-done"><span class="ok-tag">' + icon('i-check', 'ico sm') + (en ? 'Table completed' : 'Tabelle abgeschlossen') + '</span></p>' : '';
@@ -3432,7 +3447,7 @@ function msgHTML(m, i, kind){
             + '<input type="text" dir="rtl" lang="ar" inputmode="none" id="' + inputId + '">'
             + '<button class="btn small" type="button" data-deriv-submit data-mi="' + i + '" data-ri="' + rowIdx + '" data-ci="' + colIdx + '" data-kind="' + kind + '">' + icon('i-check', 'ico sm') + '</button>'
             + (m.attempt === 1 ? '<span class="dt-hint">' + (en ? 'Not quite — try again.' : 'Nicht ganz — versuch\'s noch mal.') + '</span>' : '')
-            + arabicKeysHTML(inputId)
+            + arabicKeysHTML(inputId, false)
             + '</div>';
           return '<span class="dt-cell active" lang="ar" dir="rtl"><span class="dt-active-marker"></span></span>';
         }
@@ -3699,7 +3714,10 @@ function submitTableCell(kind, mi, rawInput){
     if (m.pos === m.order.length){
       if (m.phase === 1){
         m.phase = 2;
-        m.order = shuffle(m.steps.map((_, k) => k));
+        // Ridouane (2026-11-19): bewusst NICHT mehr shuffle() wie bei Typ 3 (submitDerivTableCell unten) -
+        // die Personen-Reihenfolge soll gedrillt werden (klassisches Paradigma auswendig lernen), Phase 2
+        // wiederholt deshalb dieselbe klassische Reihenfolge aus buildTableSteps() statt sie zu mischen.
+        m.order = m.steps.map((_, k) => k);
         m.pos = 0;
         m.answers = {}; // Phase 2 ist eine eigene Durchlauf-Zählung; alte Phase-1-Antworten dürfen
                          // Zellen in Phase 2 nicht fälschlich als "schon beantwortet" rendern.
@@ -4337,6 +4355,15 @@ document.addEventListener('click', e => {
   if (d.derivContinue !== undefined){ continueDerivTable(d.kind, Number(d.mi)); return; }
   if (d.keyInsert !== undefined){ const el = $('#' + d.keyTarget); el.value += d.keyInsert; el.focus(); return; }
   if (d.keyBack !== undefined){ const el = $('#' + d.keyBack); el.value = el.value.slice(0, -1); el.focus(); return; }
+  // Ersetzt nur die eigene .t-keys-Wurzel (per outerHTML), statt renderChat() aufzurufen - sonst würde das
+  // volle innerHTML-Replace in renderChat() eine bereits angefangene Eingabe im Nachbar-<input> löschen.
+  if (d.keyShift !== undefined){
+    const wrap = t.closest('.t-keys');
+    const tashkil = wrap.dataset.tashkil !== '1';
+    wrap.outerHTML = arabicKeysHTML(d.keyShift, tashkil);
+    $('#' + d.keyShift).focus();
+    return;
+  }
   if (d.mode){ setMode(d.mode); return; }
   if (d.trClaude !== undefined){ translate($('#tr-input').value, true); return; }
   if (d.insert){ const inp = $(d.insert); insertInto(inp, d.text); if (d.say && S.settings.autoSpeak) speak(d.text); return; }

@@ -27,3 +27,34 @@ def test_submit_via_helper_typed_value_is_graded(page, served_app):
         page.click(f'[data-key-insert="{ch}"][data-key-target="t-input-0"]')
     page.click('[data-table-submit][data-qi="0"]')
     assert page.evaluate("() => CHAT.tutor.msgs[0].pos") == 1
+
+# Ridouane (2026-11-19): Ta Marbuta fehlte auf der Tastatur - fehlte bisher bewusst, weil nicht Teil des
+# bisherigen 28-Buchstaben-Satzes, soll aber jetzt dazu.
+def test_virtual_keys_include_ta_marbuta(page, served_app):
+    page.goto(served_app)
+    page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    page.click('[data-key-insert="ة"][data-key-target="t-input-0"]')
+    assert page.input_value("#t-input-0") == "ة"
+
+# Ridouane (2026-11-19): die Tashkil-Zeichen (Vokalzeichen über/unter den Buchstaben) sollen per
+# Umschalt-Taste erreichbar sein, ohne die Buchstaben-Tastatur zu ersetzen.
+def test_shift_key_toggles_to_diacritics_and_back(page, served_app):
+    page.goto(served_app)
+    page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    assert page.locator('[data-key-insert="َ"]').count() == 0
+    page.click('[data-key-shift]')
+    assert page.locator('[data-key-insert="َ"]').count() == 1
+    page.click('[data-key-insert="َ"][data-key-target="t-input-0"]')
+    assert page.input_value("#t-input-0") == "َ"
+    page.click('[data-key-shift]')
+    assert page.locator('[data-key-insert="ذ"]').count() == 1
+    assert page.locator('[data-key-insert="َ"]').count() == 0
+
+# Umschalten darf eine bereits angefangene Eingabe nicht löschen - der Toggle darf also nicht über
+# renderChat() den ganzen Chat neu zeichnen, sondern nur die Tastatur selbst ersetzen.
+def test_shift_toggle_preserves_in_progress_input(page, served_app):
+    page.goto(served_app)
+    page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    page.fill("#t-input-0", "ذه")
+    page.click('[data-key-shift]')
+    assert page.input_value("#t-input-0") == "ذه"

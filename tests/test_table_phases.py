@@ -20,6 +20,16 @@ def test_phase2_starts_with_same_cell_set(page, served_app):
     order = page.evaluate("() => CHAT.tutor.msgs[0].order")
     assert sorted(order) == list(range(10))
 
+# Ridouane (2026-11-19): die Personen-Reihenfolge soll in Phase 2 drillbar bleiben - also exakt dieselbe
+# klassische Reihenfolge wie Phase 1 (3. Pers. m -> f -> Anrede -> 1. Pers.), nicht zufällig gemischt.
+def test_phase2_keeps_same_classical_order_as_phase1(page, served_app):
+    page.goto(served_app)
+    page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    _answer_all_phase1(page)
+    assert page.evaluate("() => CHAT.tutor.msgs[0].phase") == 2
+    order = page.evaluate("() => CHAT.tutor.msgs[0].order")
+    assert order == list(range(10))
+
 def test_table_marks_done_after_phase2(page, served_app):
     page.goto(served_app)
     page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
