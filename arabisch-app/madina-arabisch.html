@@ -1387,8 +1387,11 @@ function buildTableSteps(cells){
 
 // Konjugationstabellen für Typ-2-Übungen. TABLES[topicId] = Array<VerbTabelle>.
 // VerbTabelle: {verb (Anzeige-Label), tense:'madi'|'mudari'|'amr' (nur Anzeige, keine Logik hängt daran),
-// de (Tabellen-Überschrift, Deutsch), cells:[{group, gender, num, pronoun, form}, ...] (unsortiert erlaubt,
-// buildTableSteps() sortiert)}.
+// de (Tabellen-Überschrift, Deutsch), cells:[{group, gender, num, pronoun, form, given?}, ...] (unsortiert
+// erlaubt, buildTableSteps() sortiert). given:true (optional, siehe b2-l30) zeigt die Zelle sofort
+// unbeantwortbar an (schon in einer früheren Lektion gelernte Form, hier nur zum Einordnen der neuen
+// Zellen im vollen klassischen Paradigma) - makeTable() nimmt solche Zellen aus m.order heraus, sodass
+// nur die restlichen Zellen je abgefragt/gezählt werden.
 const TABLES = {
 // form wird MIT Taschkīl gepflegt: ohne die Vokalzeichen sehen vier der zehn Formen (هي/أنتَ/أنتِ/أنا)
 // identisch aus (ذهبت), obwohl sie grammatisch verschieden sind - die fertige Tabelle soll das Paradigma
@@ -1604,10 +1607,25 @@ const TABLES = {
  ]}
 ],
 'b2-l30':[
+ // Ridouane (2026-11-19): isoliert sahen die zwei "هما"-Zeilen (m./f.) wie eine Doppelabfrage derselben
+ // Sache aus - die 10 Zellen hier sind wörtlich dieselben Formen wie TABLES['b2-l13'] (given:true, werden
+ // nur angezeigt, nicht erneut abgefragt), damit die 3 echten Dual-Zellen an ihrer klassischen Stelle im
+ // vollen Paradigma erscheinen und sichtbar wird, dass هما für beide Geschlechter dasselbe Pronomen ist,
+ // nur die Verbform sich unterscheidet.
  {verb:'ذهب', tense:'mudari', de:'gehen — Präsens (Dual)', cells:[
+   {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'يَذْهَبُ', given:true},
    {group:'3', gender:'m', num:'du', pronoun:'هما', form:'يَذْهَبَانِ'},
+   {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'يَذْهَبُونَ', given:true},
+   {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'تَذْهَبُ', given:true},
    {group:'3', gender:'f', num:'du', pronoun:'هما', form:'تَذْهَبَانِ'},
-   {group:'2', gender:null, num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ'}
+   {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'يَذْهَبْنَ', given:true},
+   {group:'2', gender:'m', num:'sg', pronoun:'أنتَ', form:'تَذْهَبُ', given:true},
+   {group:'2', gender:null, num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ'},
+   {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'تَذْهَبُونَ', given:true},
+   {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'تَذْهَبِينَ', given:true},
+   {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'تَذْهَبْنَ', given:true},
+   {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'أَذْهَبُ', given:true},
+   {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'نَذْهَبُ', given:true}
  ]}
 ]
 };
@@ -1625,13 +1643,18 @@ function makeTable(topicId, verbIndex){
   // Blase, die weder beantwortbar noch jemals done ist - und die damit (siehe ensureTutorTable()) das
   // Thema dauerhaft blockiert. Wie bei "gar keine cells" also null zurückgeben: Lektion überspringen.
   if (!steps.length) return null;
+  // given-Zellen (siehe TABLES-Schema-Kommentar oben, z. B. b2-l30) stehen schon fest und werden nie
+  // abgefragt - aus m.order ausgenommen, sonst dieselbe tote-Blase-Gefahr wie beim Steps-Check oben, nur
+  // falls eine Lektion ausschließlich given-Zellen hätte.
+  const order = steps.map((_, k) => k).filter(k => !steps[k].given);
+  if (!order.length) return null;
   return {
     role:'table',
     topicId, verbIndex,
     verb:entry.verb, tense:entry.tense, de:entry.de,
     steps,
     phase:1,
-    order:steps.map((_, k) => k),
+    order,
     pos:0,
     attempt:0,
     answers:{},
@@ -3373,7 +3396,10 @@ function msgHTML(m, i, kind){
     const rows = m.steps.map((step, idx) => {
       const ans = m.answers[idx];
       let cls = '', cell;
-      if (ans){
+      if (step.given){
+        cls = ' done given';
+        cell = '<span class="t-form" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
+      } else if (ans){
         cls = ' done' + (ans.correct ? ' ok' : ' bad');
         cell = '<span class="t-form" lang="ar" dir="rtl">' + esc(step.form) + '</span>';
       } else if (idx === activeIdx){
@@ -3717,7 +3743,10 @@ function submitTableCell(kind, mi, rawInput){
         // Ridouane (2026-11-19): bewusst NICHT mehr shuffle() wie bei Typ 3 (submitDerivTableCell unten) -
         // die Personen-Reihenfolge soll gedrillt werden (klassisches Paradigma auswendig lernen), Phase 2
         // wiederholt deshalb dieselbe klassische Reihenfolge aus buildTableSteps() statt sie zu mischen.
-        m.order = m.steps.map((_, k) => k);
+        // given-Zellen (siehe makeTable()) bleiben auch hier ausgenommen - sonst bliebe m.pos auf einer
+        // Zelle stehen, die wegen step.given nie aktiv/eingebbar wird (b2-l30 wäre dann in Phase 2 nie
+        // fertig).
+        m.order = m.steps.map((_, k) => k).filter(k => !m.steps[k].given);
         m.pos = 0;
         m.answers = {}; // Phase 2 ist eine eigene Durchlauf-Zählung; alte Phase-1-Antworten dürfen
                          // Zellen in Phase 2 nicht fälschlich als "schon beantwortet" rendern.
