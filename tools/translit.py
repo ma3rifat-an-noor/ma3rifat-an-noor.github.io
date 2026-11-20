@@ -186,6 +186,8 @@ def core_translit(s, initial=True):
             elif j < n and s[j] == SUKUN: vowel=''; j+=1
             if not dbl and j < n and s[j] == SHADDA:
                 dbl = True; j += 1
+            if vowel == 'an' and j < n and s[j] == ALEF:
+                j += 1
             if dbl:
                 out.append(cons_latin); out.append(cons_latin); out.append(vowel)
             elif vowel:
