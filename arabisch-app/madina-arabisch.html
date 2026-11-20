@@ -1364,17 +1364,20 @@ const TR_EXAMPLE = {sentences:[{ar:'ذَهَبَ الطَّالِبُ إِلَى
   ]}]};
 
 // Feste Reihenfolge der Personen/Zahlen-Buckets für Typ-2-Konjugationstabellen (volle Tabelle statt Einzelsatz):
-// 3. Pers. m (Sg/Du/Pl) -> 3. Pers. f (Sg/Du/Pl) -> 2. Pers. m Sg -> 2. Pers. Dual (für m+f gemeinsam, nur
-// einmal gefragt) -> 2. Pers. m Pl -> 2. Pers. f Sg -> 2. Pers. f Pl -> 1. Pers. Sg -> 1. Pers. Pl
-// (1. Person hat keinen Dual). Nimmt ein Array von Zell-Objekten (beliebige Eingabe-Reihenfolge, Schema
-// siehe TABLES unten) und gibt sie in dieser festen Reihenfolge zurück; Zellen ohne passende Eingabe werden
-// ausgelassen (keine Lücken, keine Platzhalter).
+// 3. Pers. m (Sg/Du/Pl) -> 3. Pers. f (Sg/Du/Pl) -> 2. Pers. m (Sg/Du/Pl) -> 2. Pers. f (Sg/Du/Pl) ->
+// 1. Pers. Sg -> 1. Pers. Pl (1. Person hat keinen Dual). Nimmt ein Array von Zell-Objekten (beliebige
+// Eingabe-Reihenfolge, Schema siehe TABLES unten) und gibt sie in dieser festen Reihenfolge zurück; Zellen
+// ohne passende Eingabe werden ausgelassen (keine Lücken, keine Platzhalter).
+// Ridouane (2026-11-20): die Anrede-Dualform (أنتما) ist für m./f. identisch, bekommt aber trotzdem einen
+// EIGENEN Platz je Geschlecht (2,m,du UND 2,f,du statt eines einzigen gemeinsamen Platzes) - Symmetrie zur
+// 3. Person, die ja ebenfalls je eine eigene m./f.-Dualzeile hat, auch wenn bei "2" beide Zellen am Ende
+// dieselbe Form zeigen.
 function buildTableSteps(cells){
   const order = [
     ['3','m','sg'], ['3','m','du'], ['3','m','pl'],
     ['3','f','sg'], ['3','f','du'], ['3','f','pl'],
-    ['2','m','sg'], ['2',null,'du'], ['2','m','pl'],
-    ['2','f','sg'], ['2','f','pl'],
+    ['2','m','sg'], ['2','m','du'], ['2','m','pl'],
+    ['2','f','sg'], ['2','f','du'], ['2','f','pl'],
     ['1',null,'sg'], ['1',null,'pl']
   ];
   const steps = [];
@@ -1399,28 +1402,45 @@ const TABLES = {
 // vergleicht über norm(), und norm() entfernt Taschkīl auf beiden Seiten (siehe TASHKEEL dort), die
 // Eingabe bleibt also weiterhin ohne Vokalzeichen möglich.
 'b2-l08':[
+ // Ridouane (2026-11-20): Dual-Formen hier nur zur ANSICHT ergänzt (given:true), nicht abgefragt - das
+ // Original-Lehrbuch liefert für den Vergangenheits-Dual keinen gedruckten Lösungsschlüssel (nur
+ // Lückentext ohne Antworten, siehe TABLES['b2-l30']s gram-Text), die App drillt deshalb grundsätzlich nur
+ // Formen mit echtem Buch-Beleg. Die drei Formen selbst sind reguläre، lehrbuchmäßige
+ // Dual-Konjugation eines gesunden Verbs (3.m: Alif anhängen; 3.f: السكون→فتحة + Alif; 2. gemeinsam:
+ // ـتُمَا) - keine Ausnahme/Unregelmäßigkeit, von Ridouane bestätigt.
  {verb:'ذهب', tense:'madi', de:'gehen — Vergangenheit', cells:[
    {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'ذَهَبَ'},
+   {group:'3', gender:'m', num:'du', pronoun:'هما', form:'ذَهَبَا', given:true},
    {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'ذَهَبُوا'},
    {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'ذَهَبَتْ'},
+   {group:'3', gender:'f', num:'du', pronoun:'هما', form:'ذَهَبَتَا', given:true},
    {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'ذَهَبْنَ'},
    {group:'2', gender:'m', num:'sg', pronoun:'أنتَ', form:'ذَهَبْتَ'},
+   {group:'2', gender:'m', num:'du', pronoun:'أنتما', form:'ذَهَبْتُمَا', given:true},
    {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'ذَهَبْتُمْ'},
    {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'ذَهَبْتِ'},
+   {group:'2', gender:'f', num:'du', pronoun:'أنتما', form:'ذَهَبْتُمَا', given:true},
    {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'ذَهَبْتُنَّ'},
    {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'ذَهَبْتُ'},
    {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'ذَهَبْنَا'}
  ]}
 ],
 'b2-l13':[
+ // Ridouane (2026-11-20): Dual-Formen hier nur zur ANSICHT ergänzt (given:true) - derselbe Wortlaut wie
+ // TABLES['b2-l30'], wo sie tatsächlich abgefragt werden, weil der Dual als Grammatik-Thema erst dort
+ // eingeführt wird. Hier schon sichtbar machen, wo sie im vollen Paradigma sitzen.
  {verb:'ذهب', tense:'mudari', de:'gehen — Präsens', cells:[
    {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'يَذْهَبُ'},
+   {group:'3', gender:'m', num:'du', pronoun:'هما', form:'يَذْهَبَانِ', given:true},
    {group:'3', gender:'m', num:'pl', pronoun:'هم', form:'يَذْهَبُونَ'},
    {group:'3', gender:'f', num:'sg', pronoun:'هي', form:'تَذْهَبُ'},
+   {group:'3', gender:'f', num:'du', pronoun:'هما', form:'تَذْهَبَانِ', given:true},
    {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'يَذْهَبْنَ'},
    {group:'2', gender:'m', num:'sg', pronoun:'أنتَ', form:'تَذْهَبُ'},
+   {group:'2', gender:'m', num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ', given:true},
    {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'تَذْهَبُونَ'},
    {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'تَذْهَبِينَ'},
+   {group:'2', gender:'f', num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ', given:true},
    {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'تَذْهَبْنَ'},
    {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'أَذْهَبُ'},
    {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'نَذْهَبُ'}
@@ -1607,11 +1627,13 @@ const TABLES = {
  ]}
 ],
 'b2-l30':[
- // Ridouane (2026-11-19): isoliert sahen die zwei "هما"-Zeilen (m./f.) wie eine Doppelabfrage derselben
- // Sache aus - die 10 Zellen hier sind wörtlich dieselben Formen wie TABLES['b2-l13'] (given:true, werden
- // nur angezeigt, nicht erneut abgefragt), damit die 3 echten Dual-Zellen an ihrer klassischen Stelle im
- // vollen Paradigma erscheinen und sichtbar wird, dass هما für beide Geschlechter dasselbe Pronomen ist,
- // nur die Verbform sich unterscheidet.
+ // Ridouane (2026-11-19): isoliert sahen die "هما"-Zeilen (m./f.) wie eine Doppelabfrage derselben Sache
+ // aus - die 10 given:true-Zellen hier sind wörtlich dieselben Formen wie TABLES['b2-l13'], werden nur
+ // angezeigt, nicht erneut abgefragt, damit die Dual-Zellen an ihrer klassischen Stelle im vollen
+ // Paradigma erscheinen und sichtbar wird, dass هما für beide Geschlechter dasselbe Pronomen ist, nur die
+ // Verbform sich unterscheidet. Ridouane (2026-11-20): die Anrede-Dualform (أنتما) bekommt jetzt zusätzlich
+ // eine eigene Zelle im weiblichen Block (identische Form wie die männliche, aber eigene Zeile) - Symmetrie
+ // zur 3. Person.
  {verb:'ذهب', tense:'mudari', de:'gehen — Präsens (Dual)', cells:[
    {group:'3', gender:'m', num:'sg', pronoun:'هو', form:'يَذْهَبُ', given:true},
    {group:'3', gender:'m', num:'du', pronoun:'هما', form:'يَذْهَبَانِ'},
@@ -1620,9 +1642,10 @@ const TABLES = {
    {group:'3', gender:'f', num:'du', pronoun:'هما', form:'تَذْهَبَانِ'},
    {group:'3', gender:'f', num:'pl', pronoun:'هن', form:'يَذْهَبْنَ', given:true},
    {group:'2', gender:'m', num:'sg', pronoun:'أنتَ', form:'تَذْهَبُ', given:true},
-   {group:'2', gender:null, num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ'},
+   {group:'2', gender:'m', num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ'},
    {group:'2', gender:'m', num:'pl', pronoun:'أنتم', form:'تَذْهَبُونَ', given:true},
    {group:'2', gender:'f', num:'sg', pronoun:'أنتِ', form:'تَذْهَبِينَ', given:true},
+   {group:'2', gender:'f', num:'du', pronoun:'أنتما', form:'تَذْهَبَانِ'},
    {group:'2', gender:'f', num:'pl', pronoun:'أنتن', form:'تَذْهَبْنَ', given:true},
    {group:'1', gender:null, num:'sg', pronoun:'أنا', form:'أَذْهَبُ', given:true},
    {group:'1', gender:null, num:'pl', pronoun:'نحن', form:'نَذْهَبُ', given:true}

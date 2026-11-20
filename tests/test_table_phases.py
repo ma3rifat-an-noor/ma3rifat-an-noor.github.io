@@ -14,21 +14,26 @@ def _answer_all_phase1(page):
 def test_phase2_starts_with_same_cell_set(page, served_app):
     page.goto(served_app)
     page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    # Erwartete Zell-Indizes dynamisch ermitteln statt range(10) hart zu kodieren: b2-l08 zeigt seit
+    # 2026-11-20 zusätzlich 4 given-Zellen (Dual-Formen nur zur Ansicht), die NIE abgefragt werden und
+    # darum die Indizes der 10 echten Phase-1-Zellen in m.steps auseinanderreißen (nicht mehr 0..9 lückenlos).
+    expected = page.evaluate("() => CHAT.tutor.msgs[0].steps.map((s, i) => i).filter(i => !CHAT.tutor.msgs[0].steps[i].given)")
     _answer_all_phase1(page)
     assert page.evaluate("() => CHAT.tutor.msgs[0].phase") == 2
     assert page.evaluate("() => CHAT.tutor.msgs[0].pos") == 0
     order = page.evaluate("() => CHAT.tutor.msgs[0].order")
-    assert sorted(order) == list(range(10))
+    assert sorted(order) == expected
 
 # Ridouane (2026-11-19): die Personen-Reihenfolge soll in Phase 2 drillbar bleiben - also exakt dieselbe
 # klassische Reihenfolge wie Phase 1 (3. Pers. m -> f -> Anrede -> 1. Pers.), nicht zufällig gemischt.
 def test_phase2_keeps_same_classical_order_as_phase1(page, served_app):
     page.goto(served_app)
     page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    expected = page.evaluate("() => CHAT.tutor.msgs[0].order")
     _answer_all_phase1(page)
     assert page.evaluate("() => CHAT.tutor.msgs[0].phase") == 2
     order = page.evaluate("() => CHAT.tutor.msgs[0].order")
-    assert order == list(range(10))
+    assert order == expected
 
 def test_table_marks_done_after_phase2(page, served_app):
     page.goto(served_app)
