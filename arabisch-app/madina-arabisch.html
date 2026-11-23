@@ -3092,17 +3092,22 @@ async function initRemote(){
 }
 
 /* ---------- Lernkartei (Leitner) ---------- */
-const DAY = 864e5; const GAP = [0, 0, 1, 3, 7, 21];
+const DAY = 864e5; const EASE_START = 2.5, EASE_MIN = 1.3, EASE_MAX = 3.0, IVL_CAP = 180;
 function dueIds(now = Date.now()){ return Object.keys(S.srs).filter(id => CARDS[id] && S.srs[id].d <= now); }
 function mistakeIds(){ return S.mistakes.filter(id => CARDS[id]); }
 function knownCount(ids){ return ids.filter(id => S.srs[id] && S.srs[id].b >= 2).length; }
-function grade(id, ok){
-  const now = Date.now(); const c = {b:0, d:0, w:0, r:0, s:0, ...(S.srs[id] || {})};
-  if (ok){
-    c.b = c.b ? Math.min(5, c.b + 1) : 2; c.r++; c.s++; c.d = now + GAP[c.b] * DAY;
+function grade(id, g){
+  const now = Date.now(); const c = {b:0, d:0, w:0, r:0, s:0, ivl:0, ease:EASE_START, ...(S.srs[id] || {})};
+  if (g > 0){
+    const delta = g === 2 ? 0.15 : -0.15;
+    c.ease = Math.min(EASE_MAX, Math.max(EASE_MIN, Math.round((c.ease + delta) * 100) / 100));
+    if (c.ivl > 0) c.ivl = g === 2 ? Math.min(IVL_CAP, Math.round(c.ivl * c.ease)) : Math.min(IVL_CAP, Math.max(1, Math.round(c.ivl * 1.2)));
+    else c.ivl = g === 2 ? 4 : 1;
+    c.b = c.b ? Math.min(5, c.b + 1) : 2; c.r++; c.s++; c.d = now + c.ivl * DAY;
     if (c.s >= 2) S.mistakes = S.mistakes.filter(x => x !== id);
   } else {
-    c.b = 1; c.w++; c.s = 0; c.d = now;
+    c.ease = Math.min(EASE_MAX, Math.max(EASE_MIN, Math.round((c.ease - 0.2) * 100) / 100));
+    c.ivl = 0; c.b = 1; c.w++; c.s = 0; c.d = now;
     if (!S.mistakes.includes(id)) S.mistakes.push(id);
   }
   S.srs[id] = c; save();
@@ -4162,7 +4167,7 @@ function renderSession(){
     + '<div class="fc-face fc-front"><span class="fc-tag' + (isWr ? ' wr' : '') + '">' + (isWr ? (en ? 'Mistake pile' : 'Fehler-Stapel') : (CARDS[c.id].topic === 'custom' ? (en ? 'My words' : 'Meine Wörter') : (TOPIC[c.topic] ? TOPIC[c.topic].de : ''))) + '</span>' + cardFace(c, 'front') + '</div>'
     + '<div class="fc-face fc-back">' + cardFace(c, 'back') + '</div></div></div>'
     + '<div class="fc-actions">' + (s.flipped
-        ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + (en ? 'Knew it' : 'Gewusst') + '</button>'
+        ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn gold" type="button" data-grade="1">' + (en ? 'Hard' : 'Schwer gewusst') + '</button><button class="btn good" type="button" data-grade="2">' + icon('i-check', 'ico sm') + (en ? 'Easy' : 'Leicht gewusst') + '</button>'
         : '<button class="btn primary wide" type="button" data-flip>' + (en ? 'Reveal' : 'Aufdecken') + '</button>') + '</div>'
     + '<p class="fc-hint">' + (en ? 'Tap the card to flip it. Wrong cards come back again soon.' : 'Tippe auf die Karte zum Umdrehen. Falsche Karten kommen gleich noch einmal.') + '</p>';
 }
@@ -4173,16 +4178,16 @@ function flipCard(){
   const fc = $('#fc'); if (fc) fc.classList.toggle('flipped', session.flipped);
   const acts = $('.fc-actions');
   if (acts) acts.innerHTML = session.flipped
-    ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn good" type="button" data-grade="1">' + icon('i-check', 'ico sm') + (en ? 'Knew it' : 'Gewusst') + '</button>'
+    ? '<button class="btn bad" type="button" data-grade="0">' + icon('i-x', 'ico sm') + (en ? 'Didn’t know it' : 'Nicht gewusst') + '</button><button class="btn gold" type="button" data-grade="1">' + (en ? 'Hard' : 'Schwer gewusst') + '</button><button class="btn good" type="button" data-grade="2">' + icon('i-check', 'ico sm') + (en ? 'Easy' : 'Leicht gewusst') + '</button>'
     : '<button class="btn primary wide" type="button" data-flip>' + (en ? 'Reveal' : 'Aufdecken') + '</button>';
   if (session.flipped && S.settings.dir === 'de') speak(CARDS[session.queue[0]].ar);
 }
-function answerCard(ok){
+function answerCard(g){
   const s = session; if (!s || !s.queue.length || !s.flipped) return;
   const id = s.queue[0];
-  grade(id, ok);
+  grade(id, g);
   s.queue.shift();
-  if (ok){ s.done++; if (!s.wrong.has(id)) s.firstOk++; }
+  if (g > 0){ s.done++; if (!s.wrong.has(id)) s.firstOk++; }
   else { s.wrong.add(id); s.queue.splice(Math.min(3, s.queue.length), 0, id); }
   s.flipped = false; renderSession();
 }
@@ -4444,7 +4449,7 @@ document.addEventListener('click', e => {
   if (d.session){ startSession(d.session); return; }
   if (d.decks !== undefined){ session = null; renderDecks(); $('#v-karten').scrollTop = 0; return; }
   if (d.flip !== undefined){ flipCard(); return; }
-  if (d.grade !== undefined){ answerCard(d.grade === '1'); return; }
+  if (d.grade !== undefined){ answerCard(Number(d.grade)); return; }
   if (d.dir){ S.settings.dir = d.dir; save(); renderDecks(); return; }
   if (d.scene){ startScene(d.scene); rolePlaying = true; return; }
   if (d.resume !== undefined){ rolePlaying = true; showRole(true); return; }
