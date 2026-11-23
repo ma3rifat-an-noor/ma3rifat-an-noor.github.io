@@ -14,6 +14,11 @@
 # (renderStart() -> Math.min(10, words.length), siehe heutiger Testfehler weiter oben im
 # Vokabel-Abgleich). Alle vier Testfaelle sind deshalb bewusst so gewaehlt, dass das JEWEILS
 # ERSTE neue Wort noch innerhalb dieser ersten 10 Chips liegt (old_count <= 8).
+#
+# Ridouane (2026-11-21): drei kleine Buch-3-Zusatzabschnitte (b3-anhang1, b3-anhang2,
+# b3-tamarin-amma, zusammen 16 Woerter) hatten noch nie ein words_en, unabhaengig vom
+# Quizlet-CSV-Projekt oben - beim Nachpruefen des Englisch-Fixes entdeckt. Gleiche Technik,
+# alle alten Woerter (old_count=0 ueberall), keine Chunk-Aufteilung wegen der kleinen Menge.
 
 def _open_settings_and_set_lang(page, lang):
     page.click("#open-settings")
@@ -37,6 +42,19 @@ CASES = [
     (3, 'b3-l02', 8, 'to return (also: يَرْجِعُ) / to return, come back, give back, come again, take refuge (also: رُجُوعٌ)'),
     (3, 'b3-l16', 0, 'to congratulate (II) (also: تَهْنِئَةً)'),
 ]
+
+ANHANG_CASES = [
+    # (book, topic_id, chip index, expected english text) - all 16 words were untranslated before, old_count=0
+    (3, 'b3-anhang1', 0, 'hitting, striking (masdar, pattern فَعْل)'),
+    (3, 'b3-anhang2', 0, 'loaves of bread (plural, pattern أَفْعِلة)'),
+    (3, 'b3-tamarin-amma', 4, "completed with Allah's help (the book's closing words)"),
+]
+
+def test_anhang_words_show_english_translation_when_lang_is_en(page, served_app):
+    page.goto(served_app)
+    _open_settings_and_set_lang(page, 'en')
+    for book, topic_id, idx, expected_en in ANHANG_CASES:
+        assert _chip_de_text(page, book, topic_id, idx) == expected_en, topic_id
 
 def test_todays_new_words_show_english_translation_when_lang_is_en(page, served_app):
     page.goto(served_app)
