@@ -3947,8 +3947,10 @@ buildDict();
 for (const id of Object.keys(EX)) for (const ex of EX[id]){ addSent(ex.ok[0], ex.ok[1]); if (ex.ok[2]) addSent(ex.ok[2], ex.ok[1]); addSent(ex.q, ex.qde.replace(/\s*\(.*\)\s*$/, '')); }
 for (const id of Object.keys(STEPS)) for (const st of STEPS[id]){ addSent(st.ok[0], st.ok[1]); if (st.t) addSent(st.t[0], st.t[1], st.t[2]); }
 for (const c of TUTOR_CHIPS) addSent(c[0], c[1]);
-const PRE = [['و','وَ (und)'],['ف','فَ (dann)'],['ب','بِ (mit, in)'],['ل','لِ (für, zu)'],['ك','كَ (wie)'],['ال','الـ (der, die, das)']];
-const SUF = [['ها','ـهَا (ihr)'],['نا','ـنَا (unser)'],['كم','ـكُمْ (euer)'],['هم','ـهُمْ (ihr, Mehrzahl)'],['ون','ـُونَ (Mehrzahl)'],['ين','ـِينَ (Mehrzahl oder Zweizahl)'],['ان','ـَانِ (Zweizahl)'],['ات','ـَاتٌ (Mehrzahl, weiblich)'],['ني','ـنِي (mich)'],['ي','ـِي (mein)'],['ك','ـكَ / ـكِ (dein)'],['ه','ـهُ (sein)']];
+const PRE = [['و','وَ (und)', de => 'und ' + de],['ف','فَ (dann)', de => 'dann ' + de],['ب','بِ (mit, in)', de => 'mit/in ' + de],['ل','لِ (für, zu)', de => 'für/zu ' + de],['ك','كَ (wie)', de => 'wie ' + de],['ال','الـ (der, die, das)', de => de]];
+const SUF = [['ها','ـهَا (ihr)', de => 'ihr ' + de],['نا','ـنَا (unser)', de => 'unser ' + de],['كم','ـكُمْ (euer)', de => 'euer ' + de],['هم','ـهُمْ (ihr, Mehrzahl)', de => 'ihr ' + de],['ون','ـُونَ (Mehrzahl)', de => de + ' (Plural)'],['ين','ـِينَ (Mehrzahl oder Zweizahl)', de => de + ' (Plural/Dual)'],['ان','ـَانِ (Zweizahl)', de => de + ' (Dual)'],['ات','ـَاتٌ (Mehrzahl, weiblich)', de => de + ' (Plural)'],['ني','ـنِي (mich)', de => 'mich: ' + de],['ي','ـِي (mein)', de => 'mein ' + de],['ك','ـكَ / ـكِ (dein)', de => 'dein ' + de],['ه','ـهُ (sein)', de => 'sein ' + de]];
+const PART_GLOSS = new Map([...PRE, ...SUF].map(([, lab, compose]) => [lab, compose]));
+function glossedDe(de, parts){ for (let i = parts.length - 1; i >= 0; i--){ const compose = PART_GLOSS.get(parts[i]); if (compose) de = compose(de); } return de; }
 function lookupAr(tok){
   const n = norm(tok); if (!n) return null;
   const hit = (k, parts) => DICT.has(k) ? {card:DICT.get(k), parts} : (DICT.has('ال' + k) ? {card:DICT.get('ال' + k), parts} : null);
@@ -3982,7 +3984,7 @@ function offlineTranslate(text){
       const r = lookupAr(tok);
       if (!r){ return {ar:tok, de:'?', tl:'', type:'', root:'', note:(en ? 'Not in the app’s dictionary. For this word, tap ' + claudeBtn + '.' : 'Nicht im Wörterbuch der App. Für dieses Wort tippe auf ' + claudeBtn + '.')}; }
       found++; const c = r.card;
-      return {ar:tok, de:c.de, tl:c.tl, type:TOPIC[c.topic] ? (en ? 'Topic: ' : 'Thema: ') + TOPIC[c.topic].de : '', root:'', note:(r.parts.length ? r.parts.join(' + ') + ' + ' + c.ar : '') + (c.ex ? (r.parts.length ? ' · ' : '') + (en ? 'Example: ' : 'Beispiel: ') + c.ex + ' – ' + c.exde : '')};
+      return {ar:tok, de:glossedDe(c.de, r.parts), tl:c.tl, type:TOPIC[c.topic] ? (en ? 'Topic: ' : 'Thema: ') + TOPIC[c.topic].de : '', root:'', note:(r.parts.length ? r.parts.join(' + ') + ' + ' + c.ar : '') + (c.ex ? (r.parts.length ? ' · ' : '') + (en ? 'Example: ' : 'Beispiel: ') + c.ex + ' – ' + c.exde : '')};
     });
     sent = {ar:text, de:whole ? whole.de : (found ? (en ? 'The whole sentence isn’t recognized. The meaning of the individual words is below.' : 'Satz nicht als Ganzes bekannt. Die Bedeutung der einzelnen Wörter steht unten.') : (en ? 'No word recognized.' : 'Kein Wort erkannt.')), tl:whole ? whole.tl : '', structure:whole ? '' : (en ? 'The dictionary knows the words from the app’s lessons. For grammar and sentence structure, use ' + claudeBtn + '.' : 'Das Wörterbuch kennt die Wörter aus den Lektionen der App. Für Grammatik und Satzbau nutze ' + claudeBtn + '.'), words};
   } else {
