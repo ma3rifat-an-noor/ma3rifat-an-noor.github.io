@@ -3399,7 +3399,11 @@ const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', '�
 // Ridouane (2026-11-25): die arabischen Satzzeichen (، Komma, ؛ Semikolon, ؟ Fragezeichen) fehlen auf der
 // gemeinsamen Satzzeichen-Taste (PUNCTUATION ist sprachübergreifend/lateinisch) - hier statt dort
 // untergebracht, analog zu أ/إ oben, da es dieselbe "arabisch-spezifische Sonderzeichen"-Taste ist.
-const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ', 'أ', 'إ', '،', '؛', '؟'];
+// Ridouane (2026-11-25): das eigenständige Hamza ء fehlte ebenfalls (z.B. für مُؤَوَّلٌ) - bewusst nicht
+// als vorkombinierte Form wie ؤ/ئ, sondern als eigene Taste, die er selbst an jeden beliebigen
+// Buchstaben anhängen kann ("das meine ich nur, das Hamza alleine"); ist bereits die Zielform, auf
+// die norm() ؤ/ئ normalisiert (siehe [ؤئ] dort), braucht also keine weitere norm()-Anpassung.
+const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ', 'أ', 'إ', 'ء', '،', '؛', '؟'];
 // Rendert die Eingabehilfe (Tastenreihe) für das aktive Tabellenzelle-Eingabefeld targetInputId:
 // eine Taste je Buchstabe/Tashkil-Zeichen (je nach tashkil-Flag), eine Umschalt-Taste zwischen beiden
 // Sätzen und eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyShift/d.keyBack unten, die auf

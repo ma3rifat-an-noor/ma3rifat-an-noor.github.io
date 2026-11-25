@@ -248,6 +248,16 @@ def test_punct_toggle_preserves_in_progress_input(page, served_app):
     assert page.input_value("#tutor-input") == "ذه"
 
 
+def test_standalone_hamza_reachable_via_tashkil_key(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-insert="و"]')
+    page.click('#vk-tutor [data-key-tashkil]')
+    page.click('#vk-tutor [data-key-insert="ء"]')
+    assert page.input_value("#tutor-input") == "وء"
+
+
 def test_arabic_specific_punctuation_reachable_via_tashkil_key(page, served_app):
     page.goto(served_app)
     _open_tutor(page)
