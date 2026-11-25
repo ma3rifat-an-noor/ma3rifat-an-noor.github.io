@@ -246,6 +246,10 @@ p{margin:0}
 .t-key-back{font-family:inherit;color:var(--muted)}
 .t-key-shift{font-family:inherit;color:var(--muted)}
 .t-key-shift[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
+.t-key-lang{font-family:inherit;font-weight:700;color:var(--gold-ink)}
+.t-key-space{min-width:4em}
+.kb-toggle[aria-pressed="true"]{background:var(--gold-soft);color:var(--ink)}
+.vk-panel:not([hidden]){margin-top:2px}
 .t-row.done .t-form{font-family:var(--f-ar);font-size:1.2rem;direction:rtl;color:var(--muted)}
 .t-row.done.ok .t-form{color:var(--green)}
 .t-row.done.bad .t-form{color:var(--red)}
@@ -519,10 +523,12 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
           <div class="scroller" id="tutor-chips"></div>
           <form class="composer" id="tutor-form" autocomplete="off">
             <button class="mic" type="button" data-mic="tutor" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <button class="icon-btn kb-toggle" type="button" data-kb-toggle="tutor-input" data-kb-panel="vk-tutor" aria-pressed="false" aria-label="Digitale Tastatur" data-i18n-aria="vkToggleLabel">⌨</button>
             <label class="sr" for="tutor-input" data-i18n="yourMessage">Deine Nachricht</label>
             <textarea id="tutor-input" rows="1" dir="auto" placeholder="Sprich oder schreib …" data-i18n-ph="speakOrWrite"></textarea>
             <button class="send" type="submit" id="tutor-send" aria-label="Senden" data-i18n-aria="sendLabel"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
+          <div class="vk-panel" id="vk-tutor" hidden></div>
           </div>
         </div>
       </div>
@@ -556,10 +562,12 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
           <div class="scroller" id="role-chips"></div>
           <form class="composer" id="role-form" autocomplete="off">
             <button class="mic" type="button" data-mic="role" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <button class="icon-btn kb-toggle" type="button" data-kb-toggle="role-input" data-kb-panel="vk-role" aria-pressed="false" aria-label="Digitale Tastatur" data-i18n-aria="vkToggleLabel">⌨</button>
             <label class="sr" for="role-input" data-i18n="yourAnswer">Deine Antwort</label>
             <textarea id="role-input" rows="1" dir="auto" placeholder="Deine Antwort …" data-i18n-ph="yourAnswerPh"></textarea>
             <button class="send" type="submit" id="role-send" aria-label="Senden" data-i18n-aria="sendLabel"><svg class="ico"><use href="#i-send"/></svg></button>
           </form>
+          <div class="vk-panel" id="vk-role" hidden></div>
           </div>
         </div>
       </div>
@@ -578,8 +586,10 @@ input[type="range"]{width:100%;accent-color:var(--gold)}
         <form class="tr-form" id="tr-form" autocomplete="off">
           <label class="sr" for="tr-input" data-i18n="trInputLabel">Text zum Übersetzen</label>
           <textarea id="tr-input" rows="3" dir="auto" placeholder="z. B. أَيْنَ الْمَسْجِدُ؟ oder: Ich trinke Tee mit Milch." data-i18n-ph="trInputPh"></textarea>
+          <div class="vk-panel" id="vk-tr" hidden></div>
           <div class="tr-actions">
             <button class="mic" type="button" data-mic="tr" aria-label="Sprechen" aria-pressed="false" data-i18n-aria="speakLabel"><svg class="ico"><use href="#i-mic"/></svg></button>
+            <button class="icon-btn kb-toggle" type="button" data-kb-toggle="tr-input" data-kb-panel="vk-tr" aria-pressed="false" aria-label="Digitale Tastatur" data-i18n-aria="vkToggleLabel">⌨</button>
             <div class="seg" id="tr-lang" role="group" aria-label="Sprache fürs Mikrofon" data-i18n-aria="micLangGroup"><button type="button" data-lang="ar-SA" aria-pressed="true" data-i18n="micLangAr">Arabisch</button><button type="button" id="tr-lang-other" data-lang="de-DE" aria-pressed="false" data-i18n="micLangDe">Deutsch</button></div>
             <span class="grow"></span>
             <button class="btn primary" type="submit" id="tr-go" data-i18n="trGoBtn">Erklären</button>
@@ -3039,7 +3049,7 @@ function applyContentLang(){
 const LS = 'madina-arabisch-v1';
 const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', lang:'de', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar', mode:'offline', byokKey:''}, srs:{}, mistakes:[], custom:[]});
+const DEFAULTS = () => ({v:1, updatedAt:0, settings:{book:1, gender:'m', lang:'de', showDe:true, showTl:true, autoSpeak:true, autoSend:true, precise:false, rate:0.85, dir:'ar', mode:'offline', byokKey:'', kbLang:'ar'}, srs:{}, mistakes:[], custom:[]});
 function mergeState(x){
   const d = DEFAULTS(); x = x && typeof x === 'object' ? x : {};
   return {...d, ...x, settings:{...d.settings, ...(x.settings || {})}, srs:(x.srs && typeof x.srs === 'object') ? x.srs : {},
@@ -3393,6 +3403,55 @@ function arabicKeysHTML(targetInputId, tashkil){
   const shiftKey = '<button class="t-key t-key-shift" type="button" data-key-shift="' + targetInputId + '" aria-pressed="' + (tashkil ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle diacritics' : 'Vokalzeichen umschalten') + '">' + (tashkil ? 'ابت' : 'ـَـِـُ') + '</button>';
   const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
   return '<div class="t-keys" role="group" data-tashkil="' + (tashkil ? '1' : '0') + '" aria-label="' + (en ? 'Arabic keyboard' : 'Arabische Tastatur') + '">' + letterKeys + shiftKey + backKey + '</div>';
+}
+// Deutsche Tastatur (physische QWERTZ-Reihenfolge, nur Kleinbuchstaben - dieselbe Vereinfachung wie beim
+// Arabischen oben, das auch keine Großschreibung kennt). ß gehört physisch in die Ziffernreihe, die wir
+// (wie beim Arabischen) nicht abbilden - deshalb wie ة bei ARABIC_LETTERS als bewusste Ausnahme ans Ende
+// angehängt statt die QWERTZ-Reihenfolge zu verbiegen.
+const GERMAN_LETTERS = ['q','w','e','r','t','z','u','i','o','p','ü','a','s','d','f','g','h','j','k','l','ö','ä','y','x','c','v','b','n','m','ß'];
+// Englische Tastatur (physische QWERTY-Reihenfolge, nur Kleinbuchstaben, keine Sonderzeichen nötig).
+const ENGLISH_LETTERS = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m'];
+// Digitale Tastatur für die freien Texteingaben (Tutor-Chat, Rollenspiel, Übersetzer) - anders als
+// arabicKeysHTML() oben (nur für die Konjugationstabellen-Zellen, dort unverändert) mit Umschaltung
+// zwischen Arabisch/Deutsch/Englisch sowie einer Leertaste, da hier ganze Sätze statt einzelner Wörter
+// eingegeben werden. data-key-insert/data-key-target/data-key-back sind dieselben generischen
+// Klick-Handler-Zweige wie bei arabicKeysHTML() (siehe dort, wirken zeichen-/feldunabhängig).
+// data-key-tashkil und data-key-lang sind eigene, composer-spezifische Zweige (siehe Klick-Handler unten),
+// damit der bestehende data-key-shift-Zweig - fest an arabicKeysHTML() gekoppelt - für die
+// Konjugationstabellen unangetastet bleibt.
+function composerKeysHTML(targetInputId, lang, tashkil){
+  const en = S.settings.lang === 'en';
+  const sets = {ar:ARABIC_LETTERS, de:GERMAN_LETTERS, en:ENGLISH_LETTERS};
+  const order = ['ar', 'de', 'en'];
+  const next = order[(order.indexOf(lang) + 1) % order.length];
+  const set = lang === 'ar' && tashkil ? TASHKIL : sets[lang];
+  const letterKeys = set.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
+  const tashkilKey = lang === 'ar' ? '<button class="t-key t-key-shift" type="button" data-key-tashkil="' + targetInputId + '" data-key-tashkil-cur="' + (tashkil ? '1' : '0') + '" aria-pressed="' + (tashkil ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle diacritics' : 'Vokalzeichen umschalten') + '">' + (tashkil ? 'ابت' : 'ـَـِـُ') + '</button>' : '';
+  const langKey = '<button class="t-key t-key-lang" type="button" data-key-lang="' + targetInputId + '" data-key-lang-cur="' + lang + '" aria-label="' + (en ? 'Switch keyboard language' : 'Tastatursprache wechseln') + '">' + next.toUpperCase() + '</button>';
+  const spaceKey = '<button class="t-key t-key-space" type="button" data-key-insert=" " data-key-target="' + targetInputId + '" aria-label="' + (en ? 'Space' : 'Leerzeichen') + '"> </button>';
+  const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
+  return '<div class="t-keys vk-keys" data-vk-lang="' + lang + '" data-vk-tashkil="' + (tashkil ? '1' : '0') + '" aria-label="' + (en ? 'Virtual keyboard' : 'Digitale Tastatur') + '">' + letterKeys + tashkilKey + langKey + spaceKey + backKey + '</div>';
+}
+// Öffnet/schließt die digitale Tastatur für ein Composer-Feld (Tutor/Rollenspiel/Übersetzer).
+// inputmode="none" auf dem Zielfeld unterdrückt beim Öffnen zuverlässig die Handy-Tastatur -
+// dasselbe bewährte Prinzip wie bei den Konjugationstabellen-Zellen (siehe inputmode="none" dort),
+// nur hier per Umschalt-Knopf steuerbar statt fest gesetzt, weil diese Felder auch ohne eigene
+// Tastatur benutzbar bleiben sollen. Die zuletzt gewählte Sprache (S.settings.kbLang) bleibt über
+// save() dauerhaft gemerkt, der Offen/Zu-Zustand selbst nicht (soll sich nicht aufdrängen).
+function vkToggle(targetInputId, panelId){
+  const panel = $('#' + panelId), input = $('#' + targetInputId), btn = $('[data-kb-toggle="' + targetInputId + '"]');
+  const show = panel.hidden;
+  if (show){
+    panel.innerHTML = composerKeysHTML(targetInputId, S.settings.kbLang || 'ar', false);
+    panel.hidden = false;
+    input.setAttribute('inputmode', 'none');
+  } else {
+    panel.hidden = true;
+    panel.innerHTML = '';
+    input.removeAttribute('inputmode');
+  }
+  if (btn) btn.setAttribute('aria-pressed', String(show));
+  input.focus();
 }
 function msgHTML(m, i, kind){
   const st = S.settings, en = st.lang === 'en';
@@ -4336,7 +4395,8 @@ const I18N_EN = {
   yourAnswer:'Your answer', yourAnswerPh:'Your answer …',
   trLede:'Write a sentence in Arabic or English. Each sentence gets translated and explained word by word.',
   trInputLabel:'Text to translate', trInputPh:'e.g. أَيْنَ الْمَسْجِدُ؟ or: I drink tea with milk.',
-  micLangGroup:'Microphone language', micLangAr:'Arabic', micLangDe:'English', trGoBtn:'Explain'
+  micLangGroup:'Microphone language', micLangAr:'Arabic', micLangDe:'English', trGoBtn:'Explain',
+  vkToggleLabel:'Virtual keyboard'
 };
 function applyI18N(){
   const en = S.settings.lang === 'en';
@@ -4444,6 +4504,25 @@ document.addEventListener('click', e => {
     $('#' + d.keyShift).focus();
     return;
   }
+  // Composer-Tastatur (Tutor/Rollenspiel/Übersetzer): eigene Zweige für Tashkil-Umschaltung und
+  // Sprachwechsel, damit der data-key-shift-Zweig oben (fest an arabicKeysHTML() gekoppelt) für die
+  // Konjugationstabellen unangetastet bleibt. Ersetzt wie dort nur die eigene .vk-keys-Wurzel per
+  // outerHTML, nicht renderChat(), damit eine bereits angefangene Eingabe im Composer erhalten bleibt.
+  if (d.keyTashkil !== undefined){
+    const tashkil = t.dataset.keyTashkilCur !== '1';
+    t.closest('.vk-keys').outerHTML = composerKeysHTML(d.keyTashkil, 'ar', tashkil);
+    $('#' + d.keyTashkil).focus();
+    return;
+  }
+  if (d.keyLang !== undefined){
+    const order = ['ar', 'de', 'en'];
+    const next = order[(order.indexOf(t.dataset.keyLangCur) + 1) % order.length];
+    S.settings.kbLang = next; save();
+    t.closest('.vk-keys').outerHTML = composerKeysHTML(d.keyLang, next, false);
+    $('#' + d.keyLang).focus();
+    return;
+  }
+  if (d.kbToggle !== undefined){ vkToggle(d.kbToggle, d.kbPanel); return; }
   if (d.mode){ setMode(d.mode); return; }
   if (d.trClaude !== undefined){ translate($('#tr-input').value, true); return; }
   if (d.insert){ const inp = $(d.insert); insertInto(inp, d.text); if (d.say && S.settings.autoSpeak) speak(d.text); return; }
