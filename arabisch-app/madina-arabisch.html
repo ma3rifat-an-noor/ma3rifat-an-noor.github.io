@@ -3388,7 +3388,10 @@ function diffMark(wrong, right){
 // Ridouane (2026-11-19): ة (Ta Marbuta) fehlte komplett, obwohl sie beim Schreiben ständig gebraucht wird
 // (z. B. jedes feminine Nomen) - bewusste Ausnahme von der 28er-Regel oben, ans Ende angehängt statt die
 // physische Tastaturreihenfolge umzubauen.
-const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د', 'ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط', 'ر', 'و', 'ز', 'ظ', 'ة'];
+// Ridouane (2026-11-26): ى (Alif Maksura, letzter Buchstabe in أَمْسَى) fehlte ebenfalls - exakt dieselbe
+// "Zusatzform"-Ausnahme wie ة oben (siehe Liste "ئ ء ؤ لاـ ى ة" im Kommentar oberhalb), norm() normalisiert
+// sie bereits auf ي (siehe /ى/ dort), braucht also keine weitere norm()-Anpassung.
+const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', 'خ', 'ح', 'ج', 'د', 'ش', 'س', 'ي', 'ب', 'ل', 'ا', 'ت', 'ن', 'م', 'ك', 'ط', 'ر', 'و', 'ز', 'ظ', 'ة', 'ى'];
 // Tashkil (Vokalzeichen über/unter dem Buchstaben) - über die Umschalt-Taste in arabicKeysHTML() erreichbar,
 // ersetzt dort die Buchstabentasten statt sie zu ergänzen. norm() ignoriert sie weiterhin beim Werten
 // (siehe TASHKEEL dort), sie sind rein fürs correkte Mitschreiben der Vokalisierung.
@@ -3403,7 +3406,12 @@ const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', '�
 // als vorkombinierte Form wie ؤ/ئ, sondern als eigene Taste, die er selbst an jeden beliebigen
 // Buchstaben anhängen kann ("das meine ich nur, das Hamza alleine"); ist bereits die Zielform, auf
 // die norm() ؤ/ئ normalisiert (siehe [ؤئ] dort), braucht also keine weitere norm()-Anpassung.
-const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ', 'أ', 'إ', 'ء', '،', '؛', '؟'];
+// Ridouane (2026-11-26): das eigenständige Hamza ء (oben) reicht ihm allein nicht - er wollte zusätzlich
+// die anhängende Hamza-Diakritik ٔ (U+0654, ARABIC HAMZA ABOVE), die sich wie Fatha/Kasra & Co. direkt
+// über den vorherigen Buchstaben legt statt als eigener Buchstabe daneben zu stehen (z. B. über ein و).
+// ٔ fällt bereits unter TASHKEEL und wird beim Werten ignoriert, genau wie Fatha/Kasra/Sukun - keine
+// norm()-Anpassung nötig. Beide Formen bleiben nebeneinander bestehen (sein Wunsch: "bitte nicht entfernen").
+const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ', 'أ', 'إ', 'ء', 'ٔ', '،', '؛', '؟'];
 // Rendert die Eingabehilfe (Tastenreihe) für das aktive Tabellenzelle-Eingabefeld targetInputId:
 // eine Taste je Buchstabe/Tashkil-Zeichen (je nach tashkil-Flag), eine Umschalt-Taste zwischen beiden
 // Sätzen und eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyShift/d.keyBack unten, die auf

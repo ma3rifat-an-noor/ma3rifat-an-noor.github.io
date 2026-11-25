@@ -258,6 +258,31 @@ def test_standalone_hamza_reachable_via_tashkil_key(page, served_app):
     assert page.input_value("#tutor-input") == "وء"
 
 
+def test_combining_hamza_above_attaches_to_preceding_letter_via_tashkil_key(page, served_app):
+    # Ridouane (2026-11-26): das eigenstaendige Hamza (ء) blieb als eigener Buchstabe neben dem
+    # vorherigen Zeichen stehen - er wollte zusaetzlich die anhaengende Diakritik-Form (U+0654), die
+    # sich wie Fatha/Kasra & Co. direkt ueber den vorherigen Buchstaben legt. Beide Formen bleiben
+    # nebeneinander auf der Tashkil-Taste bestehen (sein Wunsch: "bitte nicht entfernen").
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-insert="و"]')
+    page.click('#vk-tutor [data-key-tashkil]')
+    page.click('#vk-tutor [data-key-insert="ٔ"]')
+    assert page.input_value("#tutor-input") == "ؤ"
+
+
+def test_alif_maksura_reachable_as_a_regular_letter(page, served_app):
+    # Ridouane (2026-11-26): der letzte Buchstabe in أَمْسَى (ى, Alif Maksura) fehlte komplett -
+    # dieselbe "Zusatzform"-Ausnahme wie ة, ans Ende der Buchstabenreihe angehaengt statt die
+    # physische Tastaturreihenfolge umzubauen.
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-insert="ى"]')
+    assert page.input_value("#tutor-input") == "ى"
+
+
 def test_arabic_specific_punctuation_reachable_via_tashkil_key(page, served_app):
     page.goto(served_app)
     _open_tutor(page)
