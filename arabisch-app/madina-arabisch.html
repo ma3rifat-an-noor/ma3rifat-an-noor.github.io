@@ -246,6 +246,10 @@ p{margin:0}
 .t-key-back{font-family:inherit;color:var(--muted)}
 .t-key-shift{font-family:inherit;color:var(--muted)}
 .t-key-shift[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
+.t-key-caps{font-family:inherit;color:var(--muted)}
+.t-key-caps[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
+.t-key-punct{font-family:inherit;color:var(--muted)}
+.t-key-punct[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft);color:var(--ink)}
 .t-key-lang{font-family:inherit;font-weight:700;color:var(--gold-ink)}
 .t-key-space{min-width:4em}
 .kb-toggle[aria-pressed="true"]{background:var(--gold-soft);color:var(--ink)}
@@ -3388,7 +3392,14 @@ const ARABIC_LETTERS = ['ذ', 'ض', 'ص', 'ث', 'ق', 'ف', 'غ', 'ع', 'ه', '�
 // Tashkil (Vokalzeichen über/unter dem Buchstaben) - über die Umschalt-Taste in arabicKeysHTML() erreichbar,
 // ersetzt dort die Buchstabentasten statt sie zu ergänzen. norm() ignoriert sie weiterhin beim Werten
 // (siehe TASHKEEL dort), sie sind rein fürs correkte Mitschreiben der Vokalisierung.
-const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ'];
+// Ridouane (2026-11-25): أ (Hamza über dem Alif) und إ (Hamza unter dem Alif) fehlten auf der
+// Haupt-Buchstabentastatur (dort nur das einfache ا) - auf seinen Wunsch hier statt in ARABIC_LETTERS
+// untergebracht, da es echte Buchstabenformen und keine reinen Vokalzeichen sind, aber ebenfalls über
+// norm() auf ا normalisiert werden (dort über die separate Hamza-Alif-Ersetzung, nicht über TASHKEEL).
+// Ridouane (2026-11-25): die arabischen Satzzeichen (، Komma, ؛ Semikolon, ؟ Fragezeichen) fehlen auf der
+// gemeinsamen Satzzeichen-Taste (PUNCTUATION ist sprachübergreifend/lateinisch) - hier statt dort
+// untergebracht, analog zu أ/إ oben, da es dieselbe "arabisch-spezifische Sonderzeichen"-Taste ist.
+const TASHKIL = ['َ', 'ً', 'ُ', 'ٌ', 'ِ', 'ٍ', 'ّ', 'ْ', 'أ', 'إ', '،', '؛', '؟'];
 // Rendert die Eingabehilfe (Tastenreihe) für das aktive Tabellenzelle-Eingabefeld targetInputId:
 // eine Taste je Buchstabe/Tashkil-Zeichen (je nach tashkil-Flag), eine Umschalt-Taste zwischen beiden
 // Sätzen und eine Rücktaste. Siehe Click-Handler-Zweige d.keyInsert/d.keyShift/d.keyBack unten, die auf
@@ -3404,33 +3415,44 @@ function arabicKeysHTML(targetInputId, tashkil){
   const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
   return '<div class="t-keys" role="group" data-tashkil="' + (tashkil ? '1' : '0') + '" aria-label="' + (en ? 'Arabic keyboard' : 'Arabische Tastatur') + '">' + letterKeys + shiftKey + backKey + '</div>';
 }
-// Deutsche Tastatur (physische QWERTZ-Reihenfolge, nur Kleinbuchstaben - dieselbe Vereinfachung wie beim
-// Arabischen oben, das auch keine Großschreibung kennt). ß gehört physisch in die Ziffernreihe, die wir
-// (wie beim Arabischen) nicht abbilden - deshalb wie ة bei ARABIC_LETTERS als bewusste Ausnahme ans Ende
-// angehängt statt die QWERTZ-Reihenfolge zu verbiegen.
+// Deutsche Tastatur (physische QWERTZ-Reihenfolge, Grundform klein - Großschreibung über die
+// Umschalt-Taste in composerKeysHTML() erreichbar, siehe dort). ß gehört physisch in die Ziffernreihe,
+// die wir (wie beim Arabischen) nicht abbilden - deshalb wie ة bei ARABIC_LETTERS als bewusste
+// Ausnahme ans Ende angehängt statt die QWERTZ-Reihenfolge zu verbiegen. Großschreibung von ß ergibt
+// über toUpperCase() "SS" (Standard-JS-Verhalten, entspricht der verbreiteten Schreibweise vor der
+// seltenen Grossversion ẞ).
 const GERMAN_LETTERS = ['q','w','e','r','t','z','u','i','o','p','ü','a','s','d','f','g','h','j','k','l','ö','ä','y','x','c','v','b','n','m','ß'];
-// Englische Tastatur (physische QWERTY-Reihenfolge, nur Kleinbuchstaben, keine Sonderzeichen nötig).
+// Englische Tastatur (physische QWERTY-Reihenfolge, Grundform klein, keine Sonderzeichen nötig).
 const ENGLISH_LETTERS = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m'];
+// Ziffern + gängige Satzzeichen - sprachübergreifend geteilt (composerKeysHTML() punct-Flag), da Zahlen
+// und die lateinischen Grundsatzzeichen in Deutsch/Englisch/Arabisch gleich geschrieben werden.
+// Arabisch-spezifische Satzzeichen (، ؛ ؟) sitzen bewusst auf der Tashkil-Taste statt hier, siehe TASHKIL.
+const PUNCTUATION = ['1','2','3','4','5','6','7','8','9','0','.',',','!','?','-',':',';','\'','"','(',')'];
 // Digitale Tastatur für die freien Texteingaben (Tutor-Chat, Rollenspiel, Übersetzer) - anders als
 // arabicKeysHTML() oben (nur für die Konjugationstabellen-Zellen, dort unverändert) mit Umschaltung
 // zwischen Arabisch/Deutsch/Englisch sowie einer Leertaste, da hier ganze Sätze statt einzelner Wörter
 // eingegeben werden. data-key-insert/data-key-target/data-key-back sind dieselben generischen
 // Klick-Handler-Zweige wie bei arabicKeysHTML() (siehe dort, wirken zeichen-/feldunabhängig).
-// data-key-tashkil und data-key-lang sind eigene, composer-spezifische Zweige (siehe Klick-Handler unten),
-// damit der bestehende data-key-shift-Zweig - fest an arabicKeysHTML() gekoppelt - für die
-// Konjugationstabellen unangetastet bleibt.
-function composerKeysHTML(targetInputId, lang, tashkil){
+// data-key-tashkil/data-key-caps und data-key-lang sind eigene, composer-spezifische Zweige (siehe
+// Klick-Handler unten), damit der bestehende data-key-shift-Zweig - fest an arabicKeysHTML() gekoppelt -
+// für die Konjugationstabellen unangetastet bleibt.
+// Ridouane (2026-11-25): Groß-/Kleinschreibung fehlte bei Deutsch/Englisch - caps ist nur für diese
+// beiden relevant (Arabisch kennt keine Großschreibung, tashkil bleibt dort die einzige Umschaltung).
+function composerKeysHTML(targetInputId, lang, tashkil, caps, punct){
   const en = S.settings.lang === 'en';
   const sets = {ar:ARABIC_LETTERS, de:GERMAN_LETTERS, en:ENGLISH_LETTERS};
   const order = ['ar', 'de', 'en'];
   const next = order[(order.indexOf(lang) + 1) % order.length];
-  const set = lang === 'ar' && tashkil ? TASHKIL : sets[lang];
+  let set = punct ? PUNCTUATION : (lang === 'ar' && tashkil ? TASHKIL : sets[lang]);
+  if (!punct && lang !== 'ar' && caps) set = set.map(ch => ch.toUpperCase());
   const letterKeys = set.map(ch => '<button class="t-key" type="button" data-key-insert="' + ch + '" data-key-target="' + targetInputId + '">' + ch + '</button>').join('');
-  const tashkilKey = lang === 'ar' ? '<button class="t-key t-key-shift" type="button" data-key-tashkil="' + targetInputId + '" data-key-tashkil-cur="' + (tashkil ? '1' : '0') + '" aria-pressed="' + (tashkil ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle diacritics' : 'Vokalzeichen umschalten') + '">' + (tashkil ? 'ابت' : 'ـَـِـُ') + '</button>' : '';
+  const tashkilKey = !punct && lang === 'ar' ? '<button class="t-key t-key-shift" type="button" data-key-tashkil="' + targetInputId + '" data-key-tashkil-cur="' + (tashkil ? '1' : '0') + '" aria-pressed="' + (tashkil ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle diacritics' : 'Vokalzeichen umschalten') + '">' + (tashkil ? 'ابت' : 'ـَـِـُ') + '</button>' : '';
+  const capsKey = !punct && lang !== 'ar' ? '<button class="t-key t-key-caps" type="button" data-key-caps="' + targetInputId + '" data-key-caps-cur="' + (caps ? '1' : '0') + '" aria-pressed="' + (caps ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle uppercase' : 'Groß-/Kleinschreibung umschalten') + '">' + (caps ? 'abc' : '⇧') + '</button>' : '';
+  const punctKey = '<button class="t-key t-key-punct" type="button" data-key-punct="' + targetInputId + '" data-key-punct-cur="' + (punct ? '1' : '0') + '" aria-pressed="' + (punct ? 'true' : 'false') + '" aria-label="' + (en ? 'Toggle numbers and punctuation' : 'Zahlen und Satzzeichen umschalten') + '">' + (punct ? (lang === 'ar' ? 'ابت' : 'ABC') : '123') + '</button>';
   const langKey = '<button class="t-key t-key-lang" type="button" data-key-lang="' + targetInputId + '" data-key-lang-cur="' + lang + '" aria-label="' + (en ? 'Switch keyboard language' : 'Tastatursprache wechseln') + '">' + next.toUpperCase() + '</button>';
   const spaceKey = '<button class="t-key t-key-space" type="button" data-key-insert=" " data-key-target="' + targetInputId + '" aria-label="' + (en ? 'Space' : 'Leerzeichen') + '"> </button>';
   const backKey = '<button class="t-key t-key-back" type="button" data-key-back="' + targetInputId + '" aria-label="' + (en ? 'Delete character' : 'Zeichen löschen') + '">⌫</button>';
-  return '<div class="t-keys vk-keys" data-vk-lang="' + lang + '" data-vk-tashkil="' + (tashkil ? '1' : '0') + '" aria-label="' + (en ? 'Virtual keyboard' : 'Digitale Tastatur') + '">' + letterKeys + tashkilKey + langKey + spaceKey + backKey + '</div>';
+  return '<div class="t-keys vk-keys" data-vk-lang="' + lang + '" data-vk-tashkil="' + (tashkil ? '1' : '0') + '" data-vk-caps="' + (caps ? '1' : '0') + '" data-vk-punct="' + (punct ? '1' : '0') + '" aria-label="' + (en ? 'Virtual keyboard' : 'Digitale Tastatur') + '">' + letterKeys + tashkilKey + capsKey + punctKey + langKey + spaceKey + backKey + '</div>';
 }
 // Öffnet/schließt die digitale Tastatur für ein Composer-Feld (Tutor/Rollenspiel/Übersetzer).
 // inputmode="none" auf dem Zielfeld unterdrückt beim Öffnen zuverlässig die Handy-Tastatur -
@@ -4520,6 +4542,23 @@ document.addEventListener('click', e => {
     S.settings.kbLang = next; save();
     t.closest('.vk-keys').outerHTML = composerKeysHTML(d.keyLang, next, false);
     $('#' + d.keyLang).focus();
+    return;
+  }
+  // Groß-/Kleinschreibung (nur Deutsch/Englisch, siehe capsKey in composerKeysHTML()) und
+  // Ziffern/Satzzeichen-Umschaltung (alle drei Sprachen) - lesen/erhalten die jeweils anderen Zustände
+  // über die data-vk-*-Attribute am Wurzel-Div, statt sie beim Umschalten zu verlieren.
+  if (d.keyCaps !== undefined){
+    const root = t.closest('.vk-keys');
+    const caps = root.dataset.vkCaps !== '1';
+    root.outerHTML = composerKeysHTML(d.keyCaps, root.dataset.vkLang, false, caps, false);
+    $('#' + d.keyCaps).focus();
+    return;
+  }
+  if (d.keyPunct !== undefined){
+    const root = t.closest('.vk-keys');
+    const punct = root.dataset.vkPunct !== '1';
+    root.outerHTML = composerKeysHTML(d.keyPunct, root.dataset.vkLang, root.dataset.vkTashkil === '1', root.dataset.vkCaps === '1', punct);
+    $('#' + d.keyPunct).focus();
     return;
   }
   if (d.kbToggle !== undefined){ vkToggle(d.kbToggle, d.kbPanel); return; }

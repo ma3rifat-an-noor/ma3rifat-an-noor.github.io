@@ -163,3 +163,97 @@ def test_table_cell_keyboard_untouched_by_composer_changes(page, served_app):
     page.click('[data-key-shift]')
     page.click('[data-key-insert="َ"][data-key-target="t-input-0"]')
     assert page.input_value("#t-input-0") == "َ"
+
+
+# Ridouane (2026-11-25, Voice Line, zweite Runde): zwei Lücken nachgemeldet - Hamza-Formen أ/إ fehlten
+# auf der Haupttastatur (sind seit Session 5 ueber die Tashkil-Taste erreichbar, hier erstmals getestet,
+# siehe Handover "Keine Tests ... geschrieben"), und eine Groß-/Kleinschreibungs-Taste fuer Deutsch/
+# Englisch fehlte komplett. Dieser Block deckt beides nach, plus die neue Ziffern-/Satzzeichen-Taste.
+
+
+def test_hamza_alif_forms_reachable_via_tashkil_key(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-tashkil]')
+    page.click('#vk-tutor [data-key-insert="أ"]')
+    page.click('#vk-tutor [data-key-insert="إ"]')
+    assert page.input_value("#tutor-input") == "أإ"
+
+
+def test_caps_key_hidden_for_arabic_shown_for_latin(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    assert page.locator('#vk-tutor [data-key-caps]').count() == 0
+    page.click('#vk-tutor [data-key-lang]')  # ar -> de
+    assert page.locator('#vk-tutor [data-key-caps]').count() == 1
+
+
+def test_caps_key_uppercases_german_letters_and_toggles_back(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-lang]')  # ar -> de
+    page.click('#vk-tutor [data-key-insert="a"]')
+    page.click('#vk-tutor [data-key-caps]')
+    assert page.get_attribute('#vk-tutor [data-key-caps]', "aria-pressed") == "true"
+    page.click('#vk-tutor [data-key-insert="A"]')
+    page.click('#vk-tutor [data-key-caps]')
+    page.click('#vk-tutor [data-key-insert="a"]')
+    assert page.input_value("#tutor-input") == "aAa"
+
+
+def test_caps_toggle_preserves_in_progress_input(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.fill("#tutor-input", "hi")
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-lang]')  # ar -> de
+    page.click('#vk-tutor [data-key-caps]')
+    assert page.input_value("#tutor-input") == "hi"
+
+
+def test_punct_key_available_in_all_three_languages_and_inserts_digits_and_punctuation(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    for _ in range(3):  # ar, de, en, back to ar
+        assert page.locator('#vk-tutor [data-key-punct]').count() == 1
+        page.click('#vk-tutor [data-key-lang]')
+    page.click('#vk-tutor [data-key-punct]')
+    assert page.get_attribute("#vk-tutor .vk-keys", "data-vk-punct") == "1"
+    page.click('#vk-tutor [data-key-insert="7"]')
+    page.click('#vk-tutor [data-key-insert="?"]')
+    assert page.input_value("#tutor-input") == "7?"
+
+
+def test_punct_key_hides_tashkil_and_caps_and_round_trips_back(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-punct]')
+    assert page.locator('#vk-tutor [data-key-tashkil]').count() == 0
+    page.click('#vk-tutor [data-key-punct]')  # back to letters
+    assert page.get_attribute("#vk-tutor .vk-keys", "data-vk-punct") == "0"
+    assert page.locator('#vk-tutor [data-key-tashkil]').count() == 1
+
+
+def test_punct_toggle_preserves_in_progress_input(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.fill("#tutor-input", "ذه")
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-punct]')
+    assert page.input_value("#tutor-input") == "ذه"
+
+
+def test_arabic_specific_punctuation_reachable_via_tashkil_key(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-tashkil]')
+    page.click('#vk-tutor [data-key-insert="،"]')
+    page.click('#vk-tutor [data-key-insert="؛"]')
+    page.click('#vk-tutor [data-key-insert="؟"]')
+    assert page.input_value("#tutor-input") == "،؛؟"
