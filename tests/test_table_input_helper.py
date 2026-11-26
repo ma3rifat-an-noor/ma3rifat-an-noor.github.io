@@ -20,6 +20,20 @@ def test_backspace_key_removes_last_char(page, served_app):
     page.click('[data-key-back="t-input-0"]')
     assert page.input_value("#t-input-0") == "ذهب"
 
+def test_virtual_keys_insert_and_delete_at_cursor_position(page, served_app):
+    # Ridouane (2026-11-26): dieselbe Mitten-im-Text-Korrektur wie im Composer (siehe
+    # tests/test_virtual_keyboard.py), hier fuer den gemeinsam genutzten Klick-Zweig in der
+    # Konjugationstabellen-Tastatur gegengeprueft.
+    page.goto(served_app)
+    page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")
+    page.fill("#t-input-0", "ذب")
+    page.evaluate("() => { const el = document.getElementById('t-input-0'); el.focus(); el.setSelectionRange(1, 1); }")
+    page.click('[data-key-insert="ه"][data-key-target="t-input-0"]')
+    assert page.input_value("#t-input-0") == "ذهب"
+    page.evaluate("() => { const el = document.getElementById('t-input-0'); el.focus(); el.setSelectionRange(2, 2); }")
+    page.click('[data-key-back="t-input-0"]')
+    assert page.input_value("#t-input-0") == "ذب"
+
 def test_submit_via_helper_typed_value_is_graded(page, served_app):
     page.goto(served_app)
     page.evaluate("() => { location.hash = 'tutor'; CHAT.tutor.msgs.push(makeTable('b2-l08', 0)); renderChat('tutor'); }")

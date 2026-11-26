@@ -292,3 +292,41 @@ def test_arabic_specific_punctuation_reachable_via_tashkil_key(page, served_app)
     page.click('#vk-tutor [data-key-insert="؛"]')
     page.click('#vk-tutor [data-key-insert="؟"]')
     assert page.input_value("#tutor-input") == "،؛؟"
+
+
+# Ridouane (2026-11-26): Fehlertolerantes Mitten-im-Text-Editieren - die Einfuege-/Loeschen-Tasten
+# haengten bisher immer ans Ende an bzw. loeschten immer das letzte Zeichen, auch wenn man per
+# Antippen den Cursor mitten im Text platziert hatte (funktioniert mit Handy-/Mac-Tastatur normal).
+
+
+def test_insert_key_inserts_at_cursor_position_not_always_at_the_end(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.fill("#tutor-input", "ab")
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-lang]')  # ar -> de, lateinische Buchstaben fuer den Test
+    page.evaluate("() => { const el = document.getElementById('tutor-input'); el.focus(); el.setSelectionRange(1, 1); }")
+    page.click('#vk-tutor [data-key-insert="x"]')
+    assert page.input_value("#tutor-input") == "axb"
+
+
+def test_backspace_key_deletes_char_before_cursor_not_always_the_last(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.fill("#tutor-input", "abc")
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.evaluate("() => { const el = document.getElementById('tutor-input'); el.focus(); el.setSelectionRange(2, 2); }")
+    page.click('#vk-tutor [data-key-back]')
+    assert page.input_value("#tutor-input") == "ac"
+
+
+def test_insert_after_mid_edit_continues_from_the_new_cursor_position(page, served_app):
+    page.goto(served_app)
+    _open_tutor(page)
+    page.fill("#tutor-input", "ab")
+    page.click('[data-kb-toggle="tutor-input"]')
+    page.click('#vk-tutor [data-key-lang]')  # ar -> de
+    page.evaluate("() => { const el = document.getElementById('tutor-input'); el.focus(); el.setSelectionRange(1, 1); }")
+    page.click('#vk-tutor [data-key-insert="x"]')
+    page.click('#vk-tutor [data-key-insert="y"]')
+    assert page.input_value("#tutor-input") == "axyb"

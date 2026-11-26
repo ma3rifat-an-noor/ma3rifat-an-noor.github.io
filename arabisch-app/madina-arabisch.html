@@ -4527,8 +4527,27 @@ document.addEventListener('click', e => {
   if (d.tableSubmit !== undefined){ submitTableCell(d.kind, Number(d.qi), $('#t-input-' + d.qi).value); return; }
   if (d.derivSubmit !== undefined){ submitDerivTableCell(d.kind, Number(d.mi), Number(d.ri), Number(d.ci), $('#dt-input-' + d.mi + '-' + d.ri + '-' + d.ci).value); return; }
   if (d.derivContinue !== undefined){ continueDerivTable(d.kind, Number(d.mi)); return; }
-  if (d.keyInsert !== undefined){ const el = $('#' + d.keyTarget); el.value += d.keyInsert; el.focus(); return; }
-  if (d.keyBack !== undefined){ const el = $('#' + d.keyBack); el.value = el.value.slice(0, -1); el.focus(); return; }
+  // Ridouane (2026-11-26): Einfuegen/Loeschen haengte bisher immer ans Ende an bzw. loeschte immer nur
+  // das letzte Zeichen - wer per Antippen mitten im Text den Cursor platziert, landete beim naechsten
+  // Tastendruck trotzdem am Ende. selectionStart/-End ueberleben einen kurzen Fokusverlust beim Antippen
+  // der Taste (Browser-Standard), bleiben also auch nach dem Klick noch an der richtigen Stelle lesbar.
+  if (d.keyInsert !== undefined){
+    const el = $('#' + d.keyTarget);
+    const start = el.selectionStart ?? el.value.length, end = el.selectionEnd ?? el.value.length;
+    el.value = el.value.slice(0, start) + d.keyInsert + el.value.slice(end);
+    el.focus();
+    el.setSelectionRange(start + d.keyInsert.length, start + d.keyInsert.length);
+    return;
+  }
+  if (d.keyBack !== undefined){
+    const el = $('#' + d.keyBack);
+    const start = el.selectionStart ?? el.value.length, end = el.selectionEnd ?? el.value.length;
+    const delStart = start === end ? Math.max(0, start - 1) : start;
+    el.value = el.value.slice(0, delStart) + el.value.slice(end);
+    el.focus();
+    el.setSelectionRange(delStart, delStart);
+    return;
+  }
   // Ersetzt nur die eigene .t-keys-Wurzel (per outerHTML), statt renderChat() aufzurufen - sonst würde das
   // volle innerHTML-Replace in renderChat() eine bereits angefangene Eingabe im Nachbar-<input> löschen.
   if (d.keyShift !== undefined){
