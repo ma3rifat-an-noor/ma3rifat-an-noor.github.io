@@ -44,7 +44,7 @@ def test_speak_in_app_huelle_schickt_bridge_nachricht_statt_speechsynthesis(page
     _click_speak(page, "مَرْحَبًا")
     posted = page.evaluate("window.__posted")
     assert len(posted) == 1
-    assert json.loads(posted[0]) == {"type": "speak", "text": "مَرْحَبًا", "lang": "ar-SA"}
+    assert json.loads(posted[0]) == {"type": "speak", "text": "مَرْحَبًا", "lang": "ar-SA", "rate": 0.85}
     assert page.evaluate("window.__synthSpoken") == []
 
 

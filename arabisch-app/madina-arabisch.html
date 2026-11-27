@@ -3170,7 +3170,7 @@ function speak(text){
   // In der nativen App-Hülle (Expo-WebView) ist speechSynthesis nicht nutzbar —
   // dort übernimmt die native Seite (expo-speech) über die Nachrichten-Brücke.
   if (window.ReactNativeWebView){
-    window.ReactNativeWebView.postMessage(JSON.stringify({type:'speak', text: t, lang: arVoice ? arVoice.lang : 'ar-SA'}));
+    window.ReactNativeWebView.postMessage(JSON.stringify({type:'speak', text: t, lang: arVoice ? arVoice.lang : 'ar-SA', rate: Number(S.settings.rate) || 0.85}));
     return;
   }
   const en = S.settings.lang === 'en';
