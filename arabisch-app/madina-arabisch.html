@@ -3152,6 +3152,13 @@ function updateDuePill(){
 
 /* ---------- Vorlesen ---------- */
 let voices = [], arVoice = null, voiceWarned = false;
+const noArVoiceMsg = () => S.settings.lang === 'en'
+  ? 'No Arabic voice is installed on this device. You can add one in system settings under Language.'
+  : 'Auf diesem Gerät ist keine arabische Stimme installiert. Du kannst sie in den Systemeinstellungen unter Sprache hinzufügen.';
+// Rückkanal der nativen App-Hülle: meldet die native Seite {no-voice}
+// (keine arabische Stimme installiert), zeigt die Webapp denselben Hinweis.
+// Jedes Mal, nicht nur einmal — im nativen Fall gibt es sonst gar kein Feedback.
+window.__nativeNoVoice = () => toast(noArVoiceMsg());
 function loadVoices(){
   if (!('speechSynthesis' in window)) return;
   voices = speechSynthesis.getVoices();
@@ -3175,7 +3182,7 @@ function speak(text){
     u.rate = Number(S.settings.rate) || 0.85;
     speechSynthesis.speak(u);
   } catch (e) {}
-  if (!arVoice && voices.length && !voiceWarned){ voiceWarned = true; toast(en ? 'No Arabic voice is installed on this device. You can add one in system settings under Language.' : 'Auf diesem Gerät ist keine arabische Stimme installiert. Du kannst sie in den Systemeinstellungen unter Sprache hinzufügen.'); }
+  if (!arVoice && voices.length && !voiceWarned){ voiceWarned = true; toast(noArVoiceMsg()); }
 }
 document.addEventListener('pointerdown', function unlock(){
   document.removeEventListener('pointerdown', unlock);

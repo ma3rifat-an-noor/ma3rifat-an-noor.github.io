@@ -54,3 +54,15 @@ def test_speak_ohne_app_huelle_nutzt_weiter_speechsynthesis(page, served_app):
     _click_speak(page, "مَرْحَبًا")
     assert page.evaluate("window.__synthSpoken") == ["مَرْحَبًا"]
     assert page.evaluate("typeof window.ReactNativeWebView") == "undefined"
+
+
+def test_native_no_voice_zeigt_den_bestehenden_stimmen_hinweis(page, served_app):
+    # Task 3: Meldet die native Seite {no-voice} zurück (keine arabische Stimme
+    # installiert), ruft sie window.__nativeNoVoice() auf — derselbe Hinweistext
+    # wie der bestehende Toast im speechSynthesis-Pfad.
+    page.add_init_script(INIT_BRIDGE)
+    page.goto(served_app)
+    assert page.evaluate("typeof window.__nativeNoVoice") == "function"
+    page.evaluate("window.__nativeNoVoice()")
+    toast = page.text_content("#toast")
+    assert "keine arabische Stimme installiert" in toast
