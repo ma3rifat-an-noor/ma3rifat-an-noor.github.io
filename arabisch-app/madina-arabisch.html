@@ -3160,6 +3160,12 @@ function loadVoices(){
 if ('speechSynthesis' in window){ loadVoices(); try { speechSynthesis.addEventListener('voiceschanged', loadVoices); } catch (e) {} }
 function speak(text){
   const t = String(text || '').replace(/…/g, ' ').trim(); if (!t) return;
+  // In der nativen App-Hülle (Expo-WebView) ist speechSynthesis nicht nutzbar —
+  // dort übernimmt die native Seite (expo-speech) über die Nachrichten-Brücke.
+  if (window.ReactNativeWebView){
+    window.ReactNativeWebView.postMessage(JSON.stringify({type:'speak', text: t, lang: arVoice ? arVoice.lang : 'ar-SA'}));
+    return;
+  }
   const en = S.settings.lang === 'en';
   if (!('speechSynthesis' in window)){ toast(en ? 'Reading aloud isn’t supported on this device.' : 'Vorlesen wird auf diesem Gerät nicht unterstützt.'); return; }
   try {
