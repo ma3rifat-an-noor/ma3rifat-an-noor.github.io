@@ -74,7 +74,7 @@ p{margin:0}
 .icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid transparent;background:transparent;color:var(--ink);flex:none}
 .icon-btn:hover{background:var(--sunk)}
 .views{flex:1;min-height:0;position:relative}
-.view{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.view{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 32px}
 .tabs{flex:none;border-top:1px solid var(--line);background:var(--surface);position:relative;z-index:5}
 .tabs .row{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
@@ -159,6 +159,7 @@ p{margin:0}
 .ex-list .de{grid-column:1;font-size:.86rem;color:var(--muted)}
 .ex-list .speak{grid-row:1 / span 2;grid-column:2}
 .t-words{display:flex;flex-wrap:wrap;gap:6px}
+.t-words .chip{white-space:normal;max-width:100%;border-radius:18px}
 .t-actions{display:flex;gap:8px;flex-wrap:wrap}
 .source{font-size:.8rem;color:var(--muted);max-width:65ch}
 
